@@ -1,7 +1,10 @@
 # YeoDam2019
-YeoDam2019 Outsourcing with B1ns
+## YeoDam2019 Outsourcing with B1ns
 
-Started 2019.06.01 
+### Started 2019.06.01 
 
-Link : jauvf0.axshare.com
+[Plan-Link](https://jauvf0.axshare.com/)
+
+
+
 
