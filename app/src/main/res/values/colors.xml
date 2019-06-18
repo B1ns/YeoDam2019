@@ -3,4 +3,17 @@
     <color name="colorPrimary">#0066ff</color>
     <color name="colorPrimaryDark">#003dcb</color>
     <color name="colorAccent">#6b93ff</color>
+
+    <color name="colorPurple">#6c63ff</color>
+    <color name="colorIndigo">#303F9F</color>
+    <color name="colorBlueMidnight">#003366</color>
+    <color name="colorGrey">#C9C9C9</color>
+    <color name="colorWhite">#FFFFFF</color>
+
+    <color name="Sky1">#cdf9ff</color>
+    <color name="Sky2">#c3fbf9</color>
+    <color name="Sky3">#acf5fb</color>
+    <color name="Sky4">#8ae5ff</color>
+    <color name="Sky5">#75d5e3</color>
+
 </resources>
