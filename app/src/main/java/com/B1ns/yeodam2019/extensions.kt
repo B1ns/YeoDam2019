@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.B1ns.yeodam2019.view.activity.MainActivity
+import org.jetbrains.anko.startActivity
 
 fun Context.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -29,6 +31,6 @@ fun AppCompatActivity.toolbar(toolbar: Toolbar, titleStr: String = "") {
     supportActionBar?.title = titleStr
     toolbar.apply {
         setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
-        setNavigationOnClickListener { finish() }
+        setNavigationOnClickListener { startActivity<MainActivity>() }
     }
 }

@@ -1,11 +1,14 @@
 package com.B1ns.yeodam2019.view.activity.splash
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import com.B1ns.yeodam2019.R
+import com.B1ns.yeodam2019.view.activity.MainActivity
 import com.B1ns.yeodam2019.view.activity.OnboardingActivity
+import org.jetbrains.anko.startActivity
 
 class SplashActivity : AppCompatActivity() {
 
@@ -13,10 +16,24 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
+        var pref = getSharedPreferences("isFirst", Activity.MODE_PRIVATE)
+
+        var first = pref.getBoolean("isFirst", false)
+
         val handler = Handler()
         handler.postDelayed({
-            startActivity(Intent(this@SplashActivity, OnboardingActivity::class.java))
-            finish()
+            if (first == false) {
+                val editor = pref.edit()
+                editor.putBoolean("isFirst", true)
+                editor.apply()
+                startActivity<OnboardingActivity>()
+                finish()
+            } else {
+                startActivity<MainActivity>()
+                finish()
+            }
+
         }, 2000)
     }
+
 }
