@@ -15,21 +15,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".OnboardingActivity"></activity>
-        <activity android:name=".MapActivity" />
+        <activity android:name=".view.activity.OnboardingActivity"></activity>
+        <activity android:name=".view.activity.MapActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDhY3okx6pv4VGbGY_Ov5Zg-1tGVCG9KT4" />
 
-        <activity android:name=".SplashActivity">
+        <activity android:name=".view.activity.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".view.activity.MainActivity" />
     </application>
 
 </manifest>

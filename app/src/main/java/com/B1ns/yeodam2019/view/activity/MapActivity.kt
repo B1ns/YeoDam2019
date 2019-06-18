@@ -1,4 +1,4 @@
-package com.B1ns.yeodam2019
+package com.B1ns.yeodam2019.view.activity
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import com.B1ns.yeodam2019.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
