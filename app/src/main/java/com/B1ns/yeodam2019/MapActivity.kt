@@ -100,6 +100,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     * Start Google Map Service
     */
 
+
     override fun onMapReady(p0: GoogleMap?) {
 
     }
@@ -123,4 +124,5 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+
 }
