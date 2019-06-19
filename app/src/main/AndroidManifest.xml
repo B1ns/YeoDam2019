@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.activity.OnboardingActivity"></activity>
+        <activity android:name=".view.activity.InfoActivity"></activity>
+        <activity android:name=".view.activity.OnboardingActivity" />
         <activity android:name=".view.activity.MapActivity" />
 
         <meta-data
