@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "730477298506",
+    "firebase_url": "https://yeodam.firebaseio.com",
+    "project_id": "yeodam",
+    "storage_bucket": "yeodam.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730477298506:android:bc05892d3f18da5c",
+        "android_client_info": {
+          "package_name": "com.yeodam.yeodam2019"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "730477298506-i5a8mib5rnilfeccq7a2tob932alh99j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yeodam.yeodam2019",
+            "certificate_hash": "ce4b894e933d2bc57395f77e550b0cf7ea36c084"
+          }
+        },
+        {
+          "client_id": "730477298506-dk0mt165u23da6eqstqahlict5g6q2rh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDTJmTRy4nhpNAc5U3fyNanMin38mxduw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "730477298506-dk0mt165u23da6eqstqahlict5g6q2rh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
