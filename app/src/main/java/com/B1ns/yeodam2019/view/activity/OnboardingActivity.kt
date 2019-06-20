@@ -106,7 +106,7 @@ class OnboardingActivity : AppCompatActivity() {
 
     private fun navigateToLogin() {
         AppPrefs(this).setFirstTimeLaunch(false)
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(Intent(this, InfoActivity::class.java))
         finish()
     }
 
