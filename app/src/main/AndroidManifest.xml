@@ -16,7 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.yeodam.yeodam2019.view.activity.InfoActivity"></activity>
+        <activity
+            android:name="com.yeodam.yeodam2019.view.activity.InfoActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name="com.yeodam.yeodam2019.view.activity.OnboardingActivity" />
         <activity android:name="com.yeodam.yeodam2019.view.activity.MapActivity" />
 
