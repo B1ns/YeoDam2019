@@ -1,17 +1,14 @@
-package com.B1ns.yeodam2019.view.activity
+package com.yeodam.yeodam2019.view.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Toast
-import androidx.core.content.ContextCompat
-import com.B1ns.yeodam2019.R
-import com.B1ns.yeodam2019.toast
+import com.yeodam.yeodam2019.R
+import com.yeodam.yeodam2019.toast
 import kotlinx.android.synthetic.main.activity_info.*
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.textColor
 
 class InfoActivity : AppCompatActivity() {
 

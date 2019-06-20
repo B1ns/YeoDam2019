@@ -1,4 +1,4 @@
-package com.B1ns.yeodam2019
+package com.yeodam.yeodam2019
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4

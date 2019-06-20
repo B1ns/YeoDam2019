@@ -1,13 +1,12 @@
-package com.B1ns.yeodam2019
+package com.yeodam.yeodam2019
 
 import android.content.Context
-import android.content.Intent
 import android.os.Handler
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.B1ns.yeodam2019.view.activity.MainActivity
+import com.yeodam.yeodam2019.view.activity.MainActivity
 import org.jetbrains.anko.startActivity
 
 fun Context.toast(message: String) {

@@ -1,13 +1,12 @@
-package com.B1ns.yeodam2019.view.activity.splash
+package com.yeodam.yeodam2019.view.activity.splash
 
 import android.app.Activity
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import com.B1ns.yeodam2019.R
-import com.B1ns.yeodam2019.view.activity.MainActivity
-import com.B1ns.yeodam2019.view.activity.OnboardingActivity
+import com.yeodam.yeodam2019.R
+import com.yeodam.yeodam2019.view.activity.MainActivity
+import com.yeodam.yeodam2019.view.activity.OnboardingActivity
 import org.jetbrains.anko.startActivity
 
 class SplashActivity : AppCompatActivity() {

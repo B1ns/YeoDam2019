@@ -1,4 +1,4 @@
-package com.B1ns.yeodam2019.view.activity
+package com.yeodam.yeodam2019.view.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.text.Html
 import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
-import com.B1ns.yeodam2019.R
-import com.B1ns.yeodam2019.config.AppPrefs
-import com.B1ns.yeodam2019.hide
-import com.B1ns.yeodam2019.show
-import com.B1ns.yeodam2019.view.adapter.SliderAdapter
+import com.yeodam.yeodam2019.R
+import com.yeodam.yeodam2019.config.AppPrefs
+import com.yeodam.yeodam2019.hide
+import com.yeodam.yeodam2019.show
+import com.yeodam.yeodam2019.view.adapter.SliderAdapter
 import kotlinx.android.synthetic.main.activity_onboarding.*
 
 class OnboardingActivity : AppCompatActivity() {

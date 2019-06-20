@@ -1,8 +1,8 @@
-package com.B1ns.yeodam2019.view.activity
+package com.yeodam.yeodam2019.view.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.B1ns.yeodam2019.R
+import com.yeodam.yeodam2019.R
 
 class MainActivity : AppCompatActivity() {
 

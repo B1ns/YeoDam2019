@@ -1,4 +1,4 @@
-package com.B1ns.yeodam2019.config
+package com.yeodam.yeodam2019.config
 
 
 import android.content.Context

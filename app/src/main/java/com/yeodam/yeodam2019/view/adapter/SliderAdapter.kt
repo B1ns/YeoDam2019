@@ -1,4 +1,4 @@
-package com.B1ns.yeodam2019.view.adapter
+package com.yeodam.yeodam2019.view.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
