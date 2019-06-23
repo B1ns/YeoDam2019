@@ -24,7 +24,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDhY3okx6pv4VGbGY_Ov5Zg-1tGVCG9KT4" />
+            android:value="AIzaSyDDTJmTRy4nhpNAc5U3fyNanMin38mxduw" />
 
         <activity android:name="com.yeodam.yeodam2019.view.activity.splash.SplashActivity">
             <intent-filter>

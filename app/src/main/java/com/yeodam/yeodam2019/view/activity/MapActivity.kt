@@ -104,6 +104,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(p0: GoogleMap?) {
 
+
     }
 
     inner class MyLocationCallback : LocationCallback() {
