@@ -1,12 +1,15 @@
 package com.yeodam.yeodam2019.view.activity
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.core.app.ActivityCompat
 import com.yeodam.yeodam2019.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -17,7 +20,13 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.yeodam.yeodam2019.toast
 import kotlinx.android.synthetic.main.activity_map_activity.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.yesButton
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -25,7 +34,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
 
-    private val polylineOptions = PolylineOptions().width(5f).color(Color.RED)
+    private val polylineOptions = PolylineOptions().width(5f).color(Color.BLUE)
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -36,13 +45,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var isFabOpen = false
 
+    private lateinit var database: DatabaseReference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map_activity)
 
         fab()
+        firebaseInit()
 
     }
+
 
     /*
     *  Start double floating action button
@@ -101,11 +114,55 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     * Start Google Map Service
     */
 
+    fun firebaseInit() {
 
-    override fun onMapReady(p0: GoogleMap?) {
+        // [START initialize_database_ref]
+        database = FirebaseDatabase.getInstance().reference
+        // [END initialize_database_ref]
+    }
 
+    private fun showPermissionInfoDialog() {
+
+        alert("현재 위치 정보를 얻기 위해서 위치 권한이 필요합니다.", "권한이 필요한 이유") {
+            yesButton {
+                ActivityCompat.requestPermissions(
+                    this@MapActivity,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_ACCESS_FINE_LOCATION
+                )
+            }
+
+            noButton {
+                toast("거절")
+            }
+        }.show()
 
     }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_ACCESS_FINE_LOCATION -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    addLocationListener()
+                } else {
+                    //권한 거부
+                    toast("권한 거부 됨")
+                }
+                return
+            }
+        }
+
+    }
+
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        //val myLocation = LatLng()
+    }
+
 
     inner class MyLocationCallback : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
@@ -125,6 +182,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 mMap.addPolyline(polylineOptions)
             }
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun addLocationListener() {
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
 }

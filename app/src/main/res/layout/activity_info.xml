@@ -13,10 +13,10 @@
         android:text="여행을 떠날 당신을 소개해 주세요"
         android:textSize="8pt"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/infoImage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/infoImage"
@@ -28,8 +28,7 @@
         app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/info_text"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/info_text" />
 
     <ImageView
         android:layout_width="40dp"
@@ -51,19 +50,21 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginBottom="160dp"
         android:hint="@string/nickName"
-        android:layout_marginBottom="180dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/infoImage">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.mindorks.editdrawabletext.EditDrawableText
             android:id="@+id/nickName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:maxLength="10" />
+            android:maxLength="10"
+            android:drawableRight="@drawable/ic_close_gray_24dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
