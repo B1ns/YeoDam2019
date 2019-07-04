@@ -34,7 +34,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
 
-    private val polylineOptions = PolylineOptions().width(5f).color(Color.BLUE)
+    private val polylineOptions = PolylineOptions().width(50f).color(Color.BLUE)
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
