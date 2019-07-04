@@ -1,4 +1,4 @@
-package com.yeodam.yeodam2019.view.activity
+package com.yeodam.yeodam2019.view.activity.map
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -7,9 +7,13 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.core.app.ActivityCompat
+import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.yeodam.yeodam2019.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -53,7 +57,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         fab()
         firebaseInit()
-
     }
 
 
@@ -188,5 +191,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun addLocationListener() {
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
+
 
 }

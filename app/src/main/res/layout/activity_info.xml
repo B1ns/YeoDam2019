@@ -64,7 +64,8 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:maxLength="10"
-            android:drawableRight="@drawable/ic_close_gray_24dp" />
+            android:drawableEnd="@drawable/ic_close_gray_24dp"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
