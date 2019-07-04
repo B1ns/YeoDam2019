@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -135,7 +136,6 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
 
     private fun navigateToLogin() {
         AppPrefs(this).setFirstTimeLaunch(false)
-        startActivity(Intent(this, InfoActivity::class.java))
         finish()
     }
 
@@ -179,6 +179,7 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                    Log.d("fuck", "인증성공")
                     loginSucceed(auth.currentUser)
                 } else {
                     loginSucceed(null)
@@ -208,5 +209,7 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
             finish()
         }
     }
+
+
 }
 
