@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
 import com.yeodam.yeodam2019.R
@@ -27,9 +28,12 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.yeodam.yeodam2019.toast
+import com.yeodam.yeodam2019.view.activity.MainActivity
 import kotlinx.android.synthetic.main.activity_map_activity.*
+import kotlinx.android.synthetic.main.appbar.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.yesButton
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -48,6 +52,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fab_close: Animation
 
     private var isFabOpen = false
+    private var story = true
 
     private lateinit var database: DatabaseReference
 
@@ -57,8 +62,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         fab()
         firebaseInit()
-    }
 
+        mapHome_btn.setOnClickListener {
+            if (story) {
+                startActivity<MainActivity>()
+                finish()
+            } else {
+                onBackPressed()
+            }
+        }
+    }
 
     /*
     *  Start double floating action button
@@ -67,22 +80,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun fab() {
         fabInit()
 
+        // 각각의 서브 fab
+        fab_sub1.setOnClickListener {
+            toggleFab()
+            story = true
+            // 최상의 fab
+
+        }
+
+        fab_sub2.setOnClickListener {
+            toggleFab()
+            story = false
+            // 중간의 fab
+
+        }
+
         // 메인 fab 을 눌렀을시 서브 fab 이 나옴
         fab_main.setOnClickListener {
             toggleFab()
         }
 
-        // 각각의 서브 fab
-        fab_sub1.setOnClickListener {
-            toggleFab()
-            // 최상의 fab
-
-        }
-        fab_sub2.setOnClickListener {
-            toggleFab()
-            // 중간의 fab
-
-        }
 
     }
 
@@ -193,4 +210,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this@MapActivity)
+        builder.setTitle("여행중입니다 !")
+        builder.setIcon(R.drawable.person)
+        builder.setMessage("정말로 종료하시겠습니까?")
+        builder.setPositiveButton("확인") { _, _ ->
+            finish()
+            story = false
+        }
+        builder.setNegativeButton("취소", null)
+        val alertDialog = builder.create()
+        alertDialog.show()
+    }
 }
