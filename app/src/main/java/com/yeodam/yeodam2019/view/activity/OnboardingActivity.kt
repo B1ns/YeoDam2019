@@ -210,6 +210,5 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
         }
     }
 
-
 }
 

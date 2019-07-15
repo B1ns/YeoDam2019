@@ -25,6 +25,10 @@ fun postDelayed(delayMillis: Long, task: () -> Unit) {
     Handler().postDelayed(task, delayMillis)
 }
 
+fun View.invisivle(){
+    visibility = View.INVISIBLE
+}
+
 fun AppCompatActivity.toolbar(toolbar: Toolbar, titleStr: String = "") {
     setSupportActionBar(toolbar)
     supportActionBar?.title = titleStr
