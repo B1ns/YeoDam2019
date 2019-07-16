@@ -62,6 +62,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         fab()
         firebaseInit()
+        showPermissionInfoDialog()
 
         mapHome_btn.setOnClickListener {
             if (story) {
