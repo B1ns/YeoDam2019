@@ -26,7 +26,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.MainActivity
 import kotlinx.android.synthetic.main.activity_map_activity.*
@@ -46,7 +45,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: MyLocationCallback
+    private lateinit var locationCallback: MyLocationCallBack
 
     private lateinit var fab_open: Animation
     private lateinit var fab_close: Animation
@@ -64,11 +63,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         fab()
-        showPermissionInfoDialog()
         locationInit()
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         mapHome_btn.setOnClickListener {
             if (story) {
@@ -146,7 +144,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun locationInit() {
         fusedLocationProviderClient = FusedLocationProviderClient(this)
 
-        locationCallback = MyLocationCallback()
+        locationCallback = MyLocationCallBack()
 
         locationRequest = LocationRequest()
         // GPS 우선
@@ -192,13 +190,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-
-
     @SuppressLint("MissingPermission")
     private fun addLocationListener() {
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
             locationCallback,
-            null)
+            null
+        )
     }
 
 
@@ -280,23 +278,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    inner class MyLocationCallback : LocationCallback() {
+    inner class MyLocationCallBack : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
             super.onLocationResult(locationResult)
 
             val location = locationResult?.lastLocation
 
             location?.run {
-
+                // 14 level로 확대하며 현재 위치로 카메라 이동
                 val latLng = LatLng(latitude, longitude)
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
 
-                Log.d("MapsActivity", "위도 : $latitude, 경도 : $longitude")
+                Log.d("MapsActivity", "위도: $latitude, 경도: $longitude")
 
                 polylineOptions.add(latLng)
-                //선 그리기
+
+                // 선 그리기
                 mMap.addPolyline(polylineOptions)
+
             }
+
         }
     }
 
