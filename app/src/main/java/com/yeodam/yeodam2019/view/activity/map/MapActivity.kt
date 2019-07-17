@@ -2,19 +2,17 @@ package com.yeodam.yeodam2019.view.activity.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-import com.andrefrsousa.superbottomsheet.SuperBottomSheetFragment
+import androidx.core.content.ContextCompat
 import com.yeodam.yeodam2019.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -23,7 +21,9 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -42,7 +42,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
 
-    private val polylineOptions = PolylineOptions().width(50f).color(Color.BLUE)
+    private val polylineOptions = PolylineOptions().width(50f).color(R.color.trackingLine)
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -60,9 +60,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map_activity)
 
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
         fab()
-        firebaseInit()
         showPermissionInfoDialog()
+        locationInit()
+
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
+        mapFragment?.getMapAsync(this)
 
         mapHome_btn.setOnClickListener {
             if (story) {
@@ -131,16 +137,70 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+
     /*
     * Start Google Map Service
     */
 
-    fun firebaseInit() {
 
-        // [START initialize_database_ref]
-        database = FirebaseDatabase.getInstance().reference
-        // [END initialize_database_ref]
+    private fun locationInit() {
+        fusedLocationProviderClient = FusedLocationProviderClient(this)
+
+        locationCallback = MyLocationCallback()
+
+        locationRequest = LocationRequest()
+        // GPS 우선
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        // 업데이트 인터벌
+        // 위치 정보가 없을 때는 업데이트 안 함
+        // 상황에 따라 짧아질 수 있음, 정확하지 않음
+        // 다른 앱에서 짧은 인터벌로 위치 정보를 요청하면 짧아질 수 있음
+        locationRequest.interval = 10000
+        // 정확함. 이것보다 짧은 업데이트는 하지 않음
+        locationRequest.fastestInterval = 5000
     }
+
+
+    @SuppressLint("MissingPermission")
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+
+        val seoul = LatLng(37.566535, 126.977969)
+        mMap.addMarker(MarkerOptions().position(seoul).title("Seoul"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(seoul))
+
+        permissionCheck(cancel = {
+            showPermissionInfoDialog()
+        }, ok = {
+            mMap.isMyLocationEnabled = true
+        })
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        // 권한 요청 ⑨
+        permissionCheck(cancel = {
+            // 위치 정보가 필요한 이유 다이얼로그 표시 ⑩
+            showPermissionInfoDialog()
+        }, ok = {
+            // 현재 위치를 주기적으로 요청 (권한이 필요한 부분) ⑪
+            addLocationListener()
+        })
+    }
+
+
+
+
+    @SuppressLint("MissingPermission")
+    private fun addLocationListener() {
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+            locationCallback,
+            null)
+    }
+
 
     private fun showPermissionInfoDialog() {
 
@@ -157,6 +217,29 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }.show()
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        removeLocationListener()
+    }
+
+    private fun removeLocationListener() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+    }
+
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this@MapActivity)
+        builder.setTitle("여행중입니다 !")
+        builder.setIcon(R.drawable.person)
+        builder.setMessage("정말로 종료하시겠습니까?")
+        builder.setPositiveButton("확인") { _, _ ->
+            finish()
+            story = false
+        }
+        builder.setNegativeButton("취소", null)
+        val alertDialog = builder.create()
+        alertDialog.show()
     }
 
 
@@ -178,12 +261,24 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-
-        //val myLocation = LatLng()
+    private fun permissionCheck(cancel: () -> Unit, ok: () -> Unit) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                cancel()
+            } else {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_ACCESS_FINE_LOCATION
+                )
+            }
+        } else {
+            ok()
+        }
     }
-
 
     inner class MyLocationCallback : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
@@ -203,26 +298,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 mMap.addPolyline(polylineOptions)
             }
         }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun addLocationListener() {
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
-    }
-
-
-    override fun onBackPressed() {
-        val builder = AlertDialog.Builder(this@MapActivity)
-        builder.setTitle("여행중입니다 !")
-        builder.setIcon(R.drawable.person)
-        builder.setMessage("정말로 종료하시겠습니까?")
-        builder.setPositiveButton("확인") { _, _ ->
-            finish()
-            story = false
-        }
-        builder.setNegativeButton("취소", null)
-        val alertDialog = builder.create()
-        alertDialog.show()
     }
 
 
