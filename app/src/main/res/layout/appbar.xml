@@ -11,6 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/white"
         android:padding="18dp">
 
         <ImageView
@@ -27,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="YeoDam"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="12pt"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

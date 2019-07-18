@@ -9,6 +9,7 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -26,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="YeoDam 여행을 담다"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/black" />
 
                 <ImageButton
                     android:id="@+id/setting_btn"
@@ -34,7 +35,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="10dp"
-                    android:background="@drawable/ic_settings_24dp" />
+                    android:background="@drawable/ic_settings_24dp"
+                    android:backgroundTint="@android:color/black" />
 
                 <ImageButton
                     android:id="@+id/notification_btn"
@@ -42,7 +44,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignEnd="@+id/setting_btn"
                     android:layout_marginEnd="40dp"
-                    android:background="@drawable/ic_notifications_24dp" />
+                    android:background="@drawable/ic_notifications_24dp"
+                    android:backgroundTint="@android:color/black" />
 
             </RelativeLayout>
 
