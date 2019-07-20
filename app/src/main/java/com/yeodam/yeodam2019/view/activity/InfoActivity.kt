@@ -28,7 +28,7 @@ class InfoActivity : AppCompatActivity() {
         info_btn.setOnClickListener {
             if (nickName.text.toString().isNotEmpty()) {
                 // pref 설정
-
+                finish()
                 startActivity<MainActivity>()
             }
         }

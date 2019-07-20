@@ -205,8 +205,8 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
     private fun loginSucceed(user: FirebaseUser?) {
         if (user != null) {
             toast("로그인 성공 !")
-            startActivity<InfoActivity>()
             finish()
+            startActivity<InfoActivity>()
         }
     }
 

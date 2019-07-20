@@ -6,6 +6,7 @@ import android.view.View
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.main_userinfo.*
 import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +18,10 @@ class MainActivity : AppCompatActivity() {
         fab_main.setOnClickListener {
             slider.visibility = View.VISIBLE
 
+        }
+
+        setting_btn.setOnClickListener {
+            startActivity<SettingActivity>()
         }
     }
 }
