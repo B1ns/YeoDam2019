@@ -1,5 +1,6 @@
 package com.yeodam.yeodam2019.view.activity
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -11,12 +12,20 @@ import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
 
+    var fab : Boolean = false
+
+    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         fab_main.setOnClickListener {
             slider.visibility = View.VISIBLE
+            fab = true
+            if (fab){
+                fab_main.visibility = View.INVISIBLE
+
+            }
 
         }
 
