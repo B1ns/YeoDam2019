@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DatabaseReference
 import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.MainActivity
@@ -301,5 +303,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+//    private fun bottomNavigation(){
+//
+//        mapNavigation.setOnNavigationItemSelectedListener {
+//
+//        }
+//    }
 
 }
