@@ -33,9 +33,12 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
+        android:id="@+id/setting_Info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#f5f5f5"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/push_alram"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setting_Appbar">
@@ -59,6 +62,49 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/push_alram"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setting_Info">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/push_alram"
+                android:textColor="#2e2e2e"
+                android:textStyle="normal" />
+
+            <Switch
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="200dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="@android:color/darker_gray" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/service_text"
+            android:textColor="#2e2e2e" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
