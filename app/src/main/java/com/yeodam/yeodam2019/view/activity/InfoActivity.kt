@@ -9,8 +9,8 @@ import com.mindorks.editdrawabletext.DrawablePosition
 import com.mindorks.editdrawabletext.OnDrawableClickListener
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.toast
+import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import kotlinx.android.synthetic.main.activity_info.*
-import org.jetbrains.anko.backgroundDrawable
 import org.jetbrains.anko.startActivity
 
 class InfoActivity : AppCompatActivity() {

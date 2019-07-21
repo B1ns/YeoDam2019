@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.yeodam.yeodam2019.view.activity.MainActivity
+import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import org.jetbrains.anko.startActivity
 
 fun Context.toast(message: String) {

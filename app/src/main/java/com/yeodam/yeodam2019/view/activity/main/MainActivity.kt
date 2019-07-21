@@ -1,11 +1,11 @@
-package com.yeodam.yeodam2019.view.activity
+package com.yeodam.yeodam2019.view.activity.main
 
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.yeodam.yeodam2019.R
-import com.yeodam.yeodam2019.view.activity.map.MapActivity
+import com.yeodam.yeodam2019.view.activity.SettingActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main_userinfo.*
 import org.jetbrains.anko.startActivity
@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
             fab = true
             if (fab){
                 fab_main.visibility = View.INVISIBLE
-
             }
 
         }
