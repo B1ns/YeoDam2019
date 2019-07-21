@@ -6,13 +6,14 @@ import android.os.Bundle
 import android.view.View
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.view.activity.SettingActivity
+import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main_userinfo.*
 import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
 
-    var fab : Boolean = false
+    var fab: Boolean = false
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,14 +23,22 @@ class MainActivity : AppCompatActivity() {
         fab_main.setOnClickListener {
             slider.visibility = View.VISIBLE
             fab = true
-            if (fab){
+            if (fab) {
                 fab_main.visibility = View.INVISIBLE
             }
-
         }
 
         setting_btn.setOnClickListener {
             startActivity<SettingActivity>()
         }
+
+        if (slider.isAnimateCompletion) {
+            startMap()
+        }
+    }
+
+    private fun startMap() {
+        slider.visibility = View.GONE
+        startActivity<MapActivity>()
     }
 }
