@@ -48,7 +48,7 @@
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:layout_margin="20dp"
-            android:src="@drawable/person"
+            android:src="@drawable/ic_person_outline_black_24dp"
             app:civ_border_color="#f5f5f5"
             app:civ_border_width="2dp" />
 
