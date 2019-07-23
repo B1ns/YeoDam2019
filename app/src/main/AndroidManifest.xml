@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.activity.setting.ProfileActivity"></activity>
+        <activity android:name=".view.activity.setting.ServiceActivity"></activity>
+        <activity android:name=".view.activity.setting.ProfileActivity" />
         <activity android:name=".view.activity.setting.SettingActivity" />
         <activity
             android:name=".view.activity.splash.InfoActivity"
