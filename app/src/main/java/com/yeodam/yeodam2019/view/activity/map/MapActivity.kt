@@ -223,7 +223,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun removeLocationListener() {
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        fusedLocationProviderClient. removeLocationUpdates(locationCallback)
     }
 
     override fun onBackPressed() {
