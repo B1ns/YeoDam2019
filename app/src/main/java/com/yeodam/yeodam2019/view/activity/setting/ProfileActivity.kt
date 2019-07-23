@@ -14,7 +14,7 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile)
 
         userName.setOnClickListener {
-            
+
         }
 
         userDelete.setOnClickListener {
@@ -38,4 +38,5 @@ class ProfileActivity : AppCompatActivity() {
             ) { dialog -> dialog.dismiss() }
             .build().show()
     }
+
 }

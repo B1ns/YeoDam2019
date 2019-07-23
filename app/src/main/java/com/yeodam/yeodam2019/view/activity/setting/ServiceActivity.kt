@@ -16,6 +16,6 @@ class ServiceActivity : AppCompatActivity() {
         serviceTab.addTab(serviceTab.newTab().setText("서비스 약관"))
         serviceTab.addTab(serviceTab.newTab().setText("개인정보 보호 정책"))
 
-
+        
     }
 }
