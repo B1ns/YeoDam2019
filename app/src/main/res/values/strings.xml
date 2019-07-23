@@ -12,4 +12,5 @@
     <string name="push_alram">푸시 알림</string>
     <string name="service_text">서비스 약관 및 개인정보 보호 정책</string>
     <string name="nickname">닉네임</string>
+    <string name="dismiss">아니오</string>
 </resources>

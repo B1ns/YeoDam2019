@@ -1,4 +1,4 @@
-package com.yeodam.yeodam2019.view.activity
+package com.yeodam.yeodam2019.view.activity.splash
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

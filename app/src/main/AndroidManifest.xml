@@ -16,12 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.activity.ProfileActivity"></activity>
-        <activity android:name=".view.activity.SettingActivity" />
+        <activity android:name=".view.activity.setting.ProfileActivity"></activity>
+        <activity android:name=".view.activity.setting.SettingActivity" />
         <activity
-            android:name=".view.activity.InfoActivity"
+            android:name=".view.activity.splash.InfoActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".view.activity.OnboardingActivity" />
+        <activity android:name=".view.activity.splash.OnboardingActivity" />
         <activity android:name=".view.activity.map.MapActivity" />
 
         <meta-data

@@ -1,4 +1,4 @@
-package com.yeodam.yeodam2019.view.activity
+package com.yeodam.yeodam2019.view.activity.splash
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -169,7 +169,9 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
 
         startBtn.setOnClickListener {
             val signInIntent = googleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
+            startActivityForResult(signInIntent,
+                RC_SIGN_IN
+            )
         }
     }
 
