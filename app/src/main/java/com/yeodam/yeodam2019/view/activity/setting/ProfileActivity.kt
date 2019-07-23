@@ -13,12 +13,14 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
+        userName.setOnClickListener {
+            
+        }
+
         userDelete.setOnClickListener {
             userDelete()
         }
     }
-
-
 
     fun userDelete() {
         iOSDialogBuilder(this@ProfileActivity)
