@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             startActivity<SettingActivity>()
         }
 
-
+        
     }
 
     private fun startMap() {
