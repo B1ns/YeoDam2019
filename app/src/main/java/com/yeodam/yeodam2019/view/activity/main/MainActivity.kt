@@ -49,4 +49,5 @@ class MainActivity : AppCompatActivity() {
         slider.visibility = View.GONE
         startActivity<MapActivity>()
     }
+
 }
