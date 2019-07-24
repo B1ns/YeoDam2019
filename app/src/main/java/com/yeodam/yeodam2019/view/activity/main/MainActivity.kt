@@ -32,9 +32,7 @@ class MainActivity : AppCompatActivity() {
             startActivity<SettingActivity>()
         }
 
-        if (slider.isAnimateCompletion) {
-            startMap()
-        }
+
     }
 
     private fun startMap() {

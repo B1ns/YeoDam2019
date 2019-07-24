@@ -20,7 +20,7 @@ class SplashActivity : AppCompatActivity() {
 
         val handler = Handler()
         handler.postDelayed({
-            if (first == false) {
+            if (!first) {
                 val editor = pref.edit()
                 editor.putBoolean("isFirst", true)
                 editor.apply()
