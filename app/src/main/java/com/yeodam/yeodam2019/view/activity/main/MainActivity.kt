@@ -3,6 +3,7 @@ package com.yeodam.yeodam2019.view.activity.main
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
@@ -37,7 +38,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun slider() {
-        if (slider.isCompleted()) {
+        if (slider.isCompleted()){
+            Log.d("123", "wht")
             startMap()
         }
     }
