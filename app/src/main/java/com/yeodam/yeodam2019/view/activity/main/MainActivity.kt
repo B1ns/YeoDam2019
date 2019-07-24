@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         fab_main.setOnClickListener {
-            getBitmapFromView(main_View)
             slider.visibility = View.VISIBLE
             fab = true
             if (fab) {
