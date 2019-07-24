@@ -15,6 +15,7 @@ import org.jetbrains.anko.startActivity
 class MainActivity : AppCompatActivity() {
 
     var fab: Boolean = false
+    var log = slider.isCompleted()
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,8 +39,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun slider() {
-        if (slider.isCompleted()){
-            Log.d("123", "wht")
+        if (log){
+            Log.d("fuck", "wht")
             startMap()
         }
     }

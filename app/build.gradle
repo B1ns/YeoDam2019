@@ -54,8 +54,8 @@ dependencies {
     implementation 'com.github.MindorksOpenSource:EditDrawableText:1.2.0'
     implementation 'com.github.andrefrsousa:SuperBottomSheet:1.3.0'
     implementation 'com.ncorti:slidetoact:0.7.0'
-    implementation 'no.danielzeller.blurbehindlib:blurbehindlib:1.0.0'
     implementation 'com.gdacciaro:iosdialog:1.0.3'
+    implementation 'fr.tvbarthel.blurdialogfragment:lib:2.2.0'
 
     // Lottie
     implementation 'com.airbnb.android:lottie:3.0.0'
