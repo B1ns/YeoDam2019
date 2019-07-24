@@ -32,7 +32,14 @@ class MainActivity : AppCompatActivity() {
             startActivity<SettingActivity>()
         }
 
-        
+        slider()
+
+    }
+
+    private fun slider() {
+        if (slider.isCompleted()) {
+            startMap()
+        }
     }
 
     private fun startMap() {
