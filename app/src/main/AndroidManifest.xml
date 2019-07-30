@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.activity.map.write.PayActivity"></activity>
+        <activity android:name=".view.activity.map.write.PayActivity" />
         <activity android:name=".view.activity.map.write.memoActivity" />
         <activity android:name=".view.activity.setting.ServiceActivity" />
         <activity android:name=".view.activity.setting.ProfileActivity" />

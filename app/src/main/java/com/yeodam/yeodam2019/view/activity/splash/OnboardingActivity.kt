@@ -169,7 +169,8 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
 
         startBtn.setOnClickListener {
             val signInIntent = googleSignInClient.signInIntent
-            startActivityForResult(signInIntent,
+            startActivityForResult(
+                signInIntent,
                 RC_SIGN_IN
             )
         }
