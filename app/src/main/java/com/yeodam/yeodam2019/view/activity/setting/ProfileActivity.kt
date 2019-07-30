@@ -24,8 +24,8 @@ class ProfileActivity : AppCompatActivity() {
 
     fun userDelete() {
         iOSDialogBuilder(this@ProfileActivity)
-            .setTitle("회원탈퇴")
-            .setSubtitle("정말 탈퇴 하시겠습니까?")
+            .setTitle("정말 탈퇴 하시겠습니까?")
+            .setSubtitle("기록했던 앨범의 경로, 메모, 경비, 계정 정보를\n 포함한 모든 정보들은 삭제됩니다.")
             .setBoldPositiveLabel(true)
             .setCancelable(false)
             .setPositiveListener("네") { dialog ->

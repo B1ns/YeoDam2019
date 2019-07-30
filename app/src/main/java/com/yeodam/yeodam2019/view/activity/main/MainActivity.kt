@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun slider() {
-        if (slider.isCompleted()){
+        if (slider.isAnimateCompletion){
             Log.d("fuck", "wht")
             startMap()
         }
