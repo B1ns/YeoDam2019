@@ -56,6 +56,7 @@ dependencies {
     implementation 'com.ncorti:slidetoact:0.7.0'
     implementation 'com.gdacciaro:iosdialog:1.0.3'
     implementation 'fr.tvbarthel.blurdialogfragment:lib:2.2.0'
+    implementation 'com.wajahatkarim3.EasyMoney-Widgets:EasyMoney-Widgets:1.0.0'
 
     // Lottie
     implementation 'com.airbnb.android:lottie:3.0.0'
