@@ -142,11 +142,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
 
-//        permissionCheck(cancel = {
-//            showPermissionInfoDialog()
-//        }, ok = {
-//            mMap.isMyLocationEnabled = true
-//        })
+        permissionCheck(cancel = {
+            showPermissionInfoDialog()
+        }, ok = {
+            mMap.isMyLocationEnabled = true
+        })
     }
 
     private fun locationInit() {
