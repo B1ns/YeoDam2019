@@ -6,24 +6,25 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.yeodam.yeodam2019.R
-import com.yeodam.yeodam2019.utils.getBitmapFromView
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.main_userinfo.*
 import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
 
     var fab: Boolean = false
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint("RestrictedApi", "ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        blurLayout.pauseBlur()
+
         fab_main.setOnClickListener {
             slider.visibility = View.VISIBLE
+            blurLayout.startBlur()
             fab = true
             if (fab) {
                 fab_main.visibility = View.INVISIBLE
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun slider() {
-        if (slider.isAnimateCompletion){
+        if (slider.isCompleted()) {
             Log.d("fuck", "wht")
             startMap()
         }
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startMap() {
         slider.visibility = View.GONE
+        blurLayout.pauseBlur()
         startActivity<MapActivity>()
     }
 

@@ -20,6 +20,10 @@ class ProfileActivity : AppCompatActivity() {
         userDelete.setOnClickListener {
             userDelete()
         }
+
+        profile_toolbar.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     fun userDelete() {
