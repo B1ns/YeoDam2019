@@ -41,33 +41,33 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
 
-    private val polylineOptions = PolylineOptions().width(50f).color(R.color.trackingLine)
+    private val polylineOptions = PolylineOptions().width(5f).color(R.color.trackingLine)
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: MyLocationCallBack
-
+    private lateinit var locationCallback: MyLocationCallback
     private lateinit var fab_open: Animation
     private lateinit var fab_close: Animation
 
+    private var story = false
     private var isFabOpen = false
-    private var story = true
-
-    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map_activity)
 
+        // 화면이 꺼지지 않게 하기
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        fab()
-        locationInit()
+        //SupportMapFragment를 가져와서 지도가 준비되면 알림을 받습니다.
 
         val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+            .findFragmentById(R.id.map) as? SupportMapFragment
+        mapFragment?.getMapAsync(this)
+
+        locationInit()
+
+        fab()
 
         mapHome_btn.setOnClickListener {
             if (story) {
@@ -77,6 +77,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 onBackPressed()
             }
         }
+
     }
 
     /*
@@ -105,7 +106,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         fab_main.setOnClickListener {
             toggleFab()
         }
-
 
     }
 
@@ -136,73 +136,41 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-
-    /*
-    * Start Google Map Service
-    */
-
-
-    private fun locationInit() {
-        fusedLocationProviderClient = FusedLocationProviderClient(this)
-
-        locationCallback = MyLocationCallBack()
-
-        locationRequest = LocationRequest()
-        // GPS 우선
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        // 업데이트 인터벌
-        // 위치 정보가 없을 때는 업데이트 안 함
-        // 상황에 따라 짧아질 수 있음, 정확하지 않음
-        // 다른 앱에서 짧은 인터벌로 위치 정보를 요청하면 짧아질 수 있음
-        locationRequest.interval = 10000
-        // 정확함. 이것보다 짧은 업데이트는 하지 않음
-        locationRequest.fastestInterval = 5000
-    }
-
-
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        // Add a marker in Sydney and move the camera
+        val sydney = LatLng(-34.0, 151.0)
+        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
 
-        val seoul = LatLng(37.566535, 126.977969)
-        mMap.addMarker(MarkerOptions().position(seoul).title("Seoul"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(seoul))
-
-        permissionCheck(cancel = {
-            showPermissionInfoDialog()
-        }, ok = {
-            mMap.isMyLocationEnabled = true
-        })
+//        permissionCheck(cancel = {
+//            showPermissionInfoDialog()
+//        }, ok = {
+//            mMap.isMyLocationEnabled = true
+//        })
     }
 
+    private fun locationInit() {
+        fusedLocationProviderClient = FusedLocationProviderClient(this)
 
-    override fun onResume() {
-        super.onResume()
+        locationCallback = MyLocationCallback()
 
-        // 권한 요청 ⑨
-        permissionCheck(cancel = {
-            // 위치 정보가 필요한 이유 다이얼로그 표시 ⑩
-            showPermissionInfoDialog()
-        }, ok = {
-            // 현재 위치를 주기적으로 요청 (권한이 필요한 부분) ⑪
-            addLocationListener()
-        })
+        locationRequest = LocationRequest()
+        //GPS 우선
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        // 업데이트 인터벌
+        // 위치 정보가 없을때는 업데이트 안 함
+        locationRequest.interval = 10000
+
+        // 정확함. 이것보다 짧은 업데이트는 하지 않음
+        locationRequest.fastestInterval = 5000
+
+
     }
-
-
-    @SuppressLint("MissingPermission")
-    private fun addLocationListener() {
-        fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            null
-        )
-    }
-
 
     private fun showPermissionInfoDialog() {
-
         alert("현재 위치 정보를 얻기 위해서 위치 권한이 필요합니다.", "권한이 필요한 이유") {
             yesButton {
                 ActivityCompat.requestPermissions(
@@ -215,7 +183,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 toast("거절")
             }
         }.show()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        addLocationListener()
     }
 
     override fun onPause() {
@@ -223,42 +195,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         removeLocationListener()
     }
 
+    @SuppressLint("MissingPermission")
+    private fun addLocationListener() {
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
+    }
+
     private fun removeLocationListener() {
-        fusedLocationProviderClient. removeLocationUpdates(locationCallback)
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
-
-    override fun onBackPressed() {
-        val builder = AlertDialog.Builder(this@MapActivity)
-        builder.setTitle("여행중입니다 !")
-        builder.setIcon(R.drawable.person)
-        builder.setMessage("정말로 종료하시겠습니까?")
-        builder.setPositiveButton("확인") { _, _ ->
-            finish()
-            story = false
-        }
-        builder.setNegativeButton("취소", null)
-        val alertDialog = builder.create()
-        alertDialog.show()
-    }
-
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            REQUEST_ACCESS_FINE_LOCATION -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    addLocationListener()
-                } else {
-                    //권한 거부
-                    toast("권한 거부 됨")
-                }
-                return
-            }
-        }
-
-    }
-
 
     private fun permissionCheck(cancel: () -> Unit, ok: () -> Unit) {
         if (ContextCompat.checkSelfPermission(
@@ -279,34 +223,38 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    inner class MyLocationCallBack : LocationCallback() {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_ACCESS_FINE_LOCATION -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    addLocationListener()
+                } else {
+                    //권한 거부
+                    toast("권한 거부 됨")
+                }
+                return
+            }
+        }
+    }
+
+    inner class MyLocationCallback : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
             super.onLocationResult(locationResult)
 
             val location = locationResult?.lastLocation
 
             location?.run {
-                // 14 level로 확대하며 현재 위치로 카메라 이동
+
                 val latLng = LatLng(latitude, longitude)
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
 
-                Log.d("MapsActivity", "위도: $latitude, 경도: $longitude")
+                Log.d("MapsActivity", "위도 : $latitude, 경도 : $longitude")
 
                 polylineOptions.add(latLng)
-
-                // 선 그리기
+                //선 그리기
                 mMap.addPolyline(polylineOptions)
-
             }
-
         }
     }
-
-//    private fun bottomNavigation(){
-//
-//        mapNavigation.setOnNavigationItemSelectedListener {
-//
-//        }
-//    }
-
 }
