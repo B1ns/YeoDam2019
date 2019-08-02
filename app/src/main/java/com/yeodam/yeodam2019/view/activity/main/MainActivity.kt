@@ -20,14 +20,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        blurLayout.pauseBlur()
-
         fab_main.setOnClickListener {
+
             slider.visibility = View.VISIBLE
-            blurLayout.startBlur()
+
             fab = true
+
             if (fab) {
+
                 fab_main.visibility = View.INVISIBLE
+                blurLayout.invalidate()
             }
         }
 
@@ -48,7 +50,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun startMap() {
         slider.visibility = View.GONE
-        blurLayout.pauseBlur()
         startActivity<MapActivity>()
     }
 
