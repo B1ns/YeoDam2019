@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
             if (fab) {
 
                 fab_main.visibility = View.INVISIBLE
-                blurLayout.invalidate()
             }
         }
 
