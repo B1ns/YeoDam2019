@@ -1,19 +1,18 @@
 package com.yeodam.yeodam2019.view.activity.main
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
-import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
+import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.image
 import org.jetbrains.anko.startActivity
 
-class MainActivity : AppCompatActivity(), SlideToActView.OnSlideCompleteListener {
+
+class MainActivity : AppCompatActivity() {
 
     private var fab: Boolean = false
     private var itemType: Boolean = true
@@ -37,6 +36,8 @@ class MainActivity : AppCompatActivity(), SlideToActView.OnSlideCompleteListener
 
             if (fab) {
                 fab_main.visibility = View.INVISIBLE
+
+                sliderListener()
             }
         }
 
@@ -57,9 +58,20 @@ class MainActivity : AppCompatActivity(), SlideToActView.OnSlideCompleteListener
 
     }
 
-    override fun onSlideComplete(view: SlideToActView) {
-        Log.d("slider","good")
-        startMap()
+    private fun sliderListener() {
+
+        slider.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
+            override fun onSlideComplete(view: SlideToActView) {
+                startMap()
+                resetSlider()
+            }
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun resetSlider() {
+        fab_main.visibility = View.VISIBLE
+        slider.resetSlider()
     }
 
     private fun startMap() {
