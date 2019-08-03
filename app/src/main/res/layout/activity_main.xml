@@ -132,6 +132,7 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/count_day"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="2dp"
@@ -161,6 +162,7 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/count_km"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="2dp"
@@ -247,7 +249,7 @@
                     android:background="@drawable/ic_menu" />
             </RelativeLayout>
         </LinearLayout>
-        <!-- 작성하는 위치 -->
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_main"
             android:layout_width="wrap_content"

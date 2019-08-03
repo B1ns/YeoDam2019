@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
@@ -12,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.image
 import org.jetbrains.anko.startActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SlideToActView.OnSlideCompleteListener {
 
     private var fab: Boolean = false
     private var itemType: Boolean = true
@@ -22,8 +23,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         buttonListener()
-
-        slider()
 
     }
 
@@ -37,7 +36,6 @@ class MainActivity : AppCompatActivity() {
             fab = true
 
             if (fab) {
-
                 fab_main.visibility = View.INVISIBLE
             }
         }
@@ -59,11 +57,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun slider() {
-        if (slider.isCompleted()) {
-            Log.d("fuck", "wht")
-            startMap()
-        }
+    override fun onSlideComplete(view: SlideToActView) {
+        Log.d("slider","good")
+        startMap()
     }
 
     private fun startMap() {
@@ -72,3 +68,4 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
