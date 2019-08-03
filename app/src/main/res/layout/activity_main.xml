@@ -51,7 +51,6 @@
                             <ImageView
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:contentDescription="TODO"
                                 android:src="@drawable/ic_logo_yeodam" />
 
                             <ImageButton
