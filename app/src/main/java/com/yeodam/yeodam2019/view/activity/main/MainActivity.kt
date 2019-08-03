@@ -9,16 +9,26 @@ import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.image
 import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
 
-    var fab: Boolean = false
+    private var fab: Boolean = false
+    private var itemType: Boolean = true
 
-    @SuppressLint("RestrictedApi", "ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        buttonListener()
+
+        slider()
+
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun buttonListener() {
 
         fab_main.setOnClickListener {
 
@@ -37,7 +47,16 @@ class MainActivity : AppCompatActivity() {
             startActivity<SettingActivity>()
         }
 
-        slider()
+        change_Item.setOnClickListener {
+
+            itemType = if (itemType) {
+                change_Item.setBackgroundResource(R.drawable.ic_main_list)
+                false
+            } else {
+                change_Item.setBackgroundResource(R.drawable.ic_main_list)
+                true
+            }
+        }
 
     }
 
