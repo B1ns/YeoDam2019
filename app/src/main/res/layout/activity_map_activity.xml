@@ -16,7 +16,37 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".view.activity.map.MapActivity" />
 
-    <include layout="@layout/appbar" />
+    <include
+        android:id="@+id/appbar_map"
+        layout="@layout/appbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:elevation="20dp"
+        android:src="@drawable/ic_map_location"
+        app:backgroundTint="@android:color/white"
+        app:fabSize="mini"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar_map" />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_cancle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        app:backgroundTint="@android:color/white"
+        android:src="@drawable/ic_fab_cancle"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/fab_sub1"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_sub1"
@@ -24,7 +54,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
-        android:src="@drawable/ic_stop_black_24dp"
+        android:src="@drawable/ic_fab_finsh"
+        app:backgroundTint="@android:color/white"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/fab_sub2"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -35,8 +66,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
-        android:src="@drawable/ic_directions_walk_black_24dp"
+        android:src="@drawable/ic_fab_stop"
         android:visibility="invisible"
+        app:backgroundTint="@android:color/white"
         app:layout_constraintBottom_toTopOf="@id/fab_main"
         app:layout_constraintEnd_toEndOf="parent" />
 
