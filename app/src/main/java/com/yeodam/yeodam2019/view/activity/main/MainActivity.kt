@@ -70,7 +70,6 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("RestrictedApi")
     private fun resetSlider() {
-        fab_main.visibility = View.VISIBLE
         slider.resetSlider()
     }
 

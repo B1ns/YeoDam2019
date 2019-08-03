@@ -6,11 +6,14 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.gdacciaro.iOSDialog.iOSDialogBuilder
 import com.yeodam.yeodam2019.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -25,6 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_map_activity.*
 import kotlinx.android.synthetic.main.appbar.*
 import org.jetbrains.anko.alert
@@ -49,6 +53,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var story = false
     private var isFabOpen = false
 
+    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map_activity)
@@ -67,6 +72,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         fab()
 
         mapHome_btn.setOnClickListener {
+            fab_main.visibility = View.VISIBLE
             if (story) {
                 startActivity<MainActivity>()
                 finish()
@@ -85,6 +91,28 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         fabInit()
 
         // 각각의 서브 fab
+
+        fab_cancle.setOnClickListener {
+
+            iOSDialogBuilder(this@MapActivity)
+                .setTitle("정말 여행을 취소 하시겠습니까?")
+                .setSubtitle("여행했던 경로, 메모, 경비, 포함한 모든 정보들은 취소 됩니다.")
+                .setBoldPositiveLabel(true)
+                .setCancelable(false)
+                .setPositiveListener("네") { dialog ->
+                    toast("취소됬습니다 !")
+                    //여행 취소 로직 작성 구간
+                    toggleFab()
+                    dialog.dismiss()
+                }
+                .setNegativeListener(
+                    getString(R.string.dismiss)
+                ) { dialog -> dialog.dismiss() }
+                .build().show()
+
+        }
+
+
         fab_sub1.setOnClickListener {
             toggleFab()
             story = true
@@ -100,7 +128,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         // 메인 fab 을 눌렀을시 서브 fab 이 나옴
-        fab_main.setOnClickListener {
+        fab_main_map.setOnClickListener {
             toggleFab()
         }
 
@@ -114,20 +142,24 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun toggleFab() {
         if (isFabOpen) {
-            fab_main.setImageResource(R.drawable.ic_add_black_24dp)
+            fab_main_map.setImageResource(R.drawable.ic_map_air)
             fab_sub1.startAnimation(fab_close)
             fab_sub2.startAnimation(fab_close)
+            fab_cancle.startAnimation(fab_close)
             fab_sub1.isClickable = false
             fab_sub2.isClickable = false
+            fab_cancle.isClickable = false
 
             isFabOpen = false
 
         } else {
-            fab_main.setImageResource(R.drawable.ic_close_black_24dp)
+            fab_main_map.setImageResource(R.drawable.ic_fab_close)
             fab_sub1.startAnimation(fab_open)
             fab_sub2.startAnimation(fab_open)
+            fab_cancle.startAnimation(fab_open)
             fab_sub1.isClickable = true
             fab_sub2.isClickable = true
+            fab_cancle.isClickable = true
 
             isFabOpen = true
         }
