@@ -1,12 +1,20 @@
 package com.yeodam.yeodam2019.view.activity.splash
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import com.mindorks.editdrawabletext.DrawablePosition
 import com.mindorks.editdrawabletext.OnDrawableClickListener
 import com.yeodam.yeodam2019.R
@@ -14,48 +22,80 @@ import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import kotlinx.android.synthetic.main.activity_info.*
 import org.jetbrains.anko.startActivity
+import java.util.*
+import kotlin.collections.HashMap
 
 class InfoActivity : AppCompatActivity() {
 
     private val db = FirebaseFirestore.getInstance()
 
-//    private val PICK_IMAGE_REQUEST = 71
-//    private var filePath: Uri? = null
-//    private var firebaseStore: FirebaseStorage? = null
-//    private var storageReference: StorageReference? = null
+    private val PICK_IMAGE_REQUEST = 71
+    private var filePath: Uri? = null
+    private var firebaseStore: FirebaseStorage? = null
+    private var storageReference: StorageReference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_info)
 
-        butListener()
-        setNickName()
-        uploadProfile()
+        firebaseInit()
+        buttonListener()
+        setting()
+    }
+
+
+    private fun firebaseInit() {
+        firebaseStore = FirebaseStorage.getInstance()
+        storageReference = FirebaseStorage.getInstance().reference
 
     }
 
-    private fun uploadProfile() {
+
+    private fun uploadProfile(uri: String) {
 
         val user = HashMap<String, Any>()
         user["name"] = nickName.text.toString()
-//        user["Image"] =
+        user["image"] = uri
+
+        db.collection("userInfo")
+            .add(user)
+            .addOnSuccessListener {
+                toast("선택 완료 !")
+            }
+            .addOnFailureListener {
+                toast("다시 한번 시도 해주세요 !")
+            }
 
     }
 
 
-    private fun setNickName() {
+    private fun setting() {
         info_btn.setOnClickListener {
             if (nickName.text.toString().isNotEmpty()) {
                 // pref 설정
+                uploadImage()
+
                 finish()
                 startActivity<MainActivity>()
             }
         }
     }
 
-    private fun butListener() {
+    private fun buttonListener() {
 
-        nickName.setDrawableClickListener(object : OnDrawableClickListener{
+
+        infoImage.setOnClickListener {
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(Intent.createChooser(intent, "사진을 선택해주세요."), PICK_IMAGE_REQUEST)
+
+        }
+
+        /*
+        UI
+         */
+        nickName.setDrawableClickListener(object : OnDrawableClickListener {
             override fun onClick(target: DrawablePosition) {
                 nickName.setText("")
             }
@@ -91,9 +131,48 @@ class InfoActivity : AppCompatActivity() {
         noinfo_btn.setOnClickListener {
             toast("닉네임을 입력해주세요 !")
         }
-
-
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+            if (data == null || data.data == null) {
+                return
+            }
+
+            filePath = data.data
+
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
+            infoImage.setImageBitmap(bitmap)
+        }
+    }
+
+    private fun uploadImage() {
+        if (filePath != null) {
+            val ref = storageReference?.child("User_Image/" + UUID.randomUUID().toString())
+            val uploadTask = ref?.putFile(filePath!!)
+
+            val urlTask = uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+
+                return@Continuation ref.downloadUrl
+
+            })?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUri = task.result
+                    uploadProfile(downloadUri.toString())
+                } else {
+                    // Handle 실패할 경우
+                }
+            }?.addOnFailureListener {
+
+            }
+        }
+
+    }
 }
