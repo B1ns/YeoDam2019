@@ -1,10 +1,12 @@
 package com.yeodam.yeodam2019.view.activity.splash
 
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import com.google.firebase.firestore.FirebaseFirestore
 import com.mindorks.editdrawabletext.DrawablePosition
 import com.mindorks.editdrawabletext.OnDrawableClickListener
 import com.yeodam.yeodam2019.R
@@ -15,14 +17,31 @@ import org.jetbrains.anko.startActivity
 
 class InfoActivity : AppCompatActivity() {
 
+    private val db = FirebaseFirestore.getInstance()
+
+//    private val PICK_IMAGE_REQUEST = 71
+//    private var filePath: Uri? = null
+//    private var firebaseStore: FirebaseStorage? = null
+//    private var storageReference: StorageReference? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_info)
 
-        Button()
+        butListener()
         setNickName()
+        uploadProfile()
 
     }
+
+    private fun uploadProfile() {
+
+        val user = HashMap<String, Any>()
+        user["name"] = nickName.text.toString()
+//        user["Image"] =
+
+    }
+
 
     private fun setNickName() {
         info_btn.setOnClickListener {
@@ -34,7 +53,7 @@ class InfoActivity : AppCompatActivity() {
         }
     }
 
-    private fun Button() {
+    private fun butListener() {
 
         nickName.setDrawableClickListener(object : OnDrawableClickListener{
             override fun onClick(target: DrawablePosition) {

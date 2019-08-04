@@ -10,7 +10,6 @@ import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.gdacciaro.iOSDialog.iOSDialogBuilder
@@ -47,11 +46,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: MyLocationCallback
+
     private lateinit var fab_open: Animation
     private lateinit var fab_close: Animation
 
     private var story = false
     private var isFabOpen = false
+
+    private var yeodam: ArrayList<Any>? = null
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +76,23 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         mapHome_btn.setOnClickListener {
             fab_main.visibility = View.VISIBLE
             if (story) {
+
+                iOSDialogBuilder(this@MapActivity)
+                    .setTitle("여행중 입니다.")
+                    .setSubtitle("여행을 종료하시겠습니까?")
+                    .setBoldPositiveLabel(true)
+                    .setCancelable(false)
+                    .setPositiveListener("네") { dialog ->
+                        toast("취소됬습니다 !")
+                        //여행 취소 로직 작성 구간
+                        toggleFab()
+                        dialog.dismiss()
+                    }
+                    .setNegativeListener(
+                        getString(R.string.dismiss)
+                    ) { dialog -> dialog.dismiss() }
+                    .build().show()
+
                 startActivity<MainActivity>()
                 finish()
             } else {
@@ -280,10 +299,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 Log.d("MapsActivity", "위도 : $latitude, 경도 : $longitude")
 
-                polylineOptions.add(latLng)
-                //선 그리기
-                mMap.addPolyline(polylineOptions)
+                if (story) {
+                    polylineOptions.add(latLng)
+                    //선 그리기
+                    mMap.addPolyline(polylineOptions)
+
+                    yeodam?.add(latLng)
+
+                    Log.d("MapsActivity", "$yeodam")
+                }
             }
         }
     }
+
 }

@@ -1,13 +1,16 @@
 package com.yeodam.yeodam2019.view.activity.main
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
+import jp.wasabeef.blurry.Blurry
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
 
@@ -38,6 +41,7 @@ class MainActivity : AppCompatActivity() {
                 fab_main.visibility = View.INVISIBLE
 
                 sliderListener()
+                background()
             }
         }
 
@@ -55,6 +59,13 @@ class MainActivity : AppCompatActivity() {
                 true
             }
         }
+
+    }
+
+    private fun background() {
+//        Blurry.with(applicationContext).radius(25).sampling(2).onto(main_View)
+//        Blurry.with(applicationContext).radius(25).sampling(2).onto(dateBarin)
+        Blurry.with(applicationContext).radius(25).sampling(2).onto(main)
 
     }
 
