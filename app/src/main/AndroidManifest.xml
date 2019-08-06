@@ -26,22 +26,21 @@
         <activity android:name=".view.activity.setting.SettingActivity" />
         <activity
             android:name=".view.activity.splash.InfoActivity"
-            android:windowSoftInputMode="adjustResize" >
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".view.activity.splash.OnboardingActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.splash.OnboardingActivity" />
         <activity android:name=".view.activity.map.MapActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDDTJmTRy4nhpNAc5U3fyNanMin38mxduw" />
 
-        <activity android:name=".view.activity.splash.SplashActivity">
-        </activity>
+        <activity android:name=".view.activity.splash.SplashActivity"></activity>
         <activity android:name=".view.activity.main.MainActivity" />
     </application>
 

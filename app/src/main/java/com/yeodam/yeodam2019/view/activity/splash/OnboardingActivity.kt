@@ -29,9 +29,7 @@ import org.jetbrains.anko.startActivity
 class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFailedListener {
 
 
-    override fun onConnectionFailed(p0: ConnectionResult) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun onConnectionFailed(p0: ConnectionResult) {}
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -45,6 +43,22 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
     private lateinit var sliderAdapter: SliderAdapter
     private var dots: Array<TextView?>? = null
     private lateinit var layouts: Array<Int>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_onboarding)
+
+
+        init()
+        dataSet()
+        interactions()
+        googleAuth()
+
+    }
+    /*
+    슬라이드 구간
+     */
+
     private val sliderChangeListener = object : ViewPager.OnPageChangeListener {
 
         override fun onPageSelected(position: Int) {
@@ -68,18 +82,6 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_onboarding)
-
-
-        init()
-        dataSet()
-        interactions()
-        googleAuth()
-
     }
 
     private fun init() {
@@ -158,6 +160,9 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
 
     private fun getCurrentScreen(i: Int): Int = slider.currentItem.plus(i)
 
+    /*
+    Google Login
+     */
 
     private fun googleAuth() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -169,10 +174,7 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
 
         startBtn.setOnClickListener {
             val signInIntent = googleSignInClient.signInIntent
-            startActivityForResult(
-                signInIntent,
-                RC_SIGN_IN
-            )
+            startActivityForResult(signInIntent, RC_SIGN_IN)
         }
     }
 

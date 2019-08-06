@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
@@ -20,12 +21,26 @@ class MainActivity : AppCompatActivity() {
     private var fab: Boolean = false
     private var itemType: Boolean = true
 
+    val db = FirebaseFirestore.getInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        userInfo()
         buttonListener()
 
+    }
+
+    private fun userInfo() {
+
+        db.collection("userInfo")
+            .get()
+            .addOnSuccessListener {
+                for (document in it){
+
+                }
+            }
     }
 
     @SuppressLint("RestrictedApi")

@@ -170,7 +170,6 @@ class InfoActivity : AppCompatActivity() {
                     // Handle 실패할 경우
                 }
             }?.addOnFailureListener {
-
             }
         }
 
