@@ -110,7 +110,7 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
     private fun interactions() {
         skipBtn.setOnClickListener {
             // Launch login screen
-            navigateToLogin()
+            slider.currentItem = 2
         }
         startBtn.setOnClickListener {
             // Launch login screen

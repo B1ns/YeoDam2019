@@ -75,7 +75,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         fab()
 
         mapHome_btn.setOnClickListener {
-            fab_main.visibility = View.VISIBLE
+
             if (story) {
 
                 iOSDialogBuilder(this@MapActivity)
