@@ -49,7 +49,10 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
         interactions()
         googleAuth()
 
+
     }
+
+
     /*
     슬라이드 구간
      */

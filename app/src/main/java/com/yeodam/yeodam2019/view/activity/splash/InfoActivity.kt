@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import android.view.View
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -34,6 +35,15 @@ class InfoActivity : AppCompatActivity() {
     private var firebaseStore: FirebaseStorage? = null
     private var storageReference: StorageReference? = null
 
+    lateinit var userName: String
+    lateinit var userEmail: String
+    lateinit var userPhoto: Uri
+    lateinit var userId: String
+//    var userName: String? = null
+//    var userEmail: String? = null
+//    var userPhoto: Uri? = null
+//    var userid: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_info)
@@ -41,6 +51,7 @@ class InfoActivity : AppCompatActivity() {
         firebaseInit()
         buttonListener()
         setting()
+        getUserData()
     }
 
 
@@ -50,6 +61,35 @@ class InfoActivity : AppCompatActivity() {
 
     }
 
+    private fun getUserData() {
+
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.let {
+            // Name, email address, and profile photo Url
+            val name = user.displayName
+            val email = user.email
+            val photoUrl = user.photoUrl
+
+            // Check if user's email is verified
+            val emailVerified = user.isEmailVerified
+
+            // The user's ID, unique to the Firebase project. Do NOT use this value to
+            // authenticate with your backend server, if you have one. Use
+            // FirebaseUser.getToken() instead.
+            val uid = user.uid
+            if (name != null) {
+                userName = name
+            }
+            if (email != null) {
+                userEmail = email
+            }
+            if (photoUrl != null) {
+                userPhoto = photoUrl
+            }
+            userId = uid
+        }
+    }
+
 
     private fun uploadProfile(uri: String) {
 
@@ -57,14 +97,22 @@ class InfoActivity : AppCompatActivity() {
         user["name"] = nickName.text.toString()
         user["image"] = uri
 
-        db.collection("userInfo")
-            .add(user)
-            .addOnSuccessListener {
-                toast("선택 완료 !")
+        db.collection("userInfo").document(userName)
+            .set(user)
+            .addOnCompleteListener {
+                toast("선택 완료!")
             }
-            .addOnFailureListener {
+            .addOnCanceledListener {
                 toast("다시 한번 시도 해주세요 !")
             }
+
+//            .add(user)
+//            .addOnSuccessListener {
+//                toast("선택 완료 !")
+//            }
+//            .addOnFailureListener {
+//                toast("다시 한번 시도 해주세요 !")
+//            }
 
     }
 
@@ -150,7 +198,7 @@ class InfoActivity : AppCompatActivity() {
 
     private fun uploadImage() {
         if (filePath != null) {
-            val ref = storageReference?.child("User_Image/" + UUID.randomUUID().toString())
+            val ref = storageReference?.child("User_Image/$userName")
             val uploadTask = ref?.putFile(filePath!!)
 
             val urlTask = uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
