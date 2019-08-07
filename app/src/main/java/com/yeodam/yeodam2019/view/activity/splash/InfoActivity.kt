@@ -105,15 +105,6 @@ class InfoActivity : AppCompatActivity() {
             .addOnCanceledListener {
                 toast("다시 한번 시도 해주세요 !")
             }
-
-//            .add(user)
-//            .addOnSuccessListener {
-//                toast("선택 완료 !")
-//            }
-//            .addOnFailureListener {
-//                toast("다시 한번 시도 해주세요 !")
-//            }
-
     }
 
 

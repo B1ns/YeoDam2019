@@ -37,9 +37,7 @@ class MainActivity : AppCompatActivity() {
         db.collection("userInfo")
             .get()
             .addOnSuccessListener {
-                for (document in it){
 
-                }
             }
     }
 
