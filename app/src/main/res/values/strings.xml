@@ -13,4 +13,7 @@
     <string name="service_text">서비스 약관 및 개인정보 보호 정책</string>
     <string name="nickname">닉네임</string>
     <string name="dismiss">아니오</string>
+
+    <string name="yeodam_title">여담</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_yeodam_channel</string>
 </resources>
