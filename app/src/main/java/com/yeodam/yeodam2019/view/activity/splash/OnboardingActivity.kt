@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -33,12 +34,6 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
-
-    companion object {
-        private const val RC_SIGN_IN = 9001
-        private val FINSH_INTERVAL_TIME = 2000
-        private var backPressedTime: Long = 0
-    }
 
     private lateinit var sliderAdapter: SliderAdapter
     private var dots: Array<TextView?>? = null
@@ -172,40 +167,53 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
+        auth = FirebaseAuth.getInstance()
+
         startBtn.setOnClickListener {
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
     }
 
-    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
-
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    Log.d("fuck", "인증성공")
-                    loginSucceed(auth.currentUser)
-                } else {
-                    loginSucceed(null)
-                }
-            }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
 
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
+
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
-            } catch (e: ApiException) {
 
+            } catch (e: ApiException) {
+                Log.w("FUCK", "Google sign in failed", e)
+                loginSucceed(null)
             }
         }
     }
+
+    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
+        Log.d("FUCK", "firebaseAuthWithGoogle:" + acct.id!!)
+
+        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+
+                    Log.d("FUCK", "signInWithCredential:success")
+                    val user = auth.currentUser
+                    loginSucceed(user)
+
+                } else {
+
+                    Log.w("FUCK", "signInWithCredential:failure", task.exception)
+                    Snackbar.make(onboarding, "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
+                    loginSucceed(null)
+                }
+
+            }
+    }
+
 
     private fun loginSucceed(user: FirebaseUser?) {
         if (user != null) {
@@ -213,6 +221,12 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
             finish()
             startActivity<InfoActivity>()
         }
+    }
+
+    companion object {
+        private const val RC_SIGN_IN = 9001
+        private val FINSH_INTERVAL_TIME = 2000
+        private var backPressedTime: Long = 0
     }
 
 }

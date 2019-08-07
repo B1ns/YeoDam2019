@@ -3,6 +3,7 @@ package com.yeodam.yeodam2019.view.activity.map
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -41,7 +42,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
 
-    private val polylineOptions = PolylineOptions().width(5f).color(R.color.trackingLine)
+    private val polylineOptions = PolylineOptions().width(10f).color(Color.argb(99, 89, 211, 238))
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
