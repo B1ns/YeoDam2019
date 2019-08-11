@@ -20,5 +20,7 @@
     <color name="Sky5">#75d5e3</color>
 
     <color name="trackingLine">#59d3ee</color>
+    <color name="background_shadow">#80000000</color>
+    <color name="background" >#00ff0000</color>
 
 </resources>

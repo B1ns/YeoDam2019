@@ -61,7 +61,7 @@ class InfoActivity : AppCompatActivity() {
 
     }
 
-    private fun getUserData() {
+    fun getUserData() {
 
         val user = FirebaseAuth.getInstance().currentUser
         user?.let {

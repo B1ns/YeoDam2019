@@ -89,13 +89,14 @@
                 android:textStyle="normal" />
 
             <Switch
+                android:id="@+id/fcm_switch"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="200dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="20dp"
-                android:backgroundTint="@android:color/darker_gray" />
+                android:backgroundTint="#009688" />
         </LinearLayout>
 
         <TextView

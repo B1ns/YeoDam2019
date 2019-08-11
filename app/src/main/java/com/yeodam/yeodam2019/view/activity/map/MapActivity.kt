@@ -56,6 +56,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var yeodam: ArrayList<Any>? = null
 
+//    private var myLocation:
+
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,6 +152,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         // 메인 fab 을 눌렀을시 서브 fab 이 나옴
         fab_main_map.setOnClickListener {
             toggleFab()
+        }
+
+        fab_mylocation.setOnClickListener {
+//            val latLng = LatLng(latitude, longitude)
+//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
         }
 
     }
@@ -287,7 +294,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    inner class MyLocationCallback : LocationCallback() {
+    open inner class MyLocationCallback : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
             super.onLocationResult(locationResult)
 
