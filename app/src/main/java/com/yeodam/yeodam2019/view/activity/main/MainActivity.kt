@@ -151,9 +151,9 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("RestrictedApi")
     private fun startMap() {
         slider.visibility = View.GONE
+        main_background.visibility = View.GONE
         startActivity<MapActivity>()
         fab_main.visibility = View.VISIBLE
-
     }
 
 }

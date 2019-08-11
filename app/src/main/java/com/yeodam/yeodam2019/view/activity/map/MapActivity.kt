@@ -56,7 +56,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var yeodam: ArrayList<Any>? = null
 
-//    private var myLocation:
+    private var myLatitude : Double = 0.0
+    private var myLongitude : Double = 0.0
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,10 +97,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     ) { dialog -> dialog.dismiss() }
                     .build().show()
 
+                main_background.visibility = View.GONE
                 startActivity<MainActivity>()
                 finish()
             } else {
-                onBackPressed()
+                startActivity<MainActivity>()
+                finish()
             }
         }
 
@@ -155,8 +158,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         fab_mylocation.setOnClickListener {
-//            val latLng = LatLng(latitude, longitude)
-//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+            val latLng = LatLng(myLatitude, myLongitude)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+
+            Log.d("Map", "위도 : $myLatitude, 경도 : $myLongitude")
         }
 
     }
@@ -303,19 +308,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             location?.run {
 
                 val latLng = LatLng(latitude, longitude)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+
+                myLatitude = latitude
+                myLongitude = longitude
+
+//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
 
                 Log.d("MapsActivity", "위도 : $latitude, 경도 : $longitude")
 
-                if (story) {
-                    polylineOptions.add(latLng)
-                    //선 그리기
-                    mMap.addPolyline(polylineOptions)
-
-                    yeodam?.add(latLng)
-
-                    Log.d("MapsActivity", "$yeodam")
-                }
             }
         }
     }
