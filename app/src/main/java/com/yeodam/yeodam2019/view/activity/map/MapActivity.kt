@@ -67,6 +67,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var countToday = 0
     private var countLastday = 0
 
+    private var travelStart = ""
+    private var travelEnd = ""
+
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -332,6 +335,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
                     val current = LocalDateTime.now()
                     val formatter = DateTimeFormatter.ofPattern("dd")
+                    val startTravel = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+
+                    travelStart = current.format(startTravel)
                     countToday = current.format(formatter).toInt()
                     start = false
                 }
