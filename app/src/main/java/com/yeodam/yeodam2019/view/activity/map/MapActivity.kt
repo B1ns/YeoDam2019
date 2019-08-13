@@ -35,6 +35,9 @@ import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.yesButton
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import kotlin.collections.ArrayList
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -42,7 +45,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
 
-    private val polylineOptions = PolylineOptions().width(10f).color(Color.argb(99, 89, 211, 238))
+    private val polylineOptions = PolylineOptions().width(10f).color(Color.argb(50, 89, 211, 238))
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -51,13 +54,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fab_open: Animation
     private lateinit var fab_close: Animation
 
-    private var story = false
+    private var start = true
+    private var story = true
     private var isFabOpen = false
 
     private var yeodam: ArrayList<Any>? = null
 
-    private var myLatitude : Double = 0.0
-    private var myLongitude : Double = 0.0
+    private var myLatitude: Double = 0.0
+    private var myLongitude: Double = 0.0
+
+    private var countDay = 0
+    private var countToday = 0
+    private var countLastday = 0
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,6 +116,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    @SuppressLint("NewApi")
+    fun date() {
+        countDay = countLastday - countToday
+        count_day.setText(countDay)
+    }
+
+
     /*
     *  Start double floating action button
     */
@@ -138,14 +153,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
 
-        fab_sub1.setOnClickListener {
+        fab_pause.setOnClickListener {
             toggleFab()
-            story = true
+            story = false
             // 최상의 fab
 
         }
 
-        fab_sub2.setOnClickListener {
+        fab_stop.setOnClickListener {
             toggleFab()
             story = false
             // 중간의 fab
@@ -175,22 +190,22 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun toggleFab() {
         if (isFabOpen) {
             fab_main_map.setImageResource(R.drawable.ic_map_air)
-            fab_sub1.startAnimation(fab_close)
-            fab_sub2.startAnimation(fab_close)
+            fab_pause.startAnimation(fab_close)
+            fab_stop.startAnimation(fab_close)
             fab_cancle.startAnimation(fab_close)
-            fab_sub1.isClickable = false
-            fab_sub2.isClickable = false
+            fab_pause.isClickable = false
+            fab_stop.isClickable = false
             fab_cancle.isClickable = false
 
             isFabOpen = false
 
         } else {
             fab_main_map.setImageResource(R.drawable.ic_fab_close)
-            fab_sub1.startAnimation(fab_open)
-            fab_sub2.startAnimation(fab_open)
+            fab_pause.startAnimation(fab_open)
+            fab_stop.startAnimation(fab_open)
             fab_cancle.startAnimation(fab_open)
-            fab_sub1.isClickable = true
-            fab_sub2.isClickable = true
+            fab_pause.isClickable = true
+            fab_stop.isClickable = true
             fab_cancle.isClickable = true
 
             isFabOpen = true
@@ -202,9 +217,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val korea = LatLng(37.586218, 126.975941)
+        mMap.addMarker(MarkerOptions().position(korea).title("대한민국 청와대"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(korea))
 
         permissionCheck(cancel = {
             showPermissionInfoDialog()
@@ -300,6 +315,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     open inner class MyLocationCallback : LocationCallback() {
+        @SuppressLint("NewApi")
         override fun onLocationResult(locationResult: LocationResult?) {
             super.onLocationResult(locationResult)
 
@@ -312,9 +328,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 myLatitude = latitude
                 myLongitude = longitude
 
-//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+                if (start) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+                    val current = LocalDateTime.now()
+                    val formatter = DateTimeFormatter.ofPattern("dd")
+                    countToday = current.format(formatter).toInt()
+                    start = false
+                }
 
                 Log.d("MapsActivity", "위도 : $latitude, 경도 : $longitude")
+                if (story) {
+
+
+                    polylineOptions.add(latLng)
+                    //선 그리기
+                    mMap.addPolyline(polylineOptions)
+
+                    yeodam?.add(latLng)
+
+                    Log.d("MapsActivity", "$yeodam")
+                }
 
             }
         }

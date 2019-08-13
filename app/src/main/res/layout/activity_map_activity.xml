@@ -43,26 +43,26 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
-        app:backgroundTint="@android:color/white"
         android:src="@drawable/ic_fab_cancle"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/fab_sub1"
+        app:backgroundTint="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@id/fab_pause"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_sub1"
+        android:id="@+id/fab_pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_fab_finsh"
-        app:backgroundTint="@android:color/white"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/fab_sub2"
+        app:backgroundTint="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@id/fab_stop"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_sub2"
+        android:id="@+id/fab_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
@@ -84,6 +84,21 @@
         app:elevation="10dp"
         app:layout_constraintBottom_toTopOf="@+id/mapNavigation"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.ncorti.slidetoact.SlideToActView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"
+        app:area_margin="-0dp"
+        app:layout_constraintBottom_toTopOf="@+id/mapNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:outer_color="#e6464646"
+        app:slider_icon="@drawable/ic_fab_stop_small"
+        app:slider_icon_color="@color/colorAccent"
+        app:text="일시정지 상태입니다"
+        app:text_style="bold" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/mapNavigation"
