@@ -19,5 +19,9 @@ class SettingActivity : AppCompatActivity() {
         setting_Info.setOnClickListener {
             startActivity<ProfileActivity>()
         }
+
+        service.setOnClickListener {
+            startActivity<ServiceActivity>()
+        }
     }
 }

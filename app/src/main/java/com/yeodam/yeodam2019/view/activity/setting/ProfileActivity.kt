@@ -6,7 +6,9 @@ import com.yeodam.yeodam2019.R
 import android.widget.Toast
 import com.gdacciaro.iOSDialog.iOSDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
+import com.yeodam.yeodam2019.view.activity.splash.OnboardingActivity
 import kotlinx.android.synthetic.main.activity_profile.*
+import org.jetbrains.anko.startActivity
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -34,9 +36,10 @@ class ProfileActivity : AppCompatActivity() {
             .setBoldPositiveLabel(true)
             .setCancelable(false)
             .setPositiveListener("네") { dialog ->
+                FirebaseAuth.getInstance().signOut()
                 Toast.makeText(this@ProfileActivity, "탈퇴되었습니다 !", Toast.LENGTH_LONG).show()
                 //회원 탈퇴 로직 작성 구간
-                FirebaseAuth.getInstance().signOut()
+                startActivity<OnboardingActivity>()
                 dialog.dismiss()
             }
             .setNegativeListener(
