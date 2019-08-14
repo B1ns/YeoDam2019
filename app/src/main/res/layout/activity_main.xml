@@ -83,6 +83,7 @@
                 android:orientation="horizontal">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/userInfoLayout"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_marginStart="15dp"
@@ -118,7 +119,8 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_gravity="center"
                     android:background="@android:color/white"
                     android:orientation="vertical">
 
@@ -126,21 +128,25 @@
                         android:id="@+id/main_userName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginEnd="50dp"
-                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="8pt"
                         android:text="YeoDam Kim"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"/>
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:padding="1dp"
+                        android:layout_marginBottom="10dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
                             android:orientation="vertical">
 
                             <TextView
@@ -162,7 +168,7 @@
                         <LinearLayout
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="15dp"
                             android:layout_marginTop="2dp"
                             android:layout_marginBottom="2dp"
                             android:background="@color/colorPrimary" />
@@ -170,7 +176,7 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
+                            android:layout_marginStart="20dp"
                             android:orientation="vertical">
 
                             <TextView
@@ -197,10 +203,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="25dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="35dp"
                     android:background="@drawable/main_outline"
-                    android:gravity="center"
-                    android:padding="5dp">
+                    android:padding="3dp">
 
                     <ImageView
                         android:layout_width="15dp"

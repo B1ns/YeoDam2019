@@ -13,8 +13,11 @@ import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.UserDTO
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
+import com.yeodam.yeodam2019.view.activity.setting.ProfileActivity
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.activity_setting.*
 import org.jetbrains.anko.startActivity
 
 
@@ -27,9 +30,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userEmail: String
     private lateinit var userPhoto: Uri
     private lateinit var userId: String
-
-    private lateinit var Name: String
-    private lateinit var Image: Uri
 
     val db = FirebaseFirestore.getInstance()
 
@@ -79,8 +79,15 @@ class MainActivity : AppCompatActivity() {
             if (it.isSuccessful) {
                 Log.d("asddd", it.result.toString())
                 val userDTO = it.result?.toObject(UserDTO::class.java)
+                // Main
                 Glide.with(this).load(userDTO?.userImage).into(main_userImage)
                 main_userName.text = userDTO?.userName
+                // Setting
+                Glide.with(this).load(userDTO?.userImage).into(setting_Image)
+                setting_Name.text = userDTO?.userName
+                // Profile
+                Glide.with(this).load(userDTO?.userImage).into(profile_Image)
+                profile_Name.text = userDTO?.userName
             }
         }
     }
@@ -112,9 +119,13 @@ class MainActivity : AppCompatActivity() {
                 change_Item.setBackgroundResource(R.drawable.ic_main_list)
                 false
             } else {
-                change_Item.setBackgroundResource(R.drawable.ic_main_list)
+                change_Item.setBackgroundResource(R.drawable.ic_menu)
                 true
             }
+        }
+
+        userInfoLayout.setOnClickListener {
+            startActivity<ProfileActivity>()
         }
 
     }
