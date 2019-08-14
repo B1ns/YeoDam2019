@@ -95,7 +95,7 @@ class InfoActivity : AppCompatActivity() {
         user["userImage"] = uri
 
         db.collection("userInfo").document("$userName : $userId")
-            .set(UserDTO(nickName.text.toString(), uri))
+            .set(UserDTO(uri, nickName.text.toString()))
             .addOnCompleteListener {
                 toast("여담을 시작해볼까요?")
             }
@@ -110,7 +110,6 @@ class InfoActivity : AppCompatActivity() {
             if (nickName.text.toString().isNotEmpty()) {
                 // pref 설정
                 uploadImage()
-
                 finish()
                 startActivity<MainActivity>()
             }

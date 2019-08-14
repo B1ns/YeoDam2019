@@ -78,10 +78,9 @@ class MainActivity : AppCompatActivity() {
         docRef.get().addOnCompleteListener {
             if (it.isSuccessful) {
                 Log.d("asddd", it.result.toString())
-                
-//                val userDTO = it.result?.toObject(UserDTO::class.java)
-//                Glide.with(this).load(userDTO?.userImage).into(main_userImage)
-//                main_userName.text = userDTO?.userName
+                val userDTO = it.result?.toObject(UserDTO::class.java)
+                Glide.with(this).load(userDTO?.userImage).into(main_userImage)
+                main_userName.text = userDTO?.userName
             }
         }
     }
