@@ -94,10 +94,10 @@ class InfoActivity : AppCompatActivity() {
         user["userName"] = nickName.text.toString()
         user["userImage"] = uri
 
-        db.collection("userInfo").document(userId)
+        db.collection("userInfo").document("$userName : $userId")
             .set(UserDTO(nickName.text.toString(), uri))
             .addOnCompleteListener {
-                toast("선택 완료!")
+                toast("여담을 시작해볼까요?")
             }
             .addOnCanceledListener {
                 toast("다시 한번 시도 해주세요 !")
@@ -186,7 +186,7 @@ class InfoActivity : AppCompatActivity() {
 
     private fun uploadImage() {
         if (filePath != null) {
-            val ref = storageReference?.child("User_Image/$userName")
+            val ref = storageReference?.child("User_Image/$userName/$userId")
             val uploadTask = ref?.putFile(filePath!!)
 
             val urlTask = uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->

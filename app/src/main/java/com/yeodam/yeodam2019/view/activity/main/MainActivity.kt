@@ -73,12 +73,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun userInfo() {
 
-        val docRef = db.collection("userInfo").document(userId)
+        val docRef = db.collection("userInfo").document("$userName : $userId")
 
         docRef.get().addOnCompleteListener {
             if (it.isSuccessful) {
                 Log.d("asddd", it.result.toString())
-                var userDate = it.result?.data
+                
 //                val userDTO = it.result?.toObject(UserDTO::class.java)
 //                Glide.with(this).load(userDTO?.userImage).into(main_userImage)
 //                main_userName.text = userDTO?.userName

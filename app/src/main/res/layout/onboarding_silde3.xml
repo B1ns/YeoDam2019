@@ -13,7 +13,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="46dp"
         android:layout_marginEnd="16dp"
-        android:paddingStart="65dp"
+        android:gravity="center"
         android:text="다양한 사람들과 추억을 나눠요~"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/colorBlueMidnight"
