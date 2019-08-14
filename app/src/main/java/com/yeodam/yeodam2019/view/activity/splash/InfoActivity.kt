@@ -20,7 +20,6 @@ import com.google.firebase.storage.UploadTask
 import com.mindorks.editdrawabletext.DrawablePosition
 import com.mindorks.editdrawabletext.OnDrawableClickListener
 import com.yeodam.yeodam2019.R
-import com.yeodam.yeodam2019.data.GoogleLogin
 import com.yeodam.yeodam2019.data.UserDTO
 import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
@@ -77,7 +76,6 @@ class InfoActivity : AppCompatActivity() {
             val uid = user.uid
             if (name != null) {
                 userName = name
-                GoogleLogin().userName = name
             }
             if (email != null) {
                 userEmail = email

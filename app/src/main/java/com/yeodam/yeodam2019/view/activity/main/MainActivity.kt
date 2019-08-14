@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
-import com.yeodam.yeodam2019.data.GoogleLogin
 import com.yeodam.yeodam2019.data.UserDTO
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
@@ -61,7 +60,6 @@ class MainActivity : AppCompatActivity() {
             val uid = user.uid
             if (name != null) {
                 userName = name
-                GoogleLogin().userName = name
             }
             if (email != null) {
                 userEmail = email
@@ -75,14 +73,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun userInfo() {
 
-
         val docRef = db.collection("userInfo").document(userId)
 
         docRef.get().addOnCompleteListener {
             if (it.isSuccessful) {
-                val userDTO = it.result?.toObject(UserDTO::class.java)
-                Glide.with(this).load(userDTO?.userImage).into(main_userImage)
-                main_userName.text = userDTO?.userName
+                Log.d("asddd", it.result.toString())
+                var userDate = it.result?.data
+//                val userDTO = it.result?.toObject(UserDTO::class.java)
+//                Glide.with(this).load(userDTO?.userImage).into(main_userImage)
+//                main_userName.text = userDTO?.userName
             }
         }
     }
