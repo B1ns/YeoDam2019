@@ -49,7 +49,6 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
         interactions()
         googleAuth()
 
-
     }
 
 

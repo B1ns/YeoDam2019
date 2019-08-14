@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
@@ -19,6 +20,8 @@ import com.google.firebase.storage.UploadTask
 import com.mindorks.editdrawabletext.DrawablePosition
 import com.mindorks.editdrawabletext.OnDrawableClickListener
 import com.yeodam.yeodam2019.R
+import com.yeodam.yeodam2019.data.GoogleLogin
+import com.yeodam.yeodam2019.data.UserDTO
 import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import kotlinx.android.synthetic.main.activity_info.*
@@ -39,10 +42,6 @@ class InfoActivity : AppCompatActivity() {
     lateinit var userEmail: String
     lateinit var userPhoto: Uri
     lateinit var userId: String
-//    var userName: String? = null
-//    var userEmail: String? = null
-//    var userPhoto: Uri? = null
-//    var userid: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,14 +53,13 @@ class InfoActivity : AppCompatActivity() {
         getUserData()
     }
 
-
     private fun firebaseInit() {
         firebaseStore = FirebaseStorage.getInstance()
         storageReference = FirebaseStorage.getInstance().reference
 
     }
 
-    fun getUserData() {
+    private fun getUserData() {
 
         val user = FirebaseAuth.getInstance().currentUser
         user?.let {
@@ -79,6 +77,7 @@ class InfoActivity : AppCompatActivity() {
             val uid = user.uid
             if (name != null) {
                 userName = name
+                GoogleLogin().userName = name
             }
             if (email != null) {
                 userEmail = email
@@ -94,11 +93,11 @@ class InfoActivity : AppCompatActivity() {
     private fun uploadProfile(uri: String) {
 
         val user = HashMap<String, Any>()
-        user["name"] = nickName.text.toString()
-        user["image"] = uri
+        user["userName"] = nickName.text.toString()
+        user["userImage"] = uri
 
-        db.collection("userInfo").document(userName)
-            .set(user)
+        db.collection("userInfo").document(userId)
+            .set(UserDTO(nickName.text.toString(), uri))
             .addOnCompleteListener {
                 toast("선택 완료!")
             }

@@ -3,12 +3,16 @@ package com.yeodam.yeodam2019.view.activity.main
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
+import com.yeodam.yeodam2019.data.GoogleLogin
+import com.yeodam.yeodam2019.data.UserDTO
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -20,10 +24,10 @@ class MainActivity : AppCompatActivity() {
     private var fab: Boolean = false
     private var itemType: Boolean = true
 
-    private var userName: String = ""
-    private var userEmail: String = ""
-    private var userPhoto: Uri? = null
-    private var userId: String = ""
+    private lateinit var userName: String
+    private lateinit var userEmail: String
+    private lateinit var userPhoto: Uri
+    private lateinit var userId: String
 
     private lateinit var Name: String
     private lateinit var Image: Uri
@@ -33,12 +37,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//
-//        userInfo()
-        buttonListener()
-//        getUserData()
-    }
 
+        getUserData()
+        userInfo()
+        buttonListener()
+    }
 
     private fun getUserData() {
 
@@ -58,6 +61,7 @@ class MainActivity : AppCompatActivity() {
             val uid = user.uid
             if (name != null) {
                 userName = name
+                GoogleLogin().userName = name
             }
             if (email != null) {
                 userEmail = email
@@ -71,19 +75,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun userInfo() {
 
-        db.collection("userInfo").document(userName)
-            .get().addOnSuccessListener {
-                Name = it.get("name") as String
-                Image = it.get("image") as Uri
+
+        val docRef = db.collection("userInfo").document(userId)
+
+        docRef.get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                val userDTO = it.result?.toObject(UserDTO::class.java)
+                Glide.with(this).load(userDTO?.userImage).into(main_userImage)
+                main_userName.text = userDTO?.userName
             }
-
-        setInfo()
+        }
     }
 
-    private fun setInfo() {
-        main_userName.text = Name
-        main_userImage.setImageURI(Image)
-    }
 
     @SuppressLint("RestrictedApi")
     private fun buttonListener() {
