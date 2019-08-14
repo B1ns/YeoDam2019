@@ -50,6 +50,7 @@
             android:id="@+id/nickName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#59d3ee"
             android:drawableEnd="@drawable/ic_close_gray_24dp"
             android:inputType="text"
             android:maxLength="10" />

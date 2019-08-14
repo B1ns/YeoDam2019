@@ -15,10 +15,10 @@ import com.yeodam.yeodam2019.data.UserDTO
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import com.yeodam.yeodam2019.view.activity.setting.ProfileActivity
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
+import com.yeodam.yeodam2019.view.activity.splash.InfoActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.activity_setting.*
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,15 +31,24 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userPhoto: Uri
     private lateinit var userId: String
 
-    val db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        info()
         getUserData()
         userInfo()
         buttonListener()
+    }
+
+    private fun info() {
+        if (!InfoActivity().info) {
+            startActivity<InfoActivity>()
+        } else {
+            toast("여담 : 여행을 담다.")
+        }
     }
 
     private fun getUserData() {
@@ -82,12 +91,6 @@ class MainActivity : AppCompatActivity() {
                 // Main
                 Glide.with(this).load(userDTO?.userImage).into(main_userImage)
                 main_userName.text = userDTO?.userName
-                // Setting
-                Glide.with(this).load(userDTO?.userImage).into(setting_Image)
-                setting_Name.text = userDTO?.userName
-                // Profile
-                Glide.with(this).load(userDTO?.userImage).into(profile_Image)
-                profile_Name.text = userDTO?.userName
             }
         }
     }

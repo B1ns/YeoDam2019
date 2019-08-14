@@ -5,10 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
@@ -25,7 +25,6 @@ import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import kotlinx.android.synthetic.main.activity_info.*
 import org.jetbrains.anko.startActivity
-import java.util.*
 import kotlin.collections.HashMap
 
 class InfoActivity : AppCompatActivity() {
@@ -41,6 +40,9 @@ class InfoActivity : AppCompatActivity() {
     lateinit var userEmail: String
     lateinit var userPhoto: Uri
     lateinit var userId: String
+    var clearText = ""
+    var info = true
+    var image = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,13 +109,23 @@ class InfoActivity : AppCompatActivity() {
 
     private fun setting() {
         info_btn.setOnClickListener {
-            if (nickName.text.toString().isNotEmpty()) {
-                // pref 설정
+            if (nickName.text.toString().isNotEmpty() && image) {
                 uploadImage()
-                finish()
-                startActivity<MainActivity>()
+                Loding()
+            }else{
+                toast("닉네임과 프로필을 설정해주세요 !")
             }
         }
+    }
+
+    private fun Loding() {
+        val handler = Handler()
+        handler.postDelayed({
+            // Lottie 작성구간
+            info = false
+            startActivity<MainActivity>()
+            finish()
+        }, 2000)
     }
 
     private fun buttonListener() {
@@ -124,16 +136,16 @@ class InfoActivity : AppCompatActivity() {
             intent.type = "image/*"
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(intent, "사진을 선택해주세요."), PICK_IMAGE_REQUEST)
-
         }
 
         /*
         UI
          */
-        nickName.setDrawableClickListener(object : OnDrawableClickListener {
+        nickName.setDrawableClickListener(object  : OnDrawableClickListener {
             override fun onClick(target: DrawablePosition) {
-                nickName.setText("")
+                InfoclearText()
             }
+
         })
 
         nickName.addTextChangedListener(object : TextWatcher {
@@ -168,6 +180,10 @@ class InfoActivity : AppCompatActivity() {
         }
     }
 
+    private fun InfoclearText() {
+        nickName.setText("")
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -175,7 +191,7 @@ class InfoActivity : AppCompatActivity() {
             if (data == null || data.data == null) {
                 return
             }
-
+            image = true
             filePath = data.data
 
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)

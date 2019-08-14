@@ -26,8 +26,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
+import com.yeodam.yeodam2019.view.activity.map.write.MemoActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_map_activity.*
 import kotlinx.android.synthetic.main.appbar.*
@@ -87,6 +89,25 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         locationInit()
 
         fab()
+
+        buttonListener()
+
+
+    }
+
+    private fun buttonListener() {
+
+        map_edit.setOnClickListener {
+            startActivity<MemoActivity>()
+        }
+
+        map_camera.setOnClickListener {
+
+        }
+
+        map_credit.setOnClickListener {
+
+        }
 
         mapHome_btn.setOnClickListener {
 
@@ -159,6 +180,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         fab_pause.setOnClickListener {
             toggleFab()
             story = false
+            showFinish()
             // 최상의 fab
 
         }
@@ -166,6 +188,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         fab_stop.setOnClickListener {
             toggleFab()
             story = false
+            fab_Hide()
+            map_slider.visibility = View.VISIBLE
+            slider.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
+                override fun onSlideComplete(view: SlideToActView) {
+                    map_slider.resetSlider()
+                    map_slider.visibility = View.GONE
+                    fab_Show()
+                }
+            }
             // 중간의 fab
 
         }
@@ -182,6 +213,27 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             Log.d("Map", "위도 : $myLatitude, 경도 : $myLongitude")
         }
 
+    }
+
+    private fun showFinish() {
+        
+    }
+
+    @SuppressLint("RestrictedApi")
+    fun fab_Hide(){
+        fab_pause.visibility = View.GONE
+        fab_stop.visibility = View.GONE
+        fab_main.visibility = View.GONE
+        fab_cancle.visibility = View.GONE
+    }
+
+
+    @SuppressLint("RestrictedApi")
+    fun fab_Show(){
+        fab_pause.visibility = View.VISIBLE
+        fab_stop.visibility = View.VISIBLE
+        fab_main.visibility = View.VISIBLE
+        fab_cancle.visibility = View.VISIBLE
     }
 
     @SuppressLint("ResourceType")
