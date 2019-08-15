@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun info() {
         if (!InfoActivity().info) {
+            userInfo()
             startActivity<InfoActivity>()
         }
     }

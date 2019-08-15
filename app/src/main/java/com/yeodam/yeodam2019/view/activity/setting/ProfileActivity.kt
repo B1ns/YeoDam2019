@@ -1,30 +1,42 @@
 package com.yeodam.yeodam2019.view.activity.setting
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import com.yeodam.yeodam2019.R
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.gdacciaro.iOSDialog.iOSDialogBuilder
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import com.yeodam.yeodam2019.data.UserDTO
+import com.yeodam.yeodam2019.fcm.FcmCheck
 import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.splash.OnboardingActivity
-import kotlinx.android.synthetic.main.activity_info.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_setting.*
 import org.jetbrains.anko.startActivity
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : AppCompatActivity(){
 
+    private val PICK_IMAGE_REQUEST = 71
     private lateinit var userName: String
     private lateinit var userEmail: String
     private lateinit var userPhoto: Uri
     private lateinit var userId: String
+    private var storageReference: StorageReference? = null
+    private var filePath: Uri? = null
+    private var image = false
     private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,36 +48,31 @@ class ProfileActivity : AppCompatActivity() {
         userInfo()
     }
 
+
+
     private fun buttonListener() {
 
-        profile_Name.setOnClickListener {
+        profile_Layout.setOnClickListener {
             profile_Name.visibility = View.GONE
-
             edit_Nickname.visibility = View.VISIBLE
+        }
 
-            profile_Image.setOnClickListener {
-                
+        profile_Image.setOnClickListener {
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_PICK
+            startActivityForResult(Intent.createChooser(intent, "사진을 선택해주세요."), PICK_IMAGE_REQUEST)
+        }
+
+        ok_btn.setOnClickListener {
+            if (edit_Nickname.text.toString().isNotEmpty() && image) {
+                Log.d("asdddo", "ok")
+                uploadImage()
+                edit_Nickname.visibility = View.GONE
+                profile_Name.visibility = View.VISIBLE
+            } else {
+                toast("사진을 선택해주시고, 닉네임을 입력해주세요 !")
             }
-
-            ok_btn.setOnClickListener {
-                var Name = edit_Nickname.text.toString()
-
-                var userUpdateName = mutableMapOf<String?, Any>()
-                userUpdateName["userName"] = Name
-
-                if (edit_Nickname.text.toString().isNotEmpty()){
-                    db.collection("userInfo").document("$userName : $userId").update(userUpdateName)
-                        .addOnCompleteListener {
-                            if (it.isSuccessful){
-                                toast("적용되었습니다.")
-                                userInfo()
-                            }
-                        }
-
-
-                }
-            }
-
         }
 
         userDelete.setOnClickListener {
@@ -76,6 +83,29 @@ class ProfileActivity : AppCompatActivity() {
             onBackPressed()
         }
     }
+
+    fun userUpdate(uri: String) {
+
+        val userUpdate_profile = mutableMapOf<String, Any>()
+
+        userUpdate_profile["userImage"] = uri
+        userUpdate_profile["userName"] = edit_Nickname.text.toString()
+
+        Log.d("okdddd", "ok")
+
+        db.collection("userInfo").document("$userName : $userId").update(userUpdate_profile)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    toast("적용되었습니다.")
+                } else {
+                    toast("오류")
+                }
+
+            }.addOnFailureListener {
+                Log.d("asdddo", it.toString())
+            }
+    }
+
 
     private fun getUserData() {
 
@@ -140,4 +170,47 @@ class ProfileActivity : AppCompatActivity() {
             .build().show()
     }
 
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+            if (data == null || data.data == null) {
+                return
+            }
+            image = true
+            filePath = data.data
+
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
+            profile_Image.setImageBitmap(bitmap)
+        }
+    }
+
+    private fun uploadImage() {
+        if (filePath != null) {
+            val ref = storageReference?.child("User_Image/$userName/$userId")
+            val uploadTask = ref?.putFile(filePath!!)
+
+            val urlTask = uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+
+                return@Continuation ref.downloadUrl
+
+            })?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUri = task.result
+                    userUpdate(downloadUri.toString())
+                } else {
+                    // Handle 실패할 경우
+                    toast("실팽")
+                }
+            }?.addOnFailureListener {
+                toast("errro : $it")
+            }
+        }
+    }
 }

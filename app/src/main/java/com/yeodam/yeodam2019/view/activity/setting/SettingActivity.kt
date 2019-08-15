@@ -9,12 +9,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.UserDTO
+import com.yeodam.yeodam2019.fcm.FcmCheck
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_setting.*
 import org.jetbrains.anko.startActivity
 
-class SettingActivity : AppCompatActivity() {
+class SettingActivity : AppCompatActivity(),FcmCheck {
 
     private lateinit var userName: String
     private lateinit var userEmail: String
@@ -30,7 +31,15 @@ class SettingActivity : AppCompatActivity() {
         buttonListener()
         getUserData()
         userInfo()
+        pushCheck()
 
+    }
+
+    private fun pushCheck() {
+        fcm_switch.isChecked = true
+        if (!fcm_switch.isChecked){
+
+        }
     }
 
     private fun buttonListener() {

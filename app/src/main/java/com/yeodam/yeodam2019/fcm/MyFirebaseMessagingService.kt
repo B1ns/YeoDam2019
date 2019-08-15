@@ -16,7 +16,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 
-class MyFirebaseMessagingService : FirebaseMessagingService() {
+class MyFirebaseMessagingService : FirebaseMessagingService(),FcmCheck {
 
     /**
      * Called when message is received.
@@ -37,24 +37,26 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Log.d(TAG, "From: ${remoteMessage?.from}")
+        if(fcmCheck()) {
+            Log.d(TAG, "From: ${remoteMessage?.from}")
 
-        // Check if message contains a data payload.
-        remoteMessage?.data?.isNotEmpty()?.let {
-            Log.d(TAG, "Message data payload: " + remoteMessage.data)
+            // Check if message contains a data payload.
+            remoteMessage?.data?.isNotEmpty()?.let {
+                Log.d(TAG, "Message data payload: " + remoteMessage.data)
 
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use WorkManager.
-                scheduleJob()
-            } else {
-                // Handle message within 10 seconds
-                handleNow()
+                if (/* Check if data needs to be processed by long running job */ true) {
+                    // For long-running tasks (10 seconds or more) use WorkManager.
+                    scheduleJob()
+                } else {
+                    // Handle message within 10 seconds
+                    handleNow()
+                }
             }
-        }
 
-        // Check if message contains a notification payload.
-        remoteMessage?.notification?.let {
-            Log.d(TAG, "Message Notification Body: ${it.body}")
+            // Check if message contains a notification payload.
+            remoteMessage?.notification?.let {
+                Log.d(TAG, "Message Notification Body: ${it.body}")
+            }
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM

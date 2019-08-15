@@ -99,6 +99,7 @@ class InfoActivity : AppCompatActivity() {
         db.collection("userInfo").document("$userName : $userId")
             .set(UserDTO(uri, nickName.text.toString()))
             .addOnCompleteListener {
+
                 toast("여담을 시작해볼까요?")
             }
             .addOnCanceledListener {

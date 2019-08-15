@@ -2,17 +2,22 @@ package com.yeodam.yeodam2019.view.activity.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.gdacciaro.iOSDialog.iOSDialogBuilder
@@ -37,13 +42,14 @@ import com.yeodam.yeodam2019.view.activity.map.write.PayActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_map_activity.*
 import kotlinx.android.synthetic.main.appbar.*
+import kotlinx.android.synthetic.main.map_finish_dialog.*
+import kotlinx.android.synthetic.main.map_finish_dialog.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.yesButton
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.collections.ArrayList
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -65,7 +71,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var story = true
     private var isFabOpen = false
 
-    private var yeodam: ArrayList<Any>? = null
+    private var count = 0
+    val yeodamList = mutableListOf<LatLng>()
 
     var myLatitude: Double = 0.0
     var myLongitude: Double = 0.0
@@ -149,7 +156,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-    @SuppressLint("NewApi")
+    @TargetApi(Build.VERSION_CODES.O)
     fun date() {
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("dd")
@@ -158,7 +165,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         travelEnd = current.format(endTravel)
 
         countDay = countLastday - countToday
-        count_day.text = countDay.toString()
     }
 
 
@@ -235,13 +241,74 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-    @SuppressLint("NewApi")
+    @SuppressLint("NewApi", "InflateParams")
     private fun showFinish() {
 
-        date()
-        stopServiceYeoDam()
-        var meter = locationOne.distanceTo(locationTwo)
+//        settingDialog()
 
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.map_finish_dialog, null)
+        val mBuilder = AlertDialog.Builder(this)
+            .setView(mDialogView)
+        val mAlertDialog = mBuilder.show()
+        mAlertDialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        mDialogView.dialog_yes.setOnClickListener {
+            mAlertDialog.dismiss()
+            startActivity<UploadActivity>()
+
+//            km()
+//            count_day.text = countDay.toString()
+//            stopServiceYeoDam()
+        }
+
+        mDialogView.dialog_no.setOnClickListener {
+            mAlertDialog.dismiss()
+
+        }
+
+
+    }
+
+    private fun km() {
+        var meter = locationOne.distanceTo(locationTwo)
+        count_km.text = meter.toString()
+    }
+
+    private fun settingDialog() {
+        date()
+        story_day.text = "$travelStart ~ $travelEnd"
+    }
+
+    @SuppressLint("Registered")
+    inner class DialogShow : AppCompatActivity(), OnMapReadyCallback {
+
+        private lateinit var mMap: GoogleMap
+        private val polylineOptions = PolylineOptions().width(10f).color(Color.argb(50, 89, 211, 238))
+
+        override fun onMapReady(googleMap: GoogleMap) {
+            mMap = googleMap
+
+
+            for ((count, _) in yeodamList.withIndex()) {
+                val mapLatLng = yeodamList[count]
+                polylineOptions.add(mapLatLng)
+                mMap.addPolyline(polylineOptions)
+            }
+
+            val korea = LatLng(37.586218, 126.975941)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(korea, 17f))
+
+        }
+
+        @SuppressLint("ResourceType")
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setContentView(R.id.dialog_mapView)
+
+            val mapFragment = supportFragmentManager
+                .findFragmentById(R.id.dialog_mapView) as? SupportMapFragment
+            mapFragment?.getMapAsync(this)
+        }
 
     }
 
@@ -430,7 +497,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             location?.run {
 
                 val latLng = LatLng(latitude, longitude)
-
+                val yeodamLatLng: LatLng
                 myLatitude = latitude
                 myLongitude = longitude
 
@@ -453,13 +520,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (story) {
 
                     polylineOptions.add(latLng)
+
                     //선 그리기
                     mMap.addPolyline(polylineOptions)
 
-                    yeodam?.add(latLng)
+                    // 여행 기록을 담을 객체
+                    yeodamLatLng = LatLng(myLatitude, myLongitude)
+                    yeodamList.add(yeodamLatLng)
 
-                    Log.d("MapsActivity", "$yeodam")
+                    Log.d("YeoDam2019", "$yeodamList")
                 }
+
 
             }
         }
