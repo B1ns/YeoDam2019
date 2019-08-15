@@ -134,7 +134,7 @@ class InfoActivity : AppCompatActivity() {
         infoImage.setOnClickListener {
             val intent = Intent()
             intent.type = "image/*"
-            intent.action = Intent.ACTION_GET_CONTENT
+            intent.action = Intent.ACTION_PICK
             startActivityForResult(Intent.createChooser(intent, "사진을 선택해주세요."), PICK_IMAGE_REQUEST)
         }
 

@@ -315,7 +315,7 @@
         app:outer_color="#e6ffffff"
         app:slider_height="80dp"
         app:slider_icon="@drawable/ic_slider_air"
-        app:text="밀어서 여행 시작하기"
+        app:text="        밀어서 여행 시작하기"
         app:text_appearance="@style/TextAppearance.AppCompat.Medium"
         app:text_color="@android:color/black"
         app:text_size="12sp" />

@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import com.yeodam.yeodam2019.R
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -11,7 +12,9 @@ import com.gdacciaro.iOSDialog.iOSDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yeodam.yeodam2019.data.UserDTO
+import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.splash.OnboardingActivity
+import kotlinx.android.synthetic.main.activity_info.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_setting.*
 import org.jetbrains.anko.startActivity
@@ -36,6 +39,32 @@ class ProfileActivity : AppCompatActivity() {
     private fun buttonListener() {
 
         profile_Name.setOnClickListener {
+            profile_Name.visibility = View.GONE
+
+            edit_Nickname.visibility = View.VISIBLE
+
+            profile_Image.setOnClickListener {
+                
+            }
+
+            ok_btn.setOnClickListener {
+                var Name = edit_Nickname.text.toString()
+
+                var userUpdateName = mutableMapOf<String?, Any>()
+                userUpdateName["userName"] = Name
+
+                if (edit_Nickname.text.toString().isNotEmpty()){
+                    db.collection("userInfo").document("$userName : $userId").update(userUpdateName)
+                        .addOnCompleteListener {
+                            if (it.isSuccessful){
+                                toast("적용되었습니다.")
+                                userInfo()
+                            }
+                        }
+
+
+                }
+            }
 
         }
 

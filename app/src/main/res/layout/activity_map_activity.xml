@@ -91,14 +91,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:visibility="gone"
-        app:area_margin="-0dp"
+        app:area_margin="5dp"
         app:layout_constraintBottom_toTopOf="@+id/mapNavigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:outer_color="#e6464646"
-        app:slider_icon="@drawable/ic_fab_stop_small"
+        app:slider_icon="@drawable/ic_pause_black_24dp"
         app:slider_icon_color="@color/colorAccent"
-        app:text="일시정지 상태입니다"
+        app:text="            일시정지 상태입니다"
         app:text_style="bold" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -5,8 +5,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.gdacciaro.iOSDialog.iOSDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ncorti.slidetoact.SlideToActView
@@ -16,6 +18,7 @@ import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import com.yeodam.yeodam2019.view.activity.setting.ProfileActivity
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
 import com.yeodam.yeodam2019.view.activity.splash.InfoActivity
+import com.yeodam.yeodam2019.view.activity.splash.OnboardingActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -46,8 +49,6 @@ class MainActivity : AppCompatActivity() {
     private fun info() {
         if (!InfoActivity().info) {
             startActivity<InfoActivity>()
-        } else {
-            toast("여담 : 여행을 담다.")
         }
     }
 
@@ -169,6 +170,26 @@ class MainActivity : AppCompatActivity() {
         main_background.visibility = View.GONE
         startActivity<MapActivity>()
         fab_main.visibility = View.VISIBLE
+    }
+
+    override fun onBackPressed() {
+        backSpace()
+    }
+
+    fun backSpace() {
+        iOSDialogBuilder(this@MainActivity)
+            .setTitle("여담 : 여행을 담다")
+            .setSubtitle("종료하시겠습니까?")
+            .setBoldPositiveLabel(true)
+            .setCancelable(false)
+            .setPositiveListener("네") { dialog ->
+                dialog.dismiss()
+                finishAffinity()
+            }
+            .setNegativeListener(
+                getString(R.string.dismiss)
+            ) { dialog -> dialog.dismiss() }
+            .build().show()
     }
 
 }

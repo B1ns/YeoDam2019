@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.activity.PushInfoActivity"></activity>
+        <activity android:name=".view.activity.PushInfoActivity" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -32,7 +32,7 @@
             android:value="@string/default_notification_channel_id" />
 
         <activity android:name=".view.activity.map.write.PayActivity" />
-        <activity android:name=".view.activity.map.write.memoActivity" />
+        <activity android:name=".view.activity.map.write.MemoActivity" />
         <activity android:name=".view.activity.setting.ServiceActivity" />
         <activity android:name=".view.activity.setting.ProfileActivity" />
         <activity android:name=".view.activity.setting.SettingActivity" />
@@ -62,6 +62,10 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <service
+            android:name=".YeoDamService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

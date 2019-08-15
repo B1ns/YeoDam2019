@@ -2,8 +2,10 @@ package com.yeodam.yeodam2019.view.activity.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -27,9 +29,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.ncorti.slidetoact.SlideToActView
+import com.yeodam.yeodam2019.YeoDamService
 import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import com.yeodam.yeodam2019.view.activity.map.write.MemoActivity
+import com.yeodam.yeodam2019.view.activity.map.write.PayActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_map_activity.*
 import kotlinx.android.synthetic.main.appbar.*
@@ -46,6 +50,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
 
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
+    private val CAMERA_CODE = 1111
 
     private val polylineOptions = PolylineOptions().width(10f).color(Color.argb(50, 89, 211, 238))
 
@@ -62,8 +67,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var yeodam: ArrayList<Any>? = null
 
-    private var myLatitude: Double = 0.0
-    private var myLongitude: Double = 0.0
+    var myLatitude: Double = 0.0
+    var myLongitude: Double = 0.0
 
     private var countDay = 0
     private var countToday = 0
@@ -71,6 +76,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var travelStart = ""
     private var travelEnd = ""
+
+    private val locationOne = Location("1")
+    private val locationTwo = Location("1")
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +100,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         buttonListener()
 
-
+        startServiceYeoDam()
     }
 
     private fun buttonListener() {
@@ -106,7 +114,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         map_credit.setOnClickListener {
-
+            startActivity<PayActivity>()
         }
 
         mapHome_btn.setOnClickListener {
@@ -120,7 +128,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     .setCancelable(false)
                     .setPositiveListener("네") { dialog ->
                         toast("취소됬습니다 !")
-                        //여행 취소 로직 작성 구간
+                        //여행 취소 로직 작성 구 간
+                        finish()
+                        startActivity<MainActivity>()
                         toggleFab()
                         dialog.dismiss()
                     }
@@ -129,7 +139,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     ) { dialog -> dialog.dismiss() }
                     .build().show()
 
-                main_background.visibility = View.GONE
                 startActivity<MainActivity>()
                 finish()
             } else {
@@ -142,8 +151,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @SuppressLint("NewApi")
     fun date() {
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("dd")
+        val endTravel = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+        countLastday = current.format(formatter).toInt()
+        travelEnd = current.format(endTravel)
+
         countDay = countLastday - countToday
-        count_day.setText(countDay)
+        count_day.text = countDay.toString()
     }
 
 
@@ -180,6 +195,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         fab_pause.setOnClickListener {
             toggleFab()
             story = false
+
+            locationTwo.latitude = myLatitude
+            locationTwo.longitude = myLongitude
+
             showFinish()
             // 최상의 fab
 
@@ -190,10 +209,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             story = false
             fab_Hide()
             map_slider.visibility = View.VISIBLE
-            slider.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
+            map_slider.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
                 override fun onSlideComplete(view: SlideToActView) {
                     map_slider.resetSlider()
                     map_slider.visibility = View.GONE
+                    story = true
                     fab_Show()
                 }
             }
@@ -215,24 +235,30 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    @SuppressLint("NewApi")
     private fun showFinish() {
-        
+
+        date()
+        stopServiceYeoDam()
+        var meter = locationOne.distanceTo(locationTwo)
+
+
     }
 
     @SuppressLint("RestrictedApi")
-    fun fab_Hide(){
+    fun fab_Hide() {
         fab_pause.visibility = View.GONE
         fab_stop.visibility = View.GONE
-        fab_main.visibility = View.GONE
+        fab_main_map.visibility = View.GONE
         fab_cancle.visibility = View.GONE
     }
 
 
     @SuppressLint("RestrictedApi")
-    fun fab_Show(){
+    fun fab_Show() {
         fab_pause.visibility = View.VISIBLE
         fab_stop.visibility = View.VISIBLE
-        fab_main.visibility = View.VISIBLE
+        fab_main_map.visibility = View.VISIBLE
         fab_cancle.visibility = View.VISIBLE
     }
 
@@ -369,6 +395,31 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    override fun onBackPressed() {
+        if (story) {
+            iOSDialogBuilder(this@MapActivity)
+                .setTitle("여행중 입니다.")
+                .setSubtitle("여행을 종료하시겠습니까?")
+                .setBoldPositiveLabel(true)
+                .setCancelable(false)
+                .setPositiveListener("네") { dialog ->
+                    toast("취소됬습니다 !")
+                    //여행 취소 로직 작성 구 간
+                    toggleFab()
+                    dialog.dismiss()
+                    finish()
+                    startActivity<MainActivity>()
+                }
+                .setNegativeListener(
+                    getString(R.string.dismiss)
+                ) { dialog -> dialog.dismiss() }
+                .build().show()
+        } else {
+            startActivity<MainActivity>()
+            finish()
+        }
+    }
+
     open inner class MyLocationCallback : LocationCallback() {
         @SuppressLint("NewApi")
         override fun onLocationResult(locationResult: LocationResult?) {
@@ -389,6 +440,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     val formatter = DateTimeFormatter.ofPattern("dd")
                     val startTravel = DateTimeFormatter.ofPattern("yyyy/MM/dd")
 
+
+                    locationOne.latitude = myLatitude
+                    locationOne.longitude = myLongitude
+
                     travelStart = current.format(startTravel)
                     countToday = current.format(formatter).toInt()
                     start = false
@@ -396,7 +451,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 Log.d("MapsActivity", "위도 : $latitude, 경도 : $longitude")
                 if (story) {
-
 
                     polylineOptions.add(latLng)
                     //선 그리기
@@ -409,6 +463,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
             }
         }
+    }
+
+    fun startServiceYeoDam() {
+        val intent = Intent(this, YeoDamService::class.java)
+
+        ContextCompat.startForegroundService(this, intent)
+    }
+
+    fun stopServiceYeoDam() {
+        val intent = Intent(this, YeoDamService::class.java)
+        stopService(intent)
     }
 
 }
