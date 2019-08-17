@@ -3,6 +3,7 @@ package com.yeodam.yeodam2019.view.activity.map
 import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -39,10 +40,8 @@ import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import com.yeodam.yeodam2019.view.activity.map.write.MemoActivity
 import com.yeodam.yeodam2019.view.activity.map.write.PayActivity
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_map_activity.*
 import kotlinx.android.synthetic.main.appbar.*
-import kotlinx.android.synthetic.main.map_finish_dialog.*
 import kotlinx.android.synthetic.main.map_finish_dialog.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
@@ -56,7 +55,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
 
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
+    private val GALLERY_REQUEST_CODE = 1
     private val CAMERA_CODE = 1111
+    private val REQUEST_CODE = 3000
 
     private val polylineOptions = PolylineOptions().width(10f).color(Color.argb(50, 89, 211, 238))
 
@@ -73,6 +74,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var count = 0
     val yeodamList = mutableListOf<LatLng>()
+    var memoLatLng = mutableListOf<LatLng>()
+    var memoList = mutableListOf<Any>()
 
     var myLatitude: Double = 0.0
     var myLongitude: Double = 0.0
@@ -86,6 +89,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val locationOne = Location("1")
     private val locationTwo = Location("1")
+
+    var userMemo = ""
+    var memoCount = 0
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,11 +119,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun buttonListener() {
 
         map_edit.setOnClickListener {
-            startActivity<MemoActivity>()
+            val intent = Intent(this, MemoActivity::class.java)
+            startActivityForResult(intent, REQUEST_CODE)
         }
 
         map_camera.setOnClickListener {
-
+            camera()
         }
 
         map_credit.setOnClickListener {
@@ -155,6 +162,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
     }
+
+    private fun camera() {
+        var intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+
+        var mimeTypes = arrayListOf("image/jpeg", "image/png")
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+
+        startActivityForResult(intent, GALLERY_REQUEST_CODE)
+    }
+
 
     @TargetApi(Build.VERSION_CODES.O)
     fun date() {
@@ -256,8 +274,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             mAlertDialog.dismiss()
             startActivity<UploadActivity>()
 
-//            km()
-//            count_day.text = countDay.toString()
 //            stopServiceYeoDam()
         }
 
@@ -269,48 +285,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-    private fun km() {
-        var meter = locationOne.distanceTo(locationTwo)
-        count_km.text = meter.toString()
-    }
-
-    private fun settingDialog() {
-        date()
-        story_day.text = "$travelStart ~ $travelEnd"
-    }
-
-    @SuppressLint("Registered")
-    inner class DialogShow : AppCompatActivity(), OnMapReadyCallback {
-
-        private lateinit var mMap: GoogleMap
-        private val polylineOptions = PolylineOptions().width(10f).color(Color.argb(50, 89, 211, 238))
-
-        override fun onMapReady(googleMap: GoogleMap) {
-            mMap = googleMap
-
-
-            for ((count, _) in yeodamList.withIndex()) {
-                val mapLatLng = yeodamList[count]
-                polylineOptions.add(mapLatLng)
-                mMap.addPolyline(polylineOptions)
-            }
-
-            val korea = LatLng(37.586218, 126.975941)
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(korea, 17f))
-
-        }
-
-        @SuppressLint("ResourceType")
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContentView(R.id.dialog_mapView)
-
-            val mapFragment = supportFragmentManager
-                .findFragmentById(R.id.dialog_mapView) as? SupportMapFragment
-            mapFragment?.getMapAsync(this)
-        }
-
-    }
 
     @SuppressLint("RestrictedApi")
     fun fab_Hide() {
@@ -374,6 +348,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }, ok = {
             mMap.isMyLocationEnabled = true
         })
+
+        if (memoCount == 1) {
+            var memoLatLng = LatLng(myLatitude, myLongitude)
+            mMap.addMarker(MarkerOptions().position(memoLatLng).title("메모").snippet(userMemo))
+            memoCount--
+        }
     }
 
     private fun locationInit() {
@@ -516,6 +496,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     start = false
                 }
 
+
+
                 Log.d("MapsActivity", "위도 : $latitude, 경도 : $longitude")
                 if (story) {
 
@@ -523,6 +505,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     //선 그리기
                     mMap.addPolyline(polylineOptions)
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
 
                     // 여행 기록을 담을 객체
                     yeodamLatLng = LatLng(myLatitude, myLongitude)
@@ -547,4 +530,31 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         stopService(intent)
     }
 
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+
+            val memoLatLng = LatLng(myLatitude, myLongitude)
+            val memo = data?.getStringExtra("memo")
+
+            val memoPair = memo to memoLatLng
+            memoList.add(memoPair)
+
+            mMap.addMarker(MarkerOptions().position(memoLatLng).title("메모").snippet(memo))
+
+        }
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                GALLERY_REQUEST_CODE -> {
+                    var selectedImage = data?.data
+
+                }
+            }
+        }
+
+
+    }
 }

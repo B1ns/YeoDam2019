@@ -3,10 +3,14 @@ package com.yeodam.yeodam2019.view.activity.main
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.gdacciaro.iOSDialog.iOSDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
@@ -19,6 +23,7 @@ import com.yeodam.yeodam2019.view.activity.setting.ProfileActivity
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
 import com.yeodam.yeodam2019.view.activity.splash.InfoActivity
 import com.yeodam.yeodam2019.view.activity.splash.OnboardingActivity
+import com.yeodam.yeodam2019.view.adapter.DataAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -33,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userEmail: String
     private lateinit var userPhoto: Uri
     private lateinit var userId: String
+    private var recyclerCount: Int = 0
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -44,6 +50,8 @@ class MainActivity : AppCompatActivity() {
         getUserData()
         userInfo()
         buttonListener()
+
+        MainRecyclerView()
     }
 
     private fun info() {
@@ -84,6 +92,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun userInfo() {
 
+        lottie.playAnimation()
+
         val docRef = db.collection("userInfo").document("$userName : $userId")
 
         docRef.get().addOnCompleteListener {
@@ -122,11 +132,14 @@ class MainActivity : AppCompatActivity() {
 
             itemType = if (itemType) {
                 change_Item.setBackgroundResource(R.drawable.ic_main_list)
+                recyclerCount = 0
                 false
             } else {
                 change_Item.setBackgroundResource(R.drawable.ic_menu)
+                recyclerCount = 1
                 true
             }
+
         }
 
         userInfoLayout.setOnClickListener {
@@ -134,6 +147,22 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+
+    private fun MainRecyclerView() {
+        val view: RecyclerView = findViewById(R.id.mainRecyclerView)
+        when (recyclerCount) {
+            0 -> {
+                view.layoutManager = LinearLayoutManager(applicationContext)
+                view.adapter = DataAdapter(applicationContext)
+            }
+            1 -> {
+                view.layoutManager = GridLayoutManager(this, 2)
+                view.adapter = DataAdapter(applicationContext)
+            }
+        }
+    }
+
 
     @SuppressLint("RestrictedApi")
     private fun background() {

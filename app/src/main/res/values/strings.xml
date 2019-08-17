@@ -16,4 +16,13 @@
 
     <string name="yeodam_title">여담</string>
     <string name="default_notification_channel_id" translatable="false">fcm_yeodam_channel</string>
+
+    <array name="currency_array">
+        <item>$(달러)</item>
+        <item>€(유로)</item>
+        <item>¥(엔)</item>
+        <item>£(파운드)</item>
+    </array>
+
 </resources>
+

@@ -96,7 +96,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/outline"
-                        android:src="@drawable/person"
                         app:civ_border_color="@color/colorPrimary"
                         app:civ_border_width="2dp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -119,8 +118,8 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="25dp"
                     android:layout_gravity="center"
+                    android:layout_marginStart="25dp"
                     android:background="@android:color/white"
                     android:orientation="vertical">
 
@@ -128,21 +127,21 @@
                         android:id="@+id/main_userName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
-                        android:layout_gravity="center_vertical"
+                        android:text=""
+                        android:textColor="@android:color/black"
                         android:textSize="8pt"
-                        android:text="YeoDam Kim"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"/>
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        android:padding="1dp"
                         android:layout_marginBottom="10dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="1dp">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -161,7 +160,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Days"
-                                android:textColor="@color/colorPrimaryDark" />
+                                android:textColor="@color/colorPrimary" />
 
                         </LinearLayout>
 
@@ -191,7 +190,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="km"
-                                android:textColor="@color/colorPrimaryDark" />
+                                android:textColor="@color/colorPrimary" />
 
                         </LinearLayout>
 
@@ -239,7 +238,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/mainRecyclerView"
+            app:layout_constraintBottom_toTopOf="@id/mainRecyclerLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title">
@@ -280,16 +279,25 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/mainRecyclerView"
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/mainRecyclerLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dateBar" />
+            app:layout_constraintTop_toBottomOf="@id/dateBar">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mainRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -297,7 +305,14 @@
         android:id="@+id/main_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:lottie_fileName="air.json" />
+
 
     <com.ncorti.slidetoact.SlideToActView
         android:id="@+id/slider"

@@ -92,9 +92,6 @@ class InfoActivity : AppCompatActivity() {
 
     private fun uploadProfile(uri: String) {
 
-        val user = HashMap<String, Any>()
-        user["userName"] = nickName.text.toString()
-        user["userImage"] = uri
 
         db.collection("userInfo").document("$userName : $userId")
             .set(UserDTO(uri, nickName.text.toString()))
