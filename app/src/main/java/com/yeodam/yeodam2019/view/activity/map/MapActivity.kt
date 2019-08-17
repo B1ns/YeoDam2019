@@ -4,17 +4,24 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Location
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -31,9 +38,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.YeoDamService
 import com.yeodam.yeodam2019.toast
@@ -42,6 +47,7 @@ import com.yeodam.yeodam2019.view.activity.map.write.MemoActivity
 import com.yeodam.yeodam2019.view.activity.map.write.PayActivity
 import kotlinx.android.synthetic.main.activity_map_activity.*
 import kotlinx.android.synthetic.main.appbar.*
+import kotlinx.android.synthetic.main.custom_marker.*
 import kotlinx.android.synthetic.main.map_finish_dialog.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
@@ -90,6 +96,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val locationOne = Location("1")
     private val locationTwo = Location("1")
 
+    private var customMaker: View? = null
+
     var userMemo = ""
     var memoCount = 0
 
@@ -107,14 +115,28 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        locationInit()
-
         fab()
+
+        locationInit()
 
         buttonListener()
 
         startServiceYeoDam()
     }
+
+
+
+//    private fun addImageMaker(uri: Uri?): Marker? {
+//
+//        var image = uri
+//        var position = LatLng(myLatitude, myLongitude)
+//
+//        var bitmap = MediaStore.Images.Media.getBitmap(contentResolver, image)
+//
+//
+//        return mMap.addMarker()
+//    }
+
 
     private fun buttonListener() {
 
@@ -554,7 +576,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
-
 
     }
 }
