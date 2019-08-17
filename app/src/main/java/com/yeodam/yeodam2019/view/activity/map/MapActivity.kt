@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.net.Uri
@@ -25,6 +26,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -34,10 +36,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.YeoDamService
@@ -80,7 +79,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var count = 0
     val yeodamList = mutableListOf<LatLng>()
-    var memoLatLng = mutableListOf<LatLng>()
     var memoList = mutableListOf<Any>()
 
     var myLatitude: Double = 0.0
@@ -97,9 +95,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val locationTwo = Location("1")
 
     private var customMaker: View? = null
-
-    var userMemo = ""
-    var memoCount = 0
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,7 +118,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         startServiceYeoDam()
     }
-
 
 
 //    private fun addImageMaker(uri: Uri?): Marker? {
@@ -195,6 +189,31 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         startActivityForResult(intent, GALLERY_REQUEST_CODE)
     }
 
+    private fun getMarkerBitmapFromView(uri: Uri?): Bitmap {
+        var customMakerView =
+            (getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.custom_marker, null)
+        var imageView = customMakerView.findViewById<ImageView>(R.id.custom_Image)
+        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+        imageView.setImageBitmap(bitmap)
+
+        customMakerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        customMakerView.layout(0, 0, customMakerView.measuredWidth, customMakerView.measuredHeight)
+        customMakerView.buildDrawingCache()
+
+        var returnBitmap =
+            Bitmap.createBitmap(customMakerView.measuredWidth, customMakerView.measuredHeight, Bitmap.Config.ARGB_8888)
+
+        var canvas = Canvas(returnBitmap)
+        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN)
+        var drawble = customMakerView.background
+        if (drawble != null) {
+            drawble.draw(canvas)
+        }
+
+        customMakerView.draw(canvas)
+        return addImageMarker(returnBitmap)
+
+    }
 
     @TargetApi(Build.VERSION_CODES.O)
     fun date() {
@@ -365,17 +384,29 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.addMarker(MarkerOptions().position(korea).title("대한민국 청와대"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(korea))
 
+        MapsInitializer.initialize(this)
+
         permissionCheck(cancel = {
             showPermissionInfoDialog()
         }, ok = {
             mMap.isMyLocationEnabled = true
         })
 
-        if (memoCount == 1) {
-            var memoLatLng = LatLng(myLatitude, myLongitude)
-            mMap.addMarker(MarkerOptions().position(memoLatLng).title("메모").snippet(userMemo))
-            memoCount--
-        }
+
+    }
+
+    private fun addImageMarker(bitmap: Bitmap): Bitmap {
+
+        var ImageLatLng = LatLng(myLatitude, myLongitude)
+        mMap.addMarker(
+            MarkerOptions().position(ImageLatLng).icon(
+                BitmapDescriptorFactory.fromBitmap(
+                    bitmap
+                )
+            )
+        )
+
+        return bitmap
     }
 
     private fun locationInit() {
@@ -572,7 +603,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             when (requestCode) {
                 GALLERY_REQUEST_CODE -> {
                     var selectedImage = data?.data
-
+                    getMarkerBitmapFromView(selectedImage)
                 }
             }
         }

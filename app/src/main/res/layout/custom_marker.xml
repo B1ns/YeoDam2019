@@ -6,9 +6,9 @@
     android:background="@drawable/ic_maker_image">
 
     <ImageView
-        android:id="@+id/profile_image"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:id="@+id/custom_Image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="center_horizontal"
         android:contentDescription="@null"
         android:src="@drawable/person" />
