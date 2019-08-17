@@ -146,6 +146,10 @@ class MainActivity : AppCompatActivity() {
             startActivity<ProfileActivity>()
         }
 
+        notification_btn.setOnClickListener {
+            startActivity<NotificationActivity>()
+        }
+
     }
 
 

@@ -21,7 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.activity.main.loadMapActivity"></activity>
+        <activity android:name=".view.activity.main.NotificationActivity"></activity>
+        <activity android:name=".view.activity.main.loadMapActivity" />
         <activity android:name=".view.activity.map.UploadActivity" />
         <activity android:name=".view.activity.PushInfoActivity" />
 
