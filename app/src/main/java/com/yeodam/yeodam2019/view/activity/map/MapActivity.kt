@@ -18,15 +18,14 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -46,7 +45,6 @@ import com.yeodam.yeodam2019.view.activity.map.write.MemoActivity
 import com.yeodam.yeodam2019.view.activity.map.write.PayActivity
 import kotlinx.android.synthetic.main.activity_map_activity.*
 import kotlinx.android.synthetic.main.appbar.*
-import kotlinx.android.synthetic.main.custom_marker.*
 import kotlinx.android.synthetic.main.map_finish_dialog.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
@@ -96,6 +94,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var customMaker: View? = null
 
+    private var photoList = mutableListOf<Any>()
+
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,16 +134,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun buttonListener() {
 
-        map_edit.setOnClickListener {
+        editLayout.setOnClickListener {
             val intent = Intent(this, MemoActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE)
         }
 
-        map_camera.setOnClickListener {
+        cameraLayout.setOnClickListener {
             camera()
         }
 
-        map_credit.setOnClickListener {
+        creditLayout.setOnClickListener {
             startActivity<PayActivity>()
         }
 
@@ -216,7 +216,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    fun date() {
+    fun date() : Int{
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("dd")
         val endTravel = DateTimeFormatter.ofPattern("yyyy/MM/dd")
@@ -224,6 +224,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         travelEnd = current.format(endTravel)
 
         countDay = countLastday - countToday
+
+        return countDay
     }
 
 
@@ -300,20 +302,47 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-    @SuppressLint("NewApi", "InflateParams")
+    @SuppressLint("NewApi")
     private fun showFinish() {
 
-//        settingDialog()
+        var photoCount = photoList.size.toString()
+        var memoCount = memoList.size.toString()
+        var story_day_date = "$travelStart ~ $travelEnd"
+
+
+        Log.d("LogTest", "$photoCount + $memoCount")
 
         val mDialogView = LayoutInflater.from(this).inflate(R.layout.map_finish_dialog, null)
+        val photoID = mDialogView.findViewById<TextView>(R.id.dialog_photo)
+        val memoID = mDialogView.findViewById<TextView>(R.id.dialog_edit)
+        val dayId = mDialogView.findViewById<TextView>(R.id.story_day)
+
+
         val mBuilder = AlertDialog.Builder(this)
             .setView(mDialogView)
+
+        photoID.text = photoCount
+        memoID.text = memoCount
+        dayId.text = story_day_date
+
         val mAlertDialog = mBuilder.show()
+
         mAlertDialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         mDialogView.dialog_yes.setOnClickListener {
             mAlertDialog.dismiss()
-            startActivity<UploadActivity>()
+
+            story = false
+            fab_Hide()
+            map_slider.visibility = View.VISIBLE
+            map_slider.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
+                override fun onSlideComplete(view: SlideToActView) {
+                    map_slider.resetSlider()
+                    map_slider.visibility = View.GONE
+                    story = true
+                    fab_Show()
+                }
+            }
 
 //            stopServiceYeoDam()
         }
@@ -405,6 +434,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
             )
         )
+
+        var photoPair = ImageLatLng to bitmap
+        photoList.add(photoPair)
 
         return bitmap
     }
