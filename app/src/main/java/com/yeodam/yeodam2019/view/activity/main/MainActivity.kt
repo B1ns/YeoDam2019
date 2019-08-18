@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userEmail: String
     private lateinit var userPhoto: Uri
     private lateinit var userId: String
-    private var recyclerCount: Int = 1
+    private var recyclerCount: Boolean = true
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -132,11 +132,11 @@ class MainActivity : AppCompatActivity() {
 
             itemType = if (itemType) {
                 change_Item.setBackgroundResource(R.drawable.ic_main_list)
-                recyclerCount = 0
+                recyclerCount = false
                 false
             } else {
                 change_Item.setBackgroundResource(R.drawable.ic_menu)
-                recyclerCount = 1
+                recyclerCount = true
                 true
             }
 
@@ -157,7 +157,7 @@ class MainActivity : AppCompatActivity() {
         val cardView: RecyclerView = findViewById(R.id.mainCardView)
         val listView: RecyclerView = findViewById(R.id.mainListView)
         when (recyclerCount) {
-            0 -> {
+            true -> {
                 bg.visibility = View.GONE
                 val mAdapter = ListViewAdapter(this, YeodamStory)
                 cardView.adapter = mAdapter
@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity() {
                 listView.layoutManager = LinearLayoutManager(applicationContext)
 
             }
-            1 -> {
+            false -> {
 
                 val mAdapter = CardViewAdapter(this, YeodamStory)
                 cardView.adapter = mAdapter

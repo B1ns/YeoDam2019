@@ -60,7 +60,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
     private val GALLERY_REQUEST_CODE = 1
     val REQUEST_IMAGE_CAPTURE = 1
-    private val CAMERA_CODE = 1111
+    private val CREDIT_CODE = 1111
     private val REQUEST_CODE = 3000
 
     private val polylineOptions = PolylineOptions().width(10f).color(Color.argb(50, 89, 211, 238))
@@ -150,7 +150,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         creditLayout.setOnClickListener {
-            startActivity<PayActivity>()
+            val intent = Intent(this, PayActivity::class.java)
+            startActivityForResult(intent, CREDIT_CODE)
         }
 
         mapHome_btn.setOnClickListener {
@@ -192,22 +193,24 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun getMarkerBitmapFromView(bitmap: Bitmap?): Bitmap {
-        var customMakerView =
+        val customMakerView =
             (getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.custom_marker, null)
-        var imageView = customMakerView.findViewById<ImageView>(R.id.custom_Image)
-//        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+        val imageView = customMakerView.findViewById<ImageView>(R.id.custom_Image)
         imageView.setImageBitmap(bitmap)
 
         customMakerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         customMakerView.layout(0, 0, customMakerView.measuredWidth, customMakerView.measuredHeight)
         customMakerView.buildDrawingCache()
 
-        var returnBitmap =
-            Bitmap.createBitmap(customMakerView.measuredWidth, customMakerView.measuredHeight, Bitmap.Config.ARGB_8888)
+        val returnBitmap =
+            Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
 
-        var canvas = Canvas(returnBitmap)
+
+
+
+        val canvas = Canvas(returnBitmap)
         canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN)
-        var drawble = customMakerView.background
+        val drawble = customMakerView.background
         if (drawble != null) {
             drawble.draw(canvas)
         }
@@ -622,7 +625,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
             val bitmapdraw: BitmapDrawable = resources.getDrawable(R.drawable.box_memo) as BitmapDrawable
             val b = bitmapdraw.bitmap
-            val smallMarkar = Bitmap.createScaledBitmap(b, 70, 70, false)
+            val smallMarkar = Bitmap.createScaledBitmap(b, 125, 125, false)
 
 
             val memoPair = memo to memoLatLng
@@ -640,14 +643,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         }
 
-        if(requestCode == REQUEST_CODE){
+        if (requestCode == CREDIT_CODE && resultCode == RESULT_OK) {
+
             val creditLatLng = LatLng(myLatitude, myLongitude)
             val creditInfo = data?.getStringExtra("Pay_Info")
             val creditMoney = data?.getStringExtra("Pay_meney")
 
             val bitmapdraw2: BitmapDrawable = resources.getDrawable(R.drawable.box_pay) as BitmapDrawable
             val b2 = bitmapdraw2.bitmap
-            val smallMarkar2 = Bitmap.createScaledBitmap(b2, 70, 70, false)
+            val smallMarkar2 = Bitmap.createScaledBitmap(b2, 125, 125, false)
 
             val creditInfoPair = creditInfo to creditMoney
             creditInfoPair to creditLatLng
