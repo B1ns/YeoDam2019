@@ -621,8 +621,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             val memo = data?.getStringExtra("memo")
 
             val bitmapdraw: BitmapDrawable = resources.getDrawable(R.drawable.box_memo) as BitmapDrawable
-            var b = bitmapdraw.bitmap
-            var smallMarkar = Bitmap.createScaledBitmap(b, 200, 200, false)
+            val b = bitmapdraw.bitmap
+            val smallMarkar = Bitmap.createScaledBitmap(b, 70, 70, false)
 
 
             val memoPair = memo to memoLatLng
@@ -632,6 +632,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar)).position(memoLatLng).title(
                     "메모"
                 ).snippet(memo)
+            )
+
+
+            // credit
+
+            val creditLatLng = LatLng(myLatitude, myLongitude)
+            val creditInfo = data?.getStringExtra("Pay_Info")
+            val creditMoney = data?.getStringExtra("Pay_meney")
+
+            val bitmapdraw2: BitmapDrawable = resources.getDrawable(R.drawable.box_pay) as BitmapDrawable
+            val b2 = bitmapdraw2.bitmap
+            val smallMarkar2 = Bitmap.createScaledBitmap(b2, 70, 70, false)
+
+            val creditInfoPair = creditInfo to creditMoney
+            creditInfoPair to creditLatLng
+
+            mMap.addMarker(
+                MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar2)).position(memoLatLng).title(
+                    creditInfo
+                ).snippet(creditMoney)
             )
 
         }

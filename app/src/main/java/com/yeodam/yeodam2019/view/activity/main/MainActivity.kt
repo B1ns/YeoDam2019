@@ -168,7 +168,6 @@ class MainActivity : AppCompatActivity() {
 
             }
             1 -> {
-                bg.visibility = View.GONE
 
                 val mAdapter = CardViewAdapter(this, YeodamStory)
                 cardView.adapter = mAdapter
