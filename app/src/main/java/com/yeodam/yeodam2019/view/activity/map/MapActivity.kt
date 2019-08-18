@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.net.Uri
@@ -36,14 +37,15 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.ncorti.slidetoact.SlideToActView
+import com.yeodam.yeodam2019.DialogMap
 import com.yeodam.yeodam2019.YeoDamService
 import com.yeodam.yeodam2019.toast
+import com.yeodam.yeodam2019.utils.getBitmapFromView
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import com.yeodam.yeodam2019.view.activity.map.write.MemoActivity
 import com.yeodam.yeodam2019.view.activity.map.write.PayActivity
 import kotlinx.android.synthetic.main.activity_map_activity.*
 import kotlinx.android.synthetic.main.appbar.*
-import kotlinx.android.synthetic.main.map_finish_dialog.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.startActivity
@@ -75,7 +77,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var isFabOpen = false
 
     private var count = 0
-    val yeodamList = ArrayList<LatLng>()
+    var yeodamList = ArrayList<LatLng>()
     var memoList = ArrayList<Any>()
 
     var myLatitude: Double = 0.0
@@ -172,9 +174,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                         getString(R.string.dismiss)
                     ) { dialog -> dialog.dismiss() }
                     .build().show()
-
-                startActivity<MainActivity>()
-                finish()
             } else {
                 startActivity<MainActivity>()
                 finish()
@@ -251,10 +250,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 .setBoldPositiveLabel(true)
                 .setCancelable(false)
                 .setPositiveListener("네") { dialog ->
+                    toggleFab()
                     toast("취소됬습니다 !")
                     //여행 취소 로직 작성 구간
-                    toggleFab()
+                    story = false
                     dialog.dismiss()
+                    startActivity<MainActivity>()
+                    finish()
+
                 }
                 .setNegativeListener(
                     getString(R.string.dismiss)
@@ -305,6 +308,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             Log.d("Map", "위도 : $myLatitude, 경도 : $myLongitude")
         }
 
+
+        fab_N.setOnClickListener {
+            var cameraPosition = CameraPosition.Builder()
+                .target(LatLng(myLatitude, myLongitude))
+                .zoom(17f)
+                .bearing(0F)
+                .build()
+
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        }
+
     }
 
     @SuppressLint("NewApi")
@@ -322,55 +336,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         Log.d("LogTest", "$photoCount + $memoCount")
 
-        val mDialogView = LayoutInflater.from(this).inflate(R.layout.map_finish_dialog, null)
-        val photoID = mDialogView.findViewById<TextView>(R.id.dialog_photo)
-        val memoID = mDialogView.findViewById<TextView>(R.id.dialog_edit)
-        val dayId = mDialogView.findViewById<TextView>(R.id.story_day)
+        val intent = Intent(this, DialogMap::class.java)
 
+        intent.putExtra("MapData", yeodamList)
+        intent.putExtra("PhotoData", photoList)
+        intent.putExtra("MemoData", memoList)
+        intent.putExtra("CreditData", creditList)
 
-        val mBuilder = AlertDialog.Builder(this)
-            .setView(mDialogView)
+        intent.putExtra("story_day", story_day_date)
+        intent.putExtra("photoCount", photoCount)
+        intent.putExtra("memoCount", memoCount)
 
-        photoID.text = photoCount
-        memoID.text = memoCount
-        dayId.text = story_day_date
-
-        val mAlertDialog = mBuilder.show()
-
-        mAlertDialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        mDialogView.dialog_yes.setOnClickListener {
-            mAlertDialog.dismiss()
-
-            var intent = Intent(applicationContext, UploadActivity::class.java)
-
-            intent.putExtra("Map", yeodamList)
-            intent.putExtra("Memo", memoList)
-            intent.putExtra("Image", photoList)
-            intent.putExtra("Credit", creditList)
-
-            startActivity(intent)
-
-            story = false
-            fab_Hide()
-            map_slider.visibility = View.VISIBLE
-            map_slider.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
-                override fun onSlideComplete(view: SlideToActView) {
-                    map_slider.resetSlider()
-                    map_slider.visibility = View.GONE
-                    story = true
-                    fab_Show()
-                }
-            }
-
-//            stopServiceYeoDam()
-        }
-
-        mDialogView.dialog_no.setOnClickListener {
-            mAlertDialog.dismiss()
-
-        }
-
+        startActivity(intent)
 
     }
 
@@ -643,10 +620,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             val memoLatLng = LatLng(myLatitude, myLongitude)
             val memo = data?.getStringExtra("memo")
 
+            val bitmapdraw: BitmapDrawable = resources.getDrawable(R.drawable.box_memo) as BitmapDrawable
+            var b = bitmapdraw.bitmap
+            var smallMarkar = Bitmap.createScaledBitmap(b, 200, 200, false)
+
+
             val memoPair = memo to memoLatLng
             memoList.add(memoPair)
 
-            mMap.addMarker(MarkerOptions().position(memoLatLng).title("메모").snippet(memo))
+            mMap.addMarker(
+                MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar)).position(memoLatLng).title(
+                    "메모"
+                ).snippet(memo)
+            )
 
         }
 

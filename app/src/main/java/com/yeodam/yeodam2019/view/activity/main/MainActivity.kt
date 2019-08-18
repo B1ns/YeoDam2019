@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userEmail: String
     private lateinit var userPhoto: Uri
     private lateinit var userId: String
-    private var recyclerCount: Int = 0
+    private var recyclerCount: Int = 1
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -158,6 +158,7 @@ class MainActivity : AppCompatActivity() {
         val listView: RecyclerView = findViewById(R.id.mainListView)
         when (recyclerCount) {
             0 -> {
+                bg.visibility = View.GONE
                 val mAdapter = ListViewAdapter(this, YeodamStory)
                 cardView.adapter = mAdapter
 
@@ -167,6 +168,7 @@ class MainActivity : AppCompatActivity() {
 
             }
             1 -> {
+                bg.visibility = View.GONE
 
                 val mAdapter = CardViewAdapter(this, YeodamStory)
                 cardView.adapter = mAdapter
