@@ -203,7 +203,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         customMakerView.buildDrawingCache()
 
         val returnBitmap =
-            Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+            Bitmap.createBitmap(customMakerView.measuredWidth, customMakerView.measuredHeight, Bitmap.Config.ARGB_8888)
 
 
 
