@@ -2,6 +2,7 @@ package com.yeodam.yeodam2019.view.activity.map
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -27,15 +28,61 @@ class UploadActivity : AppCompatActivity() {
     private val storyCountry = ""
     private val date = ""
 
+    lateinit var userName: String
+    lateinit var userEmail: String
+    lateinit var userPhoto: Uri
+    lateinit var userId: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upload)
 
         buttonLitener()
 
-        uploadData()
+//        uploadData()
+
+        getUserData()
+
+        getMapData()
 
     }
+
+    private fun getMapData() {
+        var intent = Intent()
+
+
+
+    }
+
+    private fun getUserData() {
+
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.let {
+            // Name, email address, and profile photo Url
+            val name = user.displayName
+            val email = user.email
+            val photoUrl = user.photoUrl
+
+            // Check if user's email is verified
+            val emailVerified = user.isEmailVerified
+
+            // The user's ID, unique to the Firebase project. Do NOT use this value to
+            // authenticate with your backend server, if you have one. Use
+            // FirebaseUser.getToken() instead.
+            val uid = user.uid
+            if (name != null) {
+                userName = name
+            }
+            if (email != null) {
+                userEmail = email
+            }
+            if (photoUrl != null) {
+                userPhoto = photoUrl
+            }
+            userId = uid
+        }
+    }
+
 
 
 
@@ -108,6 +155,8 @@ class UploadActivity : AppCompatActivity() {
 
     private fun uploadData() {
 
-
+        var intentDate = Intent()
+        intentDate.getStringExtra("date")
+        startActivityForResult(intent, REQUEST_CODE)
     }
 }

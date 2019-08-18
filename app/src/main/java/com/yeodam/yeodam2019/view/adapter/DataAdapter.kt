@@ -22,7 +22,7 @@ class DataAdapter(private val context: Context) : RecyclerView.Adapter<DataAdapt
     }
 
     private var adapterDataList: List<Any> = emptyList()
-    private var data : List<Any> = emptyList()
+    private var data: List<Any> = emptyList()
 
 
     companion object {
@@ -33,10 +33,15 @@ class DataAdapter(private val context: Context) : RecyclerView.Adapter<DataAdapt
     inner class CardViewHolder(itemView: View) : BaseViewHolder<Story>(itemView) {
         override fun bind(item: Story) {
 
-            var cardImageView: ImageView = itemView.findViewById(R.id.card_Image)
-            var cardImageCount: TextView = itemView.findViewById(R.id.card_Image_count)
-            var cardTitle: TextView = itemView.findViewById(R.id.card_title)
-            var cardHashtag : TextView = itemView.findViewById(R.id.card_hashtag)
+            val cardImageView: ImageView = itemView.findViewById(R.id.card_Image)
+            val cardImageCount: TextView = itemView.findViewById(R.id.card_Image_count)
+            val cardTitle: TextView = itemView.findViewById(R.id.card_title)
+            val cardHashtag: TextView = itemView.findViewById(R.id.card_hashtag)
+
+            cardImageView.setImageURI(item.image)
+            cardImageCount.text = item.ImageCount.toString()
+            cardTitle.text = item.title
+            cardHashtag.text = item.hashtag
 
         }
 
@@ -45,7 +50,17 @@ class DataAdapter(private val context: Context) : RecyclerView.Adapter<DataAdapt
     inner class ListViewHolder(itemView: View) : BaseViewHolder<Story>(itemView) {
 
         override fun bind(item: Story) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+            val listImageView: ImageView = itemView.findViewById(R.id.list_Image)
+            val listImageCount: TextView = itemView.findViewById(R.id.list_count)
+            val listHashtag: TextView = itemView.findViewById(R.id.list_hashtag)
+            val listTitle: TextView = itemView.findViewById(R.id.list_title)
+
+            listImageView.setImageURI(item.image)
+            listImageCount.text = item.ImageCount.toString()
+            listTitle.text = item.title
+            listHashtag.text = item.hashtag
+
         }
 
     }
@@ -78,8 +93,15 @@ class DataAdapter(private val context: Context) : RecyclerView.Adapter<DataAdapt
         }
     }
 
-//    override fun getItemViewType(position: Int): Int {
-//        return getItem(position).getType()
-//    }
+    override fun getItemViewType(position: Int): Int {
+
+        val comparable = data[position]
+        return when (comparable) {
+            is String -> TYPE_CARDVIEW
+            is Int -> TYPE_LIST
+            else -> throw IllegalArgumentException("Invalid type of data " + position)
+        }
+
+    }
 
 }

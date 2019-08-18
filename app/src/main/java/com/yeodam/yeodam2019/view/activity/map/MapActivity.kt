@@ -7,10 +7,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.PorterDuff
+import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.net.Uri
@@ -29,6 +26,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.gdacciaro.iOSDialog.iOSDialogBuilder
 import com.yeodam.yeodam2019.R
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -59,6 +57,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
     private val GALLERY_REQUEST_CODE = 1
+    val REQUEST_IMAGE_CAPTURE = 1
     private val CAMERA_CODE = 1111
     private val REQUEST_CODE = 3000
 
@@ -76,8 +75,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var isFabOpen = false
 
     private var count = 0
-    val yeodamList = mutableListOf<LatLng>()
-    var memoList = mutableListOf<Any>()
+    val yeodamList = ArrayList<LatLng>()
+    var memoList = ArrayList<Any>()
 
     var myLatitude: Double = 0.0
     var myLongitude: Double = 0.0
@@ -94,7 +93,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var customMaker: View? = null
 
-    private var photoList = mutableListOf<Any>()
+    private var photoList = ArrayList<Any>()
+    private var creditList = ArrayList<Any>()
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,6 +117,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         buttonListener()
 
         startServiceYeoDam()
+
+        val request = permissionsBuilder(Manifest.permission.CAMERA).build()
+        request.send()
+
     }
 
 
@@ -180,20 +184,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun camera() {
-        var intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
 
-        var mimeTypes = arrayListOf("image/jpeg", "image/png")
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-
-        startActivityForResult(intent, GALLERY_REQUEST_CODE)
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+            }
+        }
     }
 
-    private fun getMarkerBitmapFromView(uri: Uri?): Bitmap {
+    private fun getMarkerBitmapFromView(bitmap: Bitmap?): Bitmap {
         var customMakerView =
             (getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.custom_marker, null)
         var imageView = customMakerView.findViewById<ImageView>(R.id.custom_Image)
-        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+//        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
         imageView.setImageBitmap(bitmap)
 
         customMakerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
@@ -210,13 +213,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             drawble.draw(canvas)
         }
 
+
         customMakerView.draw(canvas)
         return addImageMarker(returnBitmap)
 
     }
 
+
     @TargetApi(Build.VERSION_CODES.O)
-    fun date() : Int{
+    fun date(): Int {
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("dd")
         val endTravel = DateTimeFormatter.ofPattern("yyyy/MM/dd")
@@ -307,6 +312,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         var photoCount = photoList.size.toString()
         var memoCount = memoList.size.toString()
+
+        val current = LocalDateTime.now()
+        val endTravel = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+        travelEnd = current.format(endTravel)
+
         var story_day_date = "$travelStart ~ $travelEnd"
 
 
@@ -331,6 +341,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mDialogView.dialog_yes.setOnClickListener {
             mAlertDialog.dismiss()
+
+            var intent = Intent(applicationContext, UploadActivity::class.java)
+
+            intent.putExtra("Map", yeodamList)
+            intent.putExtra("Memo", memoList)
+            intent.putExtra("Image", photoList)
+            intent.putExtra("Credit", creditList)
+
+            startActivity(intent)
 
             story = false
             fab_Hide()
@@ -631,13 +650,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         }
 
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                GALLERY_REQUEST_CODE -> {
-                    var selectedImage = data?.data
-                    getMarkerBitmapFromView(selectedImage)
-                }
-            }
+//        if (resultCode == Activity.RESULT_OK) {
+//            when (requestCode) {
+//                GALLERY_REQUEST_CODE -> {
+//                    var selectedImage = data?.data
+//                    getMarkerBitmapFromView(selectedImage)
+//                }
+//            }
+//        }
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            getMarkerBitmapFromView(imageBitmap)
+
         }
 
     }

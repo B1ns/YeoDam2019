@@ -3,9 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.yeodam.yeodam2019">
 
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
@@ -17,14 +22,39 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_logo_yeodam"
         android:label="@string/app_name"
+        android:maxSdkVersion="18"
         android:roundIcon="@drawable/ic_logo_yeodam"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.activity.main.NotificationActivity"></activity>
-        <activity android:name=".view.activity.main.loadMapActivity" />
-        <activity android:name=".view.activity.map.UploadActivity" />
-        <activity android:name=".view.activity.PushInfoActivity" />
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".DialogMap"
+            android:label="@string/title_activity_dialog_map"></activity>
+        <activity
+            android:name=".view.activity.main.NotificationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.main.loadMapActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.map.UploadActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.PushInfoActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -36,29 +66,43 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
 
-        <activity android:name=".view.activity.map.write.PayActivity" />
-        <activity android:name=".view.activity.map.write.MemoActivity" />
-        <activity android:name=".view.activity.setting.ServiceActivity" />
-        <activity android:name=".view.activity.setting.ProfileActivity" />
-        <activity android:name=".view.activity.setting.SettingActivity" />
+        <activity
+            android:name=".view.activity.map.write.PayActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.map.write.MemoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.setting.ServiceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.setting.ProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.setting.SettingActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.splash.InfoActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".view.activity.splash.OnboardingActivity" />
-        <activity android:name=".view.activity.map.MapActivity" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDDTJmTRy4nhpNAc5U3fyNanMin38mxduw" />
-
-        <activity android:name=".view.activity.splash.SplashActivity">
+        <activity
+            android:name=".view.activity.splash.OnboardingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.map.MapActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.splash.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.main.MainActivity" />
+        <activity
+            android:name=".view.activity.main.MainActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".fcm.MyFirebaseMessagingService"
