@@ -3,10 +3,8 @@ package com.yeodam.yeodam2019.view.activity.main
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,16 +15,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
+import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.data.UserDTO
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import com.yeodam.yeodam2019.view.activity.setting.ProfileActivity
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
 import com.yeodam.yeodam2019.view.activity.splash.InfoActivity
-import com.yeodam.yeodam2019.view.activity.splash.OnboardingActivity
-import com.yeodam.yeodam2019.view.adapter.DataAdapter
+import com.yeodam.yeodam2019.view.adapter.CardViewAdapter
+import com.yeodam.yeodam2019.view.adapter.ListViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
 
 
 class MainActivity : AppCompatActivity() {
@@ -41,6 +39,8 @@ class MainActivity : AppCompatActivity() {
     private var recyclerCount: Int = 0
 
     private val db = FirebaseFirestore.getInstance()
+
+    private val YeodamStory = arrayListOf<Story>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -154,15 +154,26 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun MainRecyclerView() {
-        val view: RecyclerView = findViewById(R.id.mainRecyclerView)
+        val cardView: RecyclerView = findViewById(R.id.mainCardView)
+        val listView: RecyclerView = findViewById(R.id.mainListView)
         when (recyclerCount) {
             0 -> {
-                view.layoutManager = LinearLayoutManager(applicationContext)
-                view.adapter = DataAdapter(applicationContext)
+                val mAdapter = ListViewAdapter(this, YeodamStory)
+                cardView.adapter = mAdapter
+
+                cardView.visibility = View.GONE
+                listView.visibility = View.VISIBLE
+                listView.layoutManager = LinearLayoutManager(applicationContext)
+
             }
             1 -> {
-                view.layoutManager = GridLayoutManager(this, 2)
-                view.adapter = DataAdapter(applicationContext)
+
+                val mAdapter = CardViewAdapter(this, YeodamStory)
+                cardView.adapter = mAdapter
+
+                listView.visibility = View.GONE
+                cardView.visibility = View.VISIBLE
+                cardView.layoutManager = GridLayoutManager(this, 2)
             }
         }
     }

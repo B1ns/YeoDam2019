@@ -291,9 +291,17 @@
             app:layout_constraintTop_toBottomOf="@id/dateBar">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/mainRecyclerView"
+                android:id="@+id/mainCardView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mainListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
 
             </androidx.recyclerview.widget.RecyclerView>
 
