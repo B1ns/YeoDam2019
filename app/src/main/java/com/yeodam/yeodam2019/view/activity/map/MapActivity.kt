@@ -637,6 +637,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
             // credit
 
+
+        }
+
+        if(requestCode == REQUEST_CODE){
             val creditLatLng = LatLng(myLatitude, myLongitude)
             val creditInfo = data?.getStringExtra("Pay_Info")
             val creditMoney = data?.getStringExtra("Pay_meney")
@@ -649,11 +653,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             creditInfoPair to creditLatLng
 
             mMap.addMarker(
-                MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar2)).position(memoLatLng).title(
+                MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar2)).position(creditLatLng).title(
                     creditInfo
                 ).snippet(creditMoney)
             )
-
         }
 
 //        if (resultCode == Activity.RESULT_OK) {
