@@ -3,7 +3,6 @@ package com.yeodam.yeodam2019.view.activity.map
 import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,7 +10,6 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.location.Location
-import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -37,23 +35,26 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.ncorti.slidetoact.SlideToActView
-import com.yeodam.yeodam2019.DialogMap
 import com.yeodam.yeodam2019.YeoDamService
+import com.yeodam.yeodam2019.data.YeoDam
+import com.yeodam.yeodam2019.data.YeoDamData
 import com.yeodam.yeodam2019.toast
-import com.yeodam.yeodam2019.utils.getBitmapFromView
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import com.yeodam.yeodam2019.view.activity.map.write.MemoActivity
 import com.yeodam.yeodam2019.view.activity.map.write.PayActivity
 import kotlinx.android.synthetic.main.activity_map_activity.*
 import kotlinx.android.synthetic.main.appbar.*
+import kotlinx.android.synthetic.main.map_finish_dialog.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.yesButton
+import java.io.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class MapActivity : AppCompatActivity(), OnMapReadyCallback {
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
     private lateinit var mMap: GoogleMap
 
@@ -77,8 +78,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var isFabOpen = false
 
     private var count = 0
-    var yeodamList = ArrayList<LatLng>()
-    var memoList = ArrayList<Any>()
 
     var myLatitude: Double = 0.0
     var myLongitude: Double = 0.0
@@ -95,9 +94,21 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var customMaker: View? = null
 
-    private var photoList = ArrayList<Any>()
-    private var creditList = ArrayList<Any>()
+    // 핵심 리스트
 
+    var Map = ArrayList<LatLng>()
+
+    var Memo = ArrayList<String?>()
+    var MemoLocation = ArrayList<LatLng>()
+
+    private var Photo = ArrayList<Bitmap>()
+    private var PhotoLocation = ArrayList<LatLng>()
+
+    private var Pay = ArrayList<String?>()
+    private var PayInfo = ArrayList<String?>()
+    private var PayLocation = ArrayList<LatLng>()
+
+    // 여기까지
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,18 +135,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         request.send()
 
     }
-
-
-//    private fun addImageMaker(uri: Uri?): Marker? {
-//
-//        var image = uri
-//        var position = LatLng(myLatitude, myLongitude)
-//
-//        var bitmap = MediaStore.Images.Media.getBitmap(contentResolver, image)
-//
-//
-//        return mMap.addMarker()
-//    }
 
 
     private fun buttonListener() {
@@ -204,8 +203,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val returnBitmap =
             Bitmap.createBitmap(customMakerView.measuredWidth, customMakerView.measuredHeight, Bitmap.Config.ARGB_8888)
-
-
 
 
         val canvas = Canvas(returnBitmap)
@@ -313,7 +310,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         fab_N.setOnClickListener {
-            var cameraPosition = CameraPosition.Builder()
+            val cameraPosition = CameraPosition.Builder()
                 .target(LatLng(myLatitude, myLongitude))
                 .zoom(17f)
                 .bearing(0F)
@@ -324,36 +321,83 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-    @SuppressLint("NewApi")
+    @SuppressLint("NewApi", "InflateParams")
     private fun showFinish() {
-
-        var photoCount = photoList.size.toString()
-        var memoCount = memoList.size.toString()
 
         val current = LocalDateTime.now()
         val endTravel = DateTimeFormatter.ofPattern("yyyy/MM/dd")
         travelEnd = current.format(endTravel)
 
-        var story_day_date = "$travelStart ~ $travelEnd"
+        val photoCount = Photo.size.toString()
+        val memoCount = Memo.size.toString()
+        val creditCount = Pay.size.toString()
+        val story_day_date = "$travelStart ~ $travelEnd"
 
 
         Log.d("LogTest", "$photoCount + $memoCount")
 
-        val intent = Intent(this, DialogMap::class.java)
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.map_finish_dialog, null)
+        val photoID = mDialogView.findViewById<TextView>(R.id.dialog_photo)
+        val memoID = mDialogView.findViewById<TextView>(R.id.dialog_edit)
+        val dayId = mDialogView.findViewById<TextView>(R.id.story_day)
+        val payId = mDialogView.findViewById<TextView>(R.id.dialog_credit)
 
-        intent.putExtra("MapData", yeodamList)
-        intent.putExtra("PhotoData", photoList)
-        intent.putExtra("MemoData", memoList)
-        intent.putExtra("CreditData", creditList)
 
-        intent.putExtra("story_day", story_day_date)
-        intent.putExtra("photoCount", photoCount)
-        intent.putExtra("memoCount", memoCount)
+        val mBuilder = AlertDialog.Builder(this)
+            .setView(mDialogView)
 
-        startActivity(intent)
+        photoID.text = photoCount
+        memoID.text = memoCount
+        dayId.text = story_day_date
+        payId.text = creditCount
+
+
+        val mAlertDialog = mBuilder.show()
+
+        mAlertDialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        mDialogView.dialog_yes.setOnClickListener {
+            mAlertDialog.dismiss()
+
+
+            val intent = Intent(this, UploadActivity::class.java)
+            intent.putParcelableArrayListExtra("Map", Map)
+            intent.putStringArrayListExtra("Memo", Memo)
+            intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
+            intent.putParcelableArrayListExtra("Photo", Photo)
+            intent.putParcelableArrayListExtra("PhotoLocation", PhotoLocation)
+            intent.putStringArrayListExtra("Pay", Pay)
+            intent.putStringArrayListExtra("PayInfo", PayInfo)
+            intent.putParcelableArrayListExtra("PayLocation", PayLocation)
+            intent.putExtra("Day", story_day_date)
+
+            Log.d("test", Map.toString())
+            Log.d("test", Memo.toString())
+
+            startActivity(intent)
+
+            story = false
+            fab_Hide()
+            map_slider.visibility = View.VISIBLE
+            map_slider.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
+                override fun onSlideComplete(view: SlideToActView) {
+                    map_slider.resetSlider()
+                    map_slider.visibility = View.GONE
+                    story = true
+                    fab_Show()
+                }
+            }
+        }
+        mDialogView.dialog_no.setOnClickListener {
+            mAlertDialog.dismiss()
+
+        }
 
     }
 
+//    private fun showMap() {
+//        startActivity<DialogMap>()
+//    }
 
     @SuppressLint("RestrictedApi")
     fun fab_Hide() {
@@ -425,7 +469,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun addImageMarker(bitmap: Bitmap): Bitmap {
 
-        var ImageLatLng = LatLng(myLatitude, myLongitude)
+        val ImageLatLng = LatLng(myLatitude, myLongitude)
         mMap.addMarker(
             MarkerOptions().position(ImageLatLng).icon(
                 BitmapDescriptorFactory.fromBitmap(
@@ -434,8 +478,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         )
 
-        var photoPair = ImageLatLng to bitmap
-        photoList.add(photoPair)
+        Photo.add(bitmap)
+        PhotoLocation.add(ImageLatLng)
 
         return bitmap
     }
@@ -498,7 +542,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
                 cancel()
             } else {
                 ActivityCompat.requestPermissions(
@@ -511,7 +559,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             REQUEST_ACCESS_FINE_LOCATION -> {
@@ -593,11 +645,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     // 여행 기록을 담을 객체
                     yeodamLatLng = LatLng(myLatitude, myLongitude)
-                    yeodamList.add(yeodamLatLng)
+                    Map.add(yeodamLatLng)
 
-                    Log.d("YeoDam2019", "$yeodamList")
+                    Log.d("test", Map.toString())
+
                 }
-
 
             }
         }
@@ -628,17 +680,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             val smallMarkar = Bitmap.createScaledBitmap(b, 125, 125, false)
 
 
-            val memoPair = memo to memoLatLng
-            memoList.add(memoPair)
+
+            Memo.add(memo)
+            MemoLocation.add(memoLatLng)
 
             mMap.addMarker(
                 MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar)).position(memoLatLng).title(
                     "메모"
                 ).snippet(memo)
             )
-
-
-            // credit
 
 
         }
@@ -654,7 +704,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             val smallMarkar2 = Bitmap.createScaledBitmap(b2, 125, 125, false)
 
             val creditInfoPair = creditInfo to creditMoney
-            creditInfoPair to creditLatLng
+
+            Pay.add(creditInfo)
+            PayInfo.add(creditMoney)
+            PayLocation.add(creditLatLng)
 
             mMap.addMarker(
                 MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar2)).position(creditLatLng).title(
@@ -663,14 +716,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         }
 
-//        if (resultCode == Activity.RESULT_OK) {
-//            when (requestCode) {
-//                GALLERY_REQUEST_CODE -> {
-//                    var selectedImage = data?.data
-//                    getMarkerBitmapFromView(selectedImage)
-//                }
-//            }
-//        }
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap

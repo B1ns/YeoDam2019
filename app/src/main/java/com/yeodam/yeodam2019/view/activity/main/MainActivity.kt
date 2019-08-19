@@ -1,6 +1,7 @@
 package com.yeodam.yeodam2019.view.activity.main
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -47,11 +48,29 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         info()
+
         getUserData()
+
         userInfo()
+
         buttonListener()
 
         MainRecyclerView()
+
+
+    }
+
+    private fun storyInfo() {
+
+        val intent = Intent()
+
+        val docRef = db.collection("userStory").document("$userName : $userId").collection().document()
+
+        docRef.get().addOnCompleteListener {
+            val Story = it.result?.toObject(Story::class.java)
+            YeodamStory.add(Story!!)
+        }
+
     }
 
     private fun info() {

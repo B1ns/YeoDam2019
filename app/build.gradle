@@ -8,6 +8,13 @@ apply plugin: 'kotlinx-serialization'
 
 apply plugin: 'com.google.gms.google-services'
 
+apply plugin: "org.jetbrains.kotlin.android.extensions"
+
+
+androidExtensions {
+    experimental = true
+}
+
 android {
     compileSdkVersion 28
     defaultConfig {

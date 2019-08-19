@@ -42,7 +42,8 @@
 
         <activity
             android:name=".DialogMap"
-            android:label="@string/title_activity_dialog_map"></activity>
+            android:label="@string/title_activity_dialog_map"
+            android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".view.activity.main.NotificationActivity"
             android:screenOrientation="portrait" />
@@ -91,6 +92,8 @@
         <activity
             android:name=".view.activity.map.MapActivity"
             android:screenOrientation="portrait" />
+
+
         <activity
             android:name=".view.activity.splash.SplashActivity"
             android:screenOrientation="portrait">
