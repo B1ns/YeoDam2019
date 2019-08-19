@@ -1,12 +1,14 @@
 package com.yeodam.yeodam2019.view.adapter
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Story
 
@@ -36,7 +38,7 @@ class ListViewAdapter(val context: Context, private val storyList: ArrayList<Sto
 
         fun bind(story: Story, context: Context) {
 
-            listImageView.setImageURI(story.image)
+            listImageView.setImageURI(Uri.parse(story.toString()))
             listImageCount.text = story.ImageCount.toString()
             listTitle.text = story.title
             listHashtag.text = story.hashtag

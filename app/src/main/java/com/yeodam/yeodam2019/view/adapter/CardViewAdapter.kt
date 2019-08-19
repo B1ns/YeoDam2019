@@ -1,14 +1,18 @@
 package com.yeodam.yeodam2019.view.adapter
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Story
+import org.jetbrains.anko.image
+import java.net.URI
 
 class CardViewAdapter(val context: Context, val storyList: ArrayList<Story>) :
     RecyclerView.Adapter<CardViewAdapter.Holder>() {
@@ -36,7 +40,7 @@ class CardViewAdapter(val context: Context, val storyList: ArrayList<Story>) :
 
         fun bind(story: Story, context: Context) {
 
-            cardImageView.setImageURI(story.image)
+            cardImageView.setImageURI(Uri.parse(story.toString()))
             cardImageCount.text = story.ImageCount.toString()
             cardTitle.text = story.title
             cardHashtag.text = story.hashtag

@@ -101,7 +101,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     var Memo = ArrayList<String?>()
     var MemoLocation = ArrayList<LatLng>()
 
-    private var Photo = ArrayList<Bitmap>()
+    private var Photo = ArrayList<String>()
     private var PhotoLocation = ArrayList<LatLng>()
 
     private var Pay = ArrayList<String?>()
@@ -364,7 +364,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             intent.putParcelableArrayListExtra("Map", Map)
             intent.putStringArrayListExtra("Memo", Memo)
             intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
-            intent.putParcelableArrayListExtra("Photo", Photo)
+            intent.putStringArrayListExtra("Photo", Photo)
             intent.putParcelableArrayListExtra("PhotoLocation", PhotoLocation)
             intent.putStringArrayListExtra("Pay", Pay)
             intent.putStringArrayListExtra("PayInfo", PayInfo)
@@ -478,7 +478,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             )
         )
 
-        Photo.add(bitmap)
+        Photo.add(bitmap.toString())
         PhotoLocation.add(ImageLatLng)
 
         return bitmap

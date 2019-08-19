@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
+import com.yeodam.yeodam2019.data.Count
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.data.UserDTO
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userPhoto: Uri
     private lateinit var userId: String
     private var recyclerCount: Boolean = true
+    var story = false
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -53,25 +55,28 @@ class MainActivity : AppCompatActivity() {
 
         userInfo()
 
+        addItem()
+
         buttonListener()
 
-        MainRecyclerView()
+//        MainRecyclerView()
+
+        val cardView: RecyclerView = findViewById(R.id.mainCardView)
+        val listView: RecyclerView = findViewById(R.id.mainListView)
+
+        val mAdapter = CardViewAdapter(this, YeodamStory)
+        cardView.adapter = mAdapter
+
+        mAdapter.notifyItemInserted(0)
+        mAdapter.notifyDataSetChanged()
+
+        listView.visibility = View.GONE
+        cardView.visibility = View.VISIBLE
+        cardView.layoutManager = GridLayoutManager(this, 2)
 
 
     }
 
-    private fun storyInfo() {
-
-        val intent = Intent()
-
-        val docRef = db.collection("userStory").document("$userName : $userId").collection().document()
-
-        docRef.get().addOnCompleteListener {
-            val Story = it.result?.toObject(Story::class.java)
-            YeodamStory.add(Story!!)
-        }
-
-    }
 
     private fun info() {
         if (!InfoActivity().info) {
@@ -107,6 +112,8 @@ class MainActivity : AppCompatActivity() {
             }
             userId = uid
         }
+
+
     }
 
     private fun userInfo() {
@@ -171,6 +178,31 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun addItem() {
+
+        var counter: Int? = null
+
+        val docRef = db.collection("$userName : $userId").document("count")
+        docRef.get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                val countData = it.result?.toObject(Count::class.java)
+                if (countData != null) {
+                    counter = countData.count
+                }
+            }
+        }
+
+
+        val getStory = db.collection("userStory").document("$userName : $userId").collection(counter.toString())
+            .document("StoryProfile")
+        getStory.get().addOnCompleteListener {
+            val Story = it.result?.toObject(Story::class.java)
+            if (Story != null) {
+                YeodamStory.add(Story)
+            }
+        }
+    }
+
 
     private fun MainRecyclerView() {
         val cardView: RecyclerView = findViewById(R.id.mainCardView)
@@ -179,6 +211,8 @@ class MainActivity : AppCompatActivity() {
             true -> {
                 bg.visibility = View.GONE
                 val mAdapter = ListViewAdapter(this, YeodamStory)
+                mAdapter.notifyItemInserted(0)
+                mAdapter.notifyDataSetChanged()
                 cardView.adapter = mAdapter
 
                 cardView.visibility = View.GONE
@@ -190,6 +224,9 @@ class MainActivity : AppCompatActivity() {
 
                 val mAdapter = CardViewAdapter(this, YeodamStory)
                 cardView.adapter = mAdapter
+
+                mAdapter.notifyItemInserted(0)
+                mAdapter.notifyDataSetChanged()
 
                 listView.visibility = View.GONE
                 cardView.visibility = View.VISIBLE

@@ -7,7 +7,9 @@ import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.parcel.Parcelize
 
-data class Story(val image: Uri, val ImageCount: Int, val title: String, val hashtag: String)
+data class Count(var count: Int? = null)
+
+data class Story(val image: String, val ImageCount: Int, val title: String, val hashtag: String)
 
 data class UserDTO(var userImage: String? = null, var userName: String? = null)
 
@@ -24,12 +26,13 @@ data class YeoDam(
     var Map: ArrayList<LatLng>? = null,
     var Memo: ArrayList<String>? = null,
     var MemoLocation: ArrayList<LatLng>? = null,
-    var Photo: ArrayList<Bitmap>? = null,
+    var Photo: ArrayList<String>? = null,
     var PhotoLocation: ArrayList<LatLng>? = null,
     var Pay: ArrayList<String>? = null,
     var PayInfo: ArrayList<String>? = null,
     var PayLocation: ArrayList<LatLng>? = null
 )
+
 
 @Parcelize
 data class YeoDamData(

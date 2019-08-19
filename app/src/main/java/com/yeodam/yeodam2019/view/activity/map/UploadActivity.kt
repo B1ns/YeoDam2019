@@ -2,7 +2,6 @@ package com.yeodam.yeodam2019.view.activity.map
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -17,9 +16,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.yeodam.yeodam2019.R
-import com.yeodam.yeodam2019.data.UploadStory
+import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.data.YeoDam
-import com.yeodam.yeodam2019.data.YeoDamData
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import kotlinx.android.synthetic.main.activity_upload.*
 import org.jetbrains.anko.toast
@@ -52,7 +50,7 @@ class UploadActivity : AppCompatActivity() {
     private var Map = ArrayList<LatLng>()
     private var Memo = ArrayList<String>()
     private var MemoLocation = ArrayList<LatLng>()
-    private var Photo = ArrayList<Bitmap>()
+    private var Photo = ArrayList<String>()
     private var PhotoLocation = ArrayList<LatLng>()
     private var Pay = ArrayList<String>()
     private var PayInfo = ArrayList<String>()
@@ -80,7 +78,7 @@ class UploadActivity : AppCompatActivity() {
         Map = intent.getParcelableArrayListExtra("Map")
         Memo = intent.getStringArrayListExtra("Memo")
         MemoLocation = intent.getParcelableArrayListExtra("MemoLocation")
-        Photo = intent.getParcelableArrayListExtra("Photo")
+        Photo = intent.getStringArrayListExtra("Photo")
         PhotoLocation = intent.getParcelableArrayListExtra("PhotoLocation")
         Pay = intent.getStringArrayListExtra("Pay")
         PayInfo = intent.getStringArrayListExtra("PayInfo")
@@ -92,27 +90,43 @@ class UploadActivity : AppCompatActivity() {
 
     private fun Upload(uri: String) {
 
+        var image = uri
+        var ImageCount = Photo.size
         val storyTitle = upload_title_editText.text.toString()
         val storyCountry = upload_travel_editText.text.toString()
         val storyDay = StoryDay
-        val storyImage = uri
+        var YeodamStory = ArrayList<String>()
 
-        db.collection("userStory").document("$userName : $userId").collection(storyTitle).document("StoryProfile")
-            .set(UploadStory(storyImage, storyTitle, storyCountry, storyDay))
+        index++
+
+        db.collection("userStory").document("$userName : $userId").collection(index.toString()).document("StoryProfile")
+            .set(Story(image, ImageCount, storyTitle, storyCountry))
             .addOnCompleteListener {
+                YeodamStory.add(storyTitle)
                 toast("여담")
             }
             .addOnCanceledListener {
                 toast("다시 한번 시도 해주세요 !")
             }
 
-        val db = db.collection("userStory").document("$userName : $userId").collection(storyTitle).document("StoryData")
+        val db = db.collection("userStory").document("$userName : $userId").collection(index.toString())
+            .document("StoryData")
         db.set(YeoDam(Map, Memo, MemoLocation, Photo, PhotoLocation, Pay, PayInfo, PayLocation))
             .addOnCompleteListener {
                 val intent = Intent(this, MainActivity::class.java)
+                intent.putStringArrayListExtra("title", YeodamStory)
                 toast("업로드 성공입니다!")
                 startActivity(intent)
                 finish()
+            }
+
+
+        var hashIndex = hashMapOf("index" to index)
+
+        db.collection("$userName : $userId").document("count")
+        db.set(hashIndex)
+            .addOnCompleteListener {
+
             }
     }
 
@@ -157,7 +171,7 @@ class UploadActivity : AppCompatActivity() {
         Upload_Upload.setOnClickListener {
             // 업로드
             Yeodam()
-            index++
+            MainActivity().story = true
             uploadImage()
         }
 
@@ -232,7 +246,9 @@ class UploadActivity : AppCompatActivity() {
             })?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val downloadUri = task.result
-                    Upload(downloadUri.toString())
+                    if (downloadUri != null) {
+                        Upload(downloadUri.toString())
+                    }
                 } else {
                     // Handle 실패할 경우
                 }
@@ -260,7 +276,7 @@ class UploadActivity : AppCompatActivity() {
             })?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val downloadUri = task.result
-                    Upload(downloadUri.toString())
+//                    Upload(downloadUri.toString())
                 } else {
                     // Handle 실패할 경우
                 }
