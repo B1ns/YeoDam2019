@@ -2,25 +2,21 @@ package com.yeodam.yeodam2019.data
 
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.parcel.Parcelize
 
-data class Count(var count: Int? = null)
-
-data class Story(val image: String, val ImageCount: Int, val title: String, val hashtag: String)
+data class Story(
+    var image: String? = null,
+    var ImageCount: Int? = null,
+    var title: String? = null,
+    var hashtag: String? = null,
+    var index: Int? = null
+)
 
 data class UserDTO(var userImage: String? = null, var userName: String? = null)
 
-data class memo(var memo: String? = null, var myLocation: HashMap<String, Any>? = null)
-
-data class UploadStory(
-    var storyImage: String? = null,
-    var storyTitle: String? = null,
-    var storyCountry: String? = null,
-    var storyDay: String? = null
-)
+data class userIndex(var index: Int? = null)
 
 data class YeoDam(
     var Map: ArrayList<LatLng>? = null,
@@ -30,9 +26,9 @@ data class YeoDam(
     var PhotoLocation: ArrayList<LatLng>? = null,
     var Pay: ArrayList<String>? = null,
     var PayInfo: ArrayList<String>? = null,
-    var PayLocation: ArrayList<LatLng>? = null
+    var PayLocation: ArrayList<LatLng>? = null,
+    var StoryIndex: Int? = null
 )
-
 
 @Parcelize
 data class YeoDamData(
@@ -40,5 +36,6 @@ data class YeoDamData(
     var MemoLocation: ArrayList<LatLng>? = null,
     var Photo: ArrayList<Bitmap>? = null,
     var PhotoLocation: ArrayList<LatLng>? = null,
-    var PayLocation: ArrayList<LatLng>? = null
+    var PayLocation: ArrayList<LatLng>? = null,
+    var PhotoUri: ArrayList<Uri>? = null
 ) : Parcelable

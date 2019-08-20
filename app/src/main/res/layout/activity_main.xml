@@ -238,7 +238,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/mainRecyclerLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title">
@@ -281,10 +280,13 @@
 
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/mainRecyclerLayout"
+            android:id="@+id/mainRecyclerCardLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -297,6 +299,20 @@
 
             </androidx.recyclerview.widget.RecyclerView>
 
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/mainRecyclerListLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="10dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dateBar">
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mainListView"
                 android:layout_width="match_parent"
@@ -305,6 +321,7 @@
 
             </androidx.recyclerview.widget.RecyclerView>
 
+
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
@@ -312,9 +329,9 @@
             android:id="@+id/bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:layout_marginTop="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

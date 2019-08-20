@@ -10,6 +10,7 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.location.Location
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -107,6 +108,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     private var Pay = ArrayList<String?>()
     private var PayInfo = ArrayList<String?>()
     private var PayLocation = ArrayList<LatLng>()
+
+    private var PhotoUri = ArrayList<Uri>()
 
     // 여기까지
     @SuppressLint("RestrictedApi")
@@ -370,6 +373,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             intent.putStringArrayListExtra("PayInfo", PayInfo)
             intent.putParcelableArrayListExtra("PayLocation", PayLocation)
             intent.putExtra("Day", story_day_date)
+            intent.putParcelableArrayListExtra("Uri", PhotoUri)
 
             Log.d("test", Map.toString())
             Log.d("test", Memo.toString())
@@ -718,7 +722,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
+
             val imageBitmap = data?.extras?.get("data") as Bitmap
+
+            val data = data.data
+
+            PhotoUri.add(data)
+
             getMarkerBitmapFromView(imageBitmap)
 
         }

@@ -1,7 +1,6 @@
 package com.yeodam.yeodam2019.view.activity.main
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -16,9 +15,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
-import com.yeodam.yeodam2019.data.Count
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.data.UserDTO
+import com.yeodam.yeodam2019.data.userIndex
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import com.yeodam.yeodam2019.view.activity.setting.ProfileActivity
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
@@ -38,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userEmail: String
     private lateinit var userPhoto: Uri
     private lateinit var userId: String
-    private var recyclerCount: Boolean = true
+    private var recyclerCount: Int = 10
     var story = false
 
     private val db = FirebaseFirestore.getInstance()
@@ -55,26 +54,46 @@ class MainActivity : AppCompatActivity() {
 
         userInfo()
 
-        addItem()
-
         buttonListener()
 
-//        MainRecyclerView()
+        refresh()
 
+    }
+
+    private fun runItem() {
         val cardView: RecyclerView = findViewById(R.id.mainCardView)
         val listView: RecyclerView = findViewById(R.id.mainListView)
 
-        val mAdapter = CardViewAdapter(this, YeodamStory)
-        cardView.adapter = mAdapter
+        bg.visibility = View.GONE
 
-        mAdapter.notifyItemInserted(0)
-        mAdapter.notifyDataSetChanged()
+        when (recyclerCount) {
+            10 -> {
+                mainRecyclerListLayout.visibility = View.GONE
+                mainRecyclerCardLayout.visibility = View.VISIBLE
 
-        listView.visibility = View.GONE
-        cardView.visibility = View.VISIBLE
-        cardView.layoutManager = GridLayoutManager(this, 2)
+                listView.visibility = View.GONE
+                cardView.visibility = View.VISIBLE
+                cardView.layoutManager = GridLayoutManager(this, 2)
 
+                val mAdapter = CardViewAdapter(this, YeodamStory)
+                cardView.adapter = mAdapter
+                mAdapter.notifyDataSetChanged()
+            }
+            20 -> {
 
+                mainRecyclerCardLayout.visibility = View.GONE
+                mainRecyclerListLayout.visibility = View.VISIBLE
+
+                cardView.visibility = View.GONE
+                listView.visibility = View.VISIBLE
+                listView.layoutManager = LinearLayoutManager(applicationContext)
+
+                val mAdapter = ListViewAdapter(this, YeodamStory)
+                listView.adapter = mAdapter
+                mAdapter.notifyDataSetChanged()
+
+            }
+        }
     }
 
 
@@ -158,11 +177,13 @@ class MainActivity : AppCompatActivity() {
 
             itemType = if (itemType) {
                 change_Item.setBackgroundResource(R.drawable.ic_main_list)
-                recyclerCount = false
+                recyclerCount = 20
+                runItem()
                 false
             } else {
                 change_Item.setBackgroundResource(R.drawable.ic_menu)
-                recyclerCount = true
+                recyclerCount = 10
+                runItem()
                 true
             }
 
@@ -182,59 +203,57 @@ class MainActivity : AppCompatActivity() {
 
         var counter: Int? = null
 
-        val docRef = db.collection("$userName : $userId").document("count")
+        val docRef = db.collection("userIndex").document("$userName : $userId")
         docRef.get().addOnCompleteListener {
             if (it.isSuccessful) {
-                val countData = it.result?.toObject(Count::class.java)
-                if (countData != null) {
-                    counter = countData.count
+                val countData = it.result?.toObject(userIndex::class.java)
+                Log.d("testLog", countData.toString())
+                counter = countData?.index
+
+                addStory(counter)
+            }
+        }
+
+    }
+
+    private fun addStory(index: Int?) {
+
+        var indexCount = index
+
+        if (indexCount != null) {
+            while (indexCount > 0) {
+
+                val getStory = db.collection("userStory").document("$userName : $userId").collection(index.toString())
+                    .document("StoryProfile")
+                getStory.get().addOnCompleteListener {
+                    val Story = it.result?.toObject(Story::class.java)
+                    Log.d("testLog", Story.toString())
+                    if (Story != null) {
+                        Log.d("testLog", indexCount.toString())
+                        YeodamStory.add(Story)
+                        runItem()
+                    }
                 }
-            }
-        }
 
-
-        val getStory = db.collection("userStory").document("$userName : $userId").collection(counter.toString())
-            .document("StoryProfile")
-        getStory.get().addOnCompleteListener {
-            val Story = it.result?.toObject(Story::class.java)
-            if (Story != null) {
-                YeodamStory.add(Story)
+                indexCount--
             }
         }
     }
 
+    private fun refresh() {
 
-    private fun MainRecyclerView() {
-        val cardView: RecyclerView = findViewById(R.id.mainCardView)
-        val listView: RecyclerView = findViewById(R.id.mainListView)
-        when (recyclerCount) {
-            true -> {
-                bg.visibility = View.GONE
-                val mAdapter = ListViewAdapter(this, YeodamStory)
-                mAdapter.notifyItemInserted(0)
-                mAdapter.notifyDataSetChanged()
-                cardView.adapter = mAdapter
+        addItem()
 
-                cardView.visibility = View.GONE
-                listView.visibility = View.VISIBLE
-                listView.layoutManager = LinearLayoutManager(applicationContext)
+        mainRecyclerCardLayout.setOnRefreshListener {
+            runItem()
+            mainRecyclerCardLayout.isRefreshing = false
+        }
 
-            }
-            false -> {
-
-                val mAdapter = CardViewAdapter(this, YeodamStory)
-                cardView.adapter = mAdapter
-
-                mAdapter.notifyItemInserted(0)
-                mAdapter.notifyDataSetChanged()
-
-                listView.visibility = View.GONE
-                cardView.visibility = View.VISIBLE
-                cardView.layoutManager = GridLayoutManager(this, 2)
-            }
+        mainRecyclerListLayout.setOnRefreshListener {
+            runItem()
+            mainRecyclerListLayout.isRefreshing = false
         }
     }
-
 
     @SuppressLint("RestrictedApi")
     private fun background() {

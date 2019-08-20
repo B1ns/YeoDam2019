@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import com.gdacciaro.iOSDialog.iOSDialogBuilder
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Continuation
@@ -18,9 +19,11 @@ import com.google.firebase.storage.UploadTask
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.data.YeoDam
+import com.yeodam.yeodam2019.data.userIndex
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import kotlinx.android.synthetic.main.activity_upload.*
 import org.jetbrains.anko.toast
+
 
 class UploadActivity : AppCompatActivity() {
 
@@ -29,6 +32,7 @@ class UploadActivity : AppCompatActivity() {
     private val GALLERY_REQUEST_CODE = 1
 
     private var filePath: Uri? = null
+    private var userFilePath: Uri? = null
 
     private var firebaseStore: FirebaseStorage? = null
     private var storageReference: StorageReference? = null
@@ -56,7 +60,9 @@ class UploadActivity : AppCompatActivity() {
     private var PayInfo = ArrayList<String>()
     private var PayLocation = ArrayList<LatLng>()
     private var Day = ""
+    private var PhotoUri = ArrayList<Uri>()
 
+    private var indexUplaodStory: Int? = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +73,8 @@ class UploadActivity : AppCompatActivity() {
         getUserData()
 
         firebaseInit()
+
+        setIndex()
     }
 
 
@@ -84,23 +92,84 @@ class UploadActivity : AppCompatActivity() {
         PayInfo = intent.getStringArrayListExtra("PayInfo")
         PayLocation = intent.getParcelableArrayListExtra("PayLocation")
         Day = intent.getStringExtra("Day")
+        PhotoUri = intent.getParcelableArrayListExtra("Uri")
+
+    }
+
+    private fun uploadPhoto() {
 
 
+        val index = PhotoUri.size
+
+        var i = 0
+        while (index > i) {
+            userFilePath = PhotoUri[i]
+            uploadStory()
+            i++
+        }
+
+    }
+
+    private fun setIndex() {
+
+        if (index == 0) {
+            val setdbIndex = db.collection("userIndex").document("$userName : $userId")
+            setdbIndex.set(userIndex(index))
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        index++
+                    }
+                }
+        } else {
+            getIndex()
+        }
+
+    }
+
+    private fun getIndex() {
+
+        val dbgetIndex = db.collection("userIndex").document("$userName : $userId")
+        dbgetIndex.get()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val UplaodStoryIndex = it.result?.toObject(userIndex::class.java)
+                    indexUplaodStory = UplaodStoryIndex?.index
+                    index(indexUplaodStory)
+                }
+            }
+    }
+
+    private fun index(i: Int?) {
+
+        val dbUploadIndex = db.collection("userIndex").document("$userName : $userId")
+        dbUploadIndex.set(userIndex(i))
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    indexUplaodStory = indexUplaodStory?.plus(1)
+                }
+            }
     }
 
     private fun Upload(uri: String) {
 
-        var image = uri
-        var ImageCount = Photo.size
+        val image = uri
+        val ImageCount = Photo.size
         val storyTitle = upload_title_editText.text.toString()
         val storyCountry = upload_travel_editText.text.toString()
         val storyDay = StoryDay
-        var YeodamStory = ArrayList<String>()
+        val YeodamStory = ArrayList<String>()
+
+        setLoading()
+
+
 
         index++
 
-        db.collection("userStory").document("$userName : $userId").collection(index.toString()).document("StoryProfile")
-            .set(Story(image, ImageCount, storyTitle, storyCountry))
+        val dbStoryProfile =
+            db.collection("userStory").document("$userName : $userId").collection(indexUplaodStory.toString())
+                .document("StoryProfile")
+
+        dbStoryProfile.set(Story(image, ImageCount, storyTitle, storyCountry, indexUplaodStory))
             .addOnCompleteListener {
                 YeodamStory.add(storyTitle)
                 toast("여담")
@@ -109,25 +178,46 @@ class UploadActivity : AppCompatActivity() {
                 toast("다시 한번 시도 해주세요 !")
             }
 
-        val db = db.collection("userStory").document("$userName : $userId").collection(index.toString())
+        val dbData = db.collection("userStory").document("$userName : $userId").collection(indexUplaodStory.toString())
             .document("StoryData")
-        db.set(YeoDam(Map, Memo, MemoLocation, Photo, PhotoLocation, Pay, PayInfo, PayLocation))
+        dbData.set(YeoDam(Map, Memo, MemoLocation, Photo, PhotoLocation, Pay, PayInfo, PayLocation, indexUplaodStory))
             .addOnCompleteListener {
                 val intent = Intent(this, MainActivity::class.java)
                 intent.putStringArrayListExtra("title", YeodamStory)
                 toast("업로드 성공입니다!")
+                finishLoading()
                 startActivity(intent)
                 finish()
             }
 
 
-        var hashIndex = hashMapOf("index" to index)
-
-        db.collection("$userName : $userId").document("count")
-        db.set(hashIndex)
+        val hashIndex = hashMapOf("index" to index)
+        val dbCount = db.collection("userCount").document("$userName : $userId")
+        dbCount.set(hashIndex)
             .addOnCompleteListener {
 
             }
+    }
+
+    private fun finishLoading() {
+
+        upload_layout.visibility = View.GONE
+
+        upload_bg.visibility = View.GONE
+
+        upload_progress.visibility = View.GONE
+
+    }
+
+    private fun setLoading() {
+
+        upload_layout.visibility = View.VISIBLE
+
+        upload_bg.visibility = View.VISIBLE
+        upload_bg.setBackgroundResource(R.color.background_shadow)
+
+        upload_progress.visibility = View.VISIBLE
+
     }
 
 
@@ -171,6 +261,7 @@ class UploadActivity : AppCompatActivity() {
         Upload_Upload.setOnClickListener {
             // 업로드
             Yeodam()
+            uploadPhoto()
             MainActivity().story = true
             uploadImage()
         }
@@ -217,6 +308,8 @@ class UploadActivity : AppCompatActivity() {
             when (requestCode) {
                 GALLERY_REQUEST_CODE -> {
                     var selectedImage = data?.data
+
+
                     StoryImage = selectedImage.toString()
                     filePath = selectedImage
 
@@ -259,9 +352,9 @@ class UploadActivity : AppCompatActivity() {
     }
 
     private fun uploadStory() {
-        if (filePath != null) {
+        if (userFilePath != null) {
             var storyTitle = upload_title_editText.text.toString()
-            val ref = storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryTitle/StoryData")
+            val ref = storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryPhoto/StoryData")
             val uploadTask = ref?.putFile(filePath!!)
 
             val urlTask = uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->

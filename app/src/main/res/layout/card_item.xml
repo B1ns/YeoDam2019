@@ -16,6 +16,8 @@
 
         <ImageView
             android:id="@+id/card_Image"
+            android:scaleType="fitXY"
+            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -74,11 +76,6 @@
                 android:text="Osaka, 오사카 먹방"
                 android:textColor="@android:color/black" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="35dp"
-                android:src="@drawable/ic_details" />
         </LinearLayout>
 
         <LinearLayout
@@ -97,6 +94,16 @@
                 android:text="일본" />
         </LinearLayout>
 
+
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/card_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:src="@drawable/ic_details"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_main" />
 </androidx.constraintlayout.widget.ConstraintLayout>

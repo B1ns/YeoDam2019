@@ -25,12 +25,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp">
 
-                <TextView
+                <Button
                     android:id="@+id/Upload_Cancle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
+                    android:layout_marginEnd="20dp"
+                    android:background="#00ff0000"
                     android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:text="취소"
                     android:textColor="#ee5959"
                     android:textSize="7pt"
@@ -48,12 +52,18 @@
                     android:textStyle="bold" />
 
 
-                <TextView
+                <Button
                     android:id="@+id/Upload_Upload"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:layout_marginStart="20dp"
+                    android:background="#00ff0000"
                     android:gravity="center"
+                    android:paddingStart="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="10dp"
                     android:text="업로드"
                     android:textColor="#59d3ee"
                     android:textSize="7pt"
@@ -94,6 +104,7 @@
             android:src="@drawable/ic_setting_small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -179,8 +190,33 @@
             android:layout_gravity="start"
             android:layout_marginStart="3dp"
             android:layout_marginTop="20dp"
-            android:text="2019/05/01~2019/05/10"
+            android:text="2019/08/20~2019/08/20"
             android:textColor="@android:color/black" />
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/upload_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:id="@+id/upload_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/upload_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
