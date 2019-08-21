@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import com.gdacciaro.iOSDialog.iOSDialogBuilder
 import com.google.android.gms.maps.model.LatLng
@@ -23,7 +24,6 @@ import com.yeodam.yeodam2019.data.userIndex
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import kotlinx.android.synthetic.main.activity_upload.*
 import org.jetbrains.anko.toast
-
 
 class UploadActivity : AppCompatActivity() {
 
@@ -94,10 +94,11 @@ class UploadActivity : AppCompatActivity() {
         Day = intent.getStringExtra("Day")
         PhotoUri = intent.getParcelableArrayListExtra("Uri")
 
+        Log.d("OK", "yeodam")
     }
 
     private fun uploadPhoto() {
-
+        Log.d("OK", "yeodam")
 
         val index = PhotoUri.size
 
@@ -322,6 +323,7 @@ class UploadActivity : AppCompatActivity() {
     }
 
     private fun uploadImage() {
+        Log.d("OK", "yeodam")
         if (filePath != null) {
             var storyTitle = upload_title_editText.text.toString()
             val ref = storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryTitle/StoryProfile")

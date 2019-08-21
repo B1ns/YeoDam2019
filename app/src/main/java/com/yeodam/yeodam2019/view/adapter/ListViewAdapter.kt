@@ -54,7 +54,8 @@ class ListViewAdapter(val context: Context, private val storyList: ArrayList<Sto
             }
 
             listLayoit.setOnClickListener {
-                var intent = Intent(context , loadMapActivity::class.java)
+                val intent = Intent(context , loadMapActivity::class.java)
+                intent.putExtra("index", story.index)
                 ContextCompat.startActivity(context, intent, Bundle())
             }
         }

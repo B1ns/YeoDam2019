@@ -58,7 +58,9 @@ class CardViewAdapter(val context: Context, val storyList: ArrayList<Story>) :
             }
 
             cardImageView.setOnClickListener {
-                var intent = Intent(context , loadMapActivity::class.java)
+
+                val intent = Intent(context , loadMapActivity::class.java)
+                intent.putExtra("index", story.index)
                 ContextCompat.startActivity(context, intent, Bundle())
             }
         }
