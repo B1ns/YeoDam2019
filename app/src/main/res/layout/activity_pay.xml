@@ -72,99 +72,7 @@
             android:textSize="8pt"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_food"
-                    app:civ_border_color="@android:color/darker_gray"
-                    app:civ_border_width="2dp" />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_train"
-                    app:civ_border_color="@android:color/darker_gray"
-                    app:civ_border_width="2dp" />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_bank"
-                    app:civ_border_color="@android:color/darker_gray"
-                    app:civ_border_width="2dp" />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_marginStart="10dp"
-                    android:src="@drawable/ic_sim"
-                    app:civ_border_color="@android:color/darker_gray"
-                    app:civ_border_width="2dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_help"
-                    app:civ_border_color="@android:color/darker_gray"
-                    app:civ_border_width="2dp" />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_shopping"
-                    app:civ_border_color="@android:color/darker_gray"
-                    app:civ_border_width="2dp" />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_public"
-                    app:civ_border_color="@android:color/darker_gray"
-                    app:civ_border_width="2dp" />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_marginStart="10dp"
-                    android:src="@drawable/ic_ring"
-                    app:civ_border_color="@android:color/darker_gray"
-                    app:civ_border_width="2dp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -183,18 +91,20 @@
             android:orientation="horizontal">
 
             <Spinner
+                android:background="@drawable/credit_bg"
                 android:id="@+id/spinnerCurrency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="40dp"
                 android:entries="@array/currency_array"
-                android:padding="4dp" />
+                android:padding="8dp" />
 
             <com.wajahatkarim3.easymoneywidgets.EasyMoneyEditText
                 android:id="@+id/moneyEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/credit_bg"
                 android:inputType="numberDecimal"
                 android:padding="5dp"
                 app:currency_symbol="$"

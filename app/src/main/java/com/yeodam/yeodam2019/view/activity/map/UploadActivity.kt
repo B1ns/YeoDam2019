@@ -27,8 +27,6 @@ import org.jetbrains.anko.toast
 
 class UploadActivity : AppCompatActivity() {
 
-    private val REQUEST_CODE = 3000
-
     private val GALLERY_REQUEST_CODE = 1
 
     private var filePath: Uri? = null
@@ -355,7 +353,7 @@ class UploadActivity : AppCompatActivity() {
 
     private fun uploadStory() {
         if (userFilePath != null) {
-            var storyTitle = upload_title_editText.text.toString()
+            val storyTitle = upload_title_editText.text.toString()
             val ref = storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryPhoto/StoryData")
             val uploadTask = ref?.putFile(filePath!!)
 
