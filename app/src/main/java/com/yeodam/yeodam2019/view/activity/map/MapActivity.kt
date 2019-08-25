@@ -207,7 +207,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         val returnBitmap =
             Bitmap.createBitmap(customMakerView.measuredWidth, customMakerView.measuredHeight, Bitmap.Config.ARGB_8888)
 
-
         val canvas = Canvas(returnBitmap)
         canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN)
         val drawble = customMakerView.background
