@@ -4,9 +4,4 @@
 
 [Plan-Link](https://jauvf0.axshare.com/)
 
-### Android X 
-Add the Following on gradle.properties file : 
-<pre><code>android.useAndroidX=true
-android.enableJetifier=true
-</code></pre>
 
