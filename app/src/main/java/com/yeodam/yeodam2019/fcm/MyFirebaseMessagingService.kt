@@ -16,7 +16,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 
-class MyFirebaseMessagingService : FirebaseMessagingService(),FcmCheck {
+class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     /**
      * Called when message is received.
@@ -24,7 +24,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(),FcmCheck {
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
     // [START receive_message]
-    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // [START_EXCLUDE]
         // There are two types of messages data messages and notification messages. Data messages are handled
         // here in onMessageReceived whether the app is in the foreground or background. Data messages are the type
@@ -37,26 +37,24 @@ class MyFirebaseMessagingService : FirebaseMessagingService(),FcmCheck {
 
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        if(fcmCheck()) {
-            Log.d(TAG, "From: ${remoteMessage?.from}")
+        Log.d(TAG, "From: ${remoteMessage.from}")
 
-            // Check if message contains a data payload.
-            remoteMessage?.data?.isNotEmpty()?.let {
-                Log.d(TAG, "Message data payload: " + remoteMessage.data)
+        // Check if message contains a data payload.
+        remoteMessage?.data?.isNotEmpty()?.let {
+            Log.d(TAG, "Message data payload: " + remoteMessage.data)
 
-                if (/* Check if data needs to be processed by long running job */ true) {
-                    // For long-running tasks (10 seconds or more) use WorkManager.
-                    scheduleJob()
-                } else {
-                    // Handle message within 10 seconds
-                    handleNow()
-                }
+            if (/* Check if data needs to be processed by long running job */ true) {
+                // For long-running tasks (10 seconds or more) use WorkManager.
+                scheduleJob()
+            } else {
+                // Handle message within 10 seconds
+                handleNow()
             }
+        }
 
-            // Check if message contains a notification payload.
-            remoteMessage?.notification?.let {
-                Log.d(TAG, "Message Notification Body: ${it.body}")
-            }
+        // Check if message contains a notification payload.
+        remoteMessage.notification?.let {
+            Log.d(TAG, "Message Notification Body: ${it.body}")
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -70,7 +68,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService(),FcmCheck {
      * the previous token had been compromised. Note that this is called when the InstanceID token
      * is initially generated so this is where you would retrieve the token.
      */
-    override fun onNewToken(token: String?) {
+    override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
 
         // If you want to send messages to this application instance or
