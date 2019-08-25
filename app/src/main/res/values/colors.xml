@@ -5,7 +5,7 @@
 
     <color name="colorPrimary">#59d3ee</color>
     <color name="colorPrimaryDark">#C9C9C9</color>
-    <color name="colorAccent">#92ffff</color>
+    <color name="colorAccent">#59d3ee</color>
 
     <color name="colorPurple">#6c63ff</color>
     <color name="colorIndigo">#303F9F</color>

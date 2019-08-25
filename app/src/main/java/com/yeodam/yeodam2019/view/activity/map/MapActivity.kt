@@ -454,6 +454,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        mMap.uiSettings.isMyLocationButtonEnabled = false
+
         // Add a marker in Sydney and move the camera
         val korea = LatLng(37.586218, 126.975941)
         mMap.addMarker(MarkerOptions().position(korea).title("대한민국 청와대"))
