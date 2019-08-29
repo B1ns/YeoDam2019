@@ -37,8 +37,6 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.YeoDamService
-import com.yeodam.yeodam2019.data.YeoDam
-import com.yeodam.yeodam2019.data.YeoDamData
 import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import com.yeodam.yeodam2019.view.activity.map.write.MemoActivity
@@ -166,7 +164,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                     .setBoldPositiveLabel(true)
                     .setCancelable(false)
                     .setPositiveListener("네") { dialog ->
-                        toast("취소됬습니다 !")
+                        toast("취소됐습니다 !")
                         //여행 취소 로직 작성 구 간
                         finish()
                         startActivity<MainActivity>()
@@ -178,9 +176,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                     ) { dialog -> dialog.dismiss() }
                     .build().show()
             } else {
+                startServiceYeoDam()
                 startActivity<MainActivity>()
                 finish()
             }
+        }
+
+        map_menu.setOnClickListener {
+            startActivity<MapMoreActivity>()
         }
 
     }
@@ -196,7 +199,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
     private fun getMarkerBitmapFromView(bitmap: Bitmap?): Bitmap {
         val customMakerView =
-            (getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.custom_marker, null)
+            (getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(
+                R.layout.custom_marker,
+                null
+            )
         val imageView = customMakerView.findViewById<ImageView>(R.id.custom_Image)
         imageView.setImageBitmap(bitmap)
 
@@ -205,7 +211,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         customMakerView.buildDrawingCache()
 
         val returnBitmap =
-            Bitmap.createBitmap(customMakerView.measuredWidth, customMakerView.measuredHeight, Bitmap.Config.ARGB_8888)
+            Bitmap.createBitmap(
+                customMakerView.measuredWidth,
+                customMakerView.measuredHeight,
+                Bitmap.Config.ARGB_8888
+            )
 
         val canvas = Canvas(returnBitmap)
         canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN)
@@ -328,12 +338,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
         val current = LocalDateTime.now()
         val endTravel = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+        val countLast = DateTimeFormatter.ofPattern("dd")
+        countLastday = current.format(countLast).toInt()
         travelEnd = current.format(endTravel)
 
         val photoCount = Photo.size.toString()
         val memoCount = Memo.size.toString()
         val creditCount = Pay.size.toString()
-        val story_day_date = "$travelStart ~ $travelEnd"
+        val dayTotal = "$travelStart ~ $travelEnd"
 
 
         Log.d("LogTest", "$photoCount + $memoCount")
@@ -343,14 +355,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         val memoID = mDialogView.findViewById<TextView>(R.id.dialog_edit)
         val dayId = mDialogView.findViewById<TextView>(R.id.story_day)
         val payId = mDialogView.findViewById<TextView>(R.id.dialog_credit)
+        val mapID = mDialogView.findViewById<ImageView>(R.id.dialog_map)
 
 
         val mBuilder = AlertDialog.Builder(this)
             .setView(mDialogView)
 
+        val callback = GoogleMap.SnapshotReadyCallback {
+            mapID.setImageBitmap(it)
+        }
+        mMap.snapshot(callback)
         photoID.text = photoCount
         memoID.text = memoCount
-        dayId.text = story_day_date
+        dayId.text = dayTotal
         payId.text = creditCount
 
 
@@ -361,6 +378,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         mDialogView.dialog_yes.setOnClickListener {
             mAlertDialog.dismiss()
 
+            stopServiceYeoDam()
 
             val intent = Intent(this, UploadActivity::class.java)
             intent.putParcelableArrayListExtra("Map", Map)
@@ -371,8 +389,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             intent.putStringArrayListExtra("Pay", Pay)
             intent.putStringArrayListExtra("PayInfo", PayInfo)
             intent.putParcelableArrayListExtra("PayLocation", PayLocation)
-            intent.putExtra("Day", story_day_date)
+            intent.putExtra("Day", dayTotal)
             intent.putParcelableArrayListExtra("Uri", PhotoUri)
+            intent.putExtra("DayCount", countToday - countLastday)
 
             Log.d("test", Map.toString())
             Log.d("test", Memo.toString())
@@ -468,8 +487,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         }, ok = {
             mMap.isMyLocationEnabled = true
         })
-
-
     }
 
     private fun addImageMarker(bitmap: Bitmap): Bitmap {
@@ -496,7 +513,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
         locationRequest = LocationRequest()
         //GPS 우선
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         // 업데이트 인터벌
         // 위치 정보가 없을때는 업데이트 안 함
         locationRequest.interval = 10000
@@ -680,7 +697,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             val memoLatLng = LatLng(myLatitude, myLongitude)
             val memo = data?.getStringExtra("memo")
 
-            val bitmapdraw: BitmapDrawable = resources.getDrawable(R.drawable.box_memo) as BitmapDrawable
+            val bitmapdraw: BitmapDrawable =
+                resources.getDrawable(R.drawable.box_memo) as BitmapDrawable
             val b = bitmapdraw.bitmap
             val smallMarkar = Bitmap.createScaledBitmap(b, 125, 125, false)
 
@@ -690,7 +708,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             MemoLocation.add(memoLatLng)
 
             mMap.addMarker(
-                MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar)).position(memoLatLng).title(
+                MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar)).position(
+                    memoLatLng
+                ).title(
                     "메모"
                 ).snippet(memo)
             )
@@ -704,7 +724,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             val creditInfo = data?.getStringExtra("Pay_Info")
             val creditMoney = data?.getStringExtra("Pay_meney")
 
-            val bitmapdraw2: BitmapDrawable = resources.getDrawable(R.drawable.box_pay) as BitmapDrawable
+            val bitmapdraw2: BitmapDrawable =
+                resources.getDrawable(R.drawable.box_pay) as BitmapDrawable
             val b2 = bitmapdraw2.bitmap
             val smallMarkar2 = Bitmap.createScaledBitmap(b2, 125, 125, false)
 
@@ -715,7 +736,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             PayLocation.add(creditLatLng)
 
             mMap.addMarker(
-                MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar2)).position(creditLatLng).title(
+                MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar2)).position(
+                    creditLatLng
+                ).title(
                     creditInfo
                 ).snippet(creditMoney)
             )

@@ -39,3 +39,6 @@ data class YeoDamData(
     var PayLocation: ArrayList<LatLng>? = null,
     var PhotoUri: ArrayList<Uri>? = null
 ) : Parcelable
+
+
+data class userCount(var DayCount: Int? = null, var KmCount: Int? = null)

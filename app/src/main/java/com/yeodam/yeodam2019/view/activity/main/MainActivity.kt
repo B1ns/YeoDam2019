@@ -202,7 +202,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun addItem() {
 
-        var counter: Int? = null
+        var counter: Int?
 
         val docRef = db.collection("userIndex").document("$userName : $userId")
         docRef.get().addOnCompleteListener {
@@ -219,12 +219,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun addStory(index: Int?) {
 
-        var indexCount = index
+        val indexCount = index
+
+        Log.d("testLog", indexCount.toString())
 
         if (indexCount != null) {
-            while (indexCount > 0) {
 
-                val getStory = db.collection("userStory").document("$userName : $userId").collection(index.toString())
+            var i = 0
+
+            while (indexCount > i) {
+
+                val getStory = db.collection("userStory").document("$userName : $userId")
+                    .collection(index.toString())
                     .document("StoryProfile")
                 getStory.get().addOnCompleteListener {
                     val Story = it.result?.toObject(Story::class.java)
@@ -233,10 +239,11 @@ class MainActivity : AppCompatActivity() {
                         Log.d("testLog", indexCount.toString())
                         YeodamStory.add(Story)
                         runItem()
+                        i++
                     }
                 }
 
-                indexCount--
+
             }
         }
     }
@@ -313,7 +320,6 @@ class MainActivity : AppCompatActivity() {
             ) { dialog -> dialog.dismiss() }
             .build().show()
     }
-
 
 
 }

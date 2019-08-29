@@ -22,17 +22,17 @@
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="5dp"
             android:src="@drawable/ic_home" />
 
         <ImageView
             android:padding="10dp"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_map" />
+            android:src="@drawable/ic_yeodam_more" />
 
         <ImageView
             android:id="@+id/map_menu"
@@ -41,7 +41,7 @@
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="5dp"
             android:src="@drawable/ic_map_menu" />
 
     </RelativeLayout>

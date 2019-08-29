@@ -25,6 +25,7 @@
 
     <string name="default_notification_channel_id" translatable="false">fcm_yeodam_channel</string>
     <string name="title_activity_dialog_map">Map</string>
+    <string name="yeodam_policy">여담 서비스를 이용해 주셔서 감사합니다. 여담은 모바일 서비스를 여러분이 가장 편하고 친근하게  이용할 수 있는 방법으로 제공하고있습니다  여담은 여러분이 서비스에 더 가깝게 다가갈 수 있도록 모든 여담 서비스에 적용될 수 있는 하나의 약관을 마련하였습니다. 여러분이 조금만 시간을 내서 약관을 읽어주신다면, 여러분과 여담은 더욱 가까운 사이가 될 것이라고 믿습니다.</string>
 
 </resources>
 

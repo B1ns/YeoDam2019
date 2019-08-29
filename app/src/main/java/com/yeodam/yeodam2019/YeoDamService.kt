@@ -1,6 +1,5 @@
 package com.yeodam.yeodam2019
 
-import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
@@ -13,7 +12,6 @@ class YeoDamService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -22,14 +20,13 @@ class YeoDamService : Service() {
         val pendingIntent = PendingIntent.getActivity(this, 0 , notificationIntent, 0)
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("YeoDam Service")
-            .setContentText("여행 기록중")
+            .setContentTitle("여담")
+            .setContentText("지금은 여행을 기록중입니다:D")
             .setSmallIcon(R.drawable.ic_logo_yeodam)
             .setContentIntent(pendingIntent)
             .build()
 
         startForeground(1, notification)
-
         return START_NOT_STICKY
     }
 
@@ -41,7 +38,5 @@ class YeoDamService : Service() {
 
         return null
     }
-
-
 
 }

@@ -1,4 +1,4 @@
-package com.yeodam.yeodam2019.view.fragment.map
+package com.yeodam.yeodam2019.view.fragment.load
 
 
 import android.os.Bundle
@@ -8,14 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import com.yeodam.yeodam2019.R
 
-open class MapMorePhotoFragment : Fragment() {
+
+class ItemMoreMemoFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map_more_photo, container, false)
+        return inflater.inflate(R.layout.fragment_item_more_memo, container, false)
     }
 
 

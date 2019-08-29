@@ -1,7 +1,9 @@
 package com.yeodam.yeodam2019.view.activity.map
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -60,7 +62,8 @@ class UploadActivity : AppCompatActivity() {
     private var Day = ""
     private var PhotoUri = ArrayList<Uri>()
 
-    private var indexUplaodStory: Int? = 0
+    private var DayCount = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,9 +75,22 @@ class UploadActivity : AppCompatActivity() {
 
         firebaseInit()
 
-        setIndex()
+        loadIndex()
+
     }
 
+    private fun loadIndex() {
+        val sharePref = getSharedPreferences("index", Context.MODE_PRIVATE)
+        val getIndex = sharePref.getInt("index", 0)
+        index = getIndex
+    }
+
+    private fun saveIndex() {
+        val sharePref = getSharedPreferences("index", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharePref.edit()
+        editor.putInt("index", index)
+        editor.apply()
+    }
 
     private fun Yeodam() {
 
@@ -91,7 +107,9 @@ class UploadActivity : AppCompatActivity() {
         PayLocation = intent.getParcelableArrayListExtra("PayLocation")
         Day = intent.getStringExtra("Day")
         PhotoUri = intent.getParcelableArrayListExtra("Uri")
+        DayCount = intent.getIntExtra("DayCount", 0)
 
+        upload_Date.text = Day
         Log.d("OK", "yeodam")
     }
 
@@ -107,46 +125,6 @@ class UploadActivity : AppCompatActivity() {
             i++
         }
 
-    }
-
-    private fun setIndex() {
-
-        if (index == 0) {
-            val setdbIndex = db.collection("userIndex").document("$userName : $userId")
-            setdbIndex.set(userIndex(index))
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        index++
-                    }
-                }
-        } else {
-            getIndex()
-        }
-
-    }
-
-    private fun getIndex() {
-
-        val dbgetIndex = db.collection("userIndex").document("$userName : $userId")
-        dbgetIndex.get()
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val UplaodStoryIndex = it.result?.toObject(userIndex::class.java)
-                    indexUplaodStory = UplaodStoryIndex?.index
-                    index(indexUplaodStory)
-                }
-            }
-    }
-
-    private fun index(i: Int?) {
-
-        val dbUploadIndex = db.collection("userIndex").document("$userName : $userId")
-        dbUploadIndex.set(userIndex(i))
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    indexUplaodStory = indexUplaodStory?.plus(1)
-                }
-            }
     }
 
     private fun Upload(uri: String) {
@@ -165,10 +143,11 @@ class UploadActivity : AppCompatActivity() {
         index++
 
         val dbStoryProfile =
-            db.collection("userStory").document("$userName : $userId").collection(indexUplaodStory.toString())
+            db.collection("userStory").document("$userName : $userId")
+                .collection(index.toString())
                 .document("StoryProfile")
 
-        dbStoryProfile.set(Story(image, ImageCount, storyTitle, storyCountry, indexUplaodStory))
+        dbStoryProfile.set(Story(image, ImageCount, storyTitle, storyCountry, index))
             .addOnCompleteListener {
                 YeodamStory.add(storyTitle)
                 toast("여담")
@@ -177,9 +156,22 @@ class UploadActivity : AppCompatActivity() {
                 toast("다시 한번 시도 해주세요 !")
             }
 
-        val dbData = db.collection("userStory").document("$userName : $userId").collection(indexUplaodStory.toString())
+        val dbData = db.collection("userStory").document("$userName : $userId")
+            .collection(index.toString())
             .document("StoryData")
-        dbData.set(YeoDam(Map, Memo, MemoLocation, Photo, PhotoLocation, Pay, PayInfo, PayLocation, indexUplaodStory))
+        dbData.set(
+            YeoDam(
+                Map,
+                Memo,
+                MemoLocation,
+                Photo,
+                PhotoLocation,
+                Pay,
+                PayInfo,
+                PayLocation,
+                index
+            )
+        )
             .addOnCompleteListener {
                 val intent = Intent(this, MainActivity::class.java)
                 intent.putStringArrayListExtra("title", YeodamStory)
@@ -189,12 +181,11 @@ class UploadActivity : AppCompatActivity() {
                 finish()
             }
 
-
         val hashIndex = hashMapOf("index" to index)
-        val dbCount = db.collection("userCount").document("$userName : $userId")
+        val dbCount = db.collection("userIndex").document("$userName : $userId")
         dbCount.set(hashIndex)
             .addOnCompleteListener {
-
+                saveIndex()
             }
     }
 
@@ -324,29 +315,31 @@ class UploadActivity : AppCompatActivity() {
         Log.d("OK", "yeodam")
         if (filePath != null) {
             var storyTitle = upload_title_editText.text.toString()
-            val ref = storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryTitle/StoryProfile")
+            val ref =
+                storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryTitle/StoryProfile")
             val uploadTask = ref?.putFile(filePath!!)
 
-            val urlTask = uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let {
-                        throw it
+            val urlTask =
+                uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            throw it
+                        }
                     }
-                }
 
-                return@Continuation ref.downloadUrl
+                    return@Continuation ref.downloadUrl
 
-            })?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val downloadUri = task.result
-                    if (downloadUri != null) {
-                        Upload(downloadUri.toString())
+                })?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUri = task.result
+                        if (downloadUri != null) {
+                            Upload(downloadUri.toString())
+                        }
+                    } else {
+                        // Handle 실패할 경우
                     }
-                } else {
-                    // Handle 실패할 경우
+                }?.addOnFailureListener {
                 }
-            }?.addOnFailureListener {
-            }
         }
 
     }
@@ -354,27 +347,29 @@ class UploadActivity : AppCompatActivity() {
     private fun uploadStory() {
         if (userFilePath != null) {
             val storyTitle = upload_title_editText.text.toString()
-            val ref = storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryPhoto/StoryData")
+            val ref =
+                storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryPhoto/StoryData")
             val uploadTask = ref?.putFile(filePath!!)
 
-            val urlTask = uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let {
-                        throw it
+            val urlTask =
+                uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            throw it
+                        }
                     }
-                }
 
-                return@Continuation ref.downloadUrl
+                    return@Continuation ref.downloadUrl
 
-            })?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val downloadUri = task.result
+                })?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUri = task.result
 //                    Upload(downloadUri.toString())
-                } else {
-                    // Handle 실패할 경우
+                    } else {
+                        // Handle 실패할 경우
+                    }
+                }?.addOnFailureListener {
                 }
-            }?.addOnFailureListener {
-            }
         }
 
     }

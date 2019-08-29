@@ -17,7 +17,7 @@
         app:layout_constraintTop_toBottomOf="@+id/mapMoreTab" />
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/mapMoreViewPager"
+        android:id="@+id/itemMoreViewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,17 +26,17 @@
         app:layout_constraintTop_toBottomOf="@+id/line" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/mapMoreTab"
+        android:id="@+id/itemMoreTab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbar_mapMore"
+        app:layout_constraintTop_toBottomOf="@+id/appbar_itemMore"
         app:tabBackground="@android:color/white" />
 
     <include
-        android:id="@+id/appbar_mapMore"
+        android:id="@+id/appbar_itemMore"
         layout="@layout/appbar_more"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
