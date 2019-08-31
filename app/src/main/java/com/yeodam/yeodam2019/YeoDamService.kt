@@ -5,13 +5,17 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.yeodam.yeodam2019.App.Companion.CHANNEL_ID
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
 
 class YeoDamService : Service() {
 
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
     override fun onCreate() {
         super.onCreate()
+
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

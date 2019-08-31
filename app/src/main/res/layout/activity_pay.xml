@@ -44,7 +44,15 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:background="@drawable/ic_check_memo"
-                    />
+                    android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/credit_not"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/ic_check_not"
+                    android:visibility="visible" />
 
             </RelativeLayout>
 
@@ -74,51 +82,49 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:layout_marginTop="10dp">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
 
-             <ImageButton
-                 android:id="@+id/pay_food"
-                 android:layout_width="65dp"
-                 android:layout_height="65dp"
-                 android:background="@drawable/ic_btn_food_off"
-                 app:layout_constraintStart_toStartOf="parent"
-                 app:layout_constraintTop_toTopOf="parent"
-                 app:layout_constraintBottom_toBottomOf="parent"
-                 app:layout_constraintEnd_toStartOf="@id/pay_sleep"
-                 />
+            <ImageButton
+                android:id="@+id/pay_food"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:background="@drawable/ic_btn_food_off"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/pay_sleep"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-             <ImageButton
-                 android:id="@+id/pay_sleep"
-                 android:layout_width="65dp"
-                 android:layout_height="65dp"
-                 android:background="@drawable/ic_btn_sleep_off"
-                 app:layout_constraintStart_toEndOf="@id/pay_food"
-                 app:layout_constraintTop_toTopOf="parent"
-                 app:layout_constraintBottom_toBottomOf="parent"
-                 app:layout_constraintEnd_toStartOf="@id/pay_bus"
-                 />
-             <ImageButton
-                 android:id="@+id/pay_bus"
-                 android:layout_width="65dp"
-                 android:layout_height="65dp"
-                 android:background="@drawable/ic_btn_bus_off"
-                 app:layout_constraintStart_toEndOf="@id/pay_sleep"
-                 app:layout_constraintTop_toTopOf="parent"
-                 app:layout_constraintBottom_toBottomOf="parent"
-                 app:layout_constraintEnd_toStartOf="@id/pay_museum"
-                 />
-             <ImageButton
-                 android:id="@+id/pay_museum"
-                 android:layout_width="65dp"
-                 android:layout_height="65dp"
-                 android:background="@drawable/ic_btn_museum_off"
-                 app:layout_constraintStart_toEndOf="@id/pay_bus"
-                 app:layout_constraintEnd_toEndOf="parent"
-                 app:layout_constraintTop_toTopOf="parent"
-                 app:layout_constraintBottom_toBottomOf="parent"
-                 />
+            <ImageButton
+                android:id="@+id/pay_sleep"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:background="@drawable/ic_btn_sleep_off"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/pay_bus"
+                app:layout_constraintStart_toEndOf="@id/pay_food"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/pay_bus"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:background="@drawable/ic_btn_bus_off"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/pay_museum"
+                app:layout_constraintStart_toEndOf="@id/pay_sleep"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/pay_museum"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:background="@drawable/ic_btn_museum_off"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/pay_bus"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -130,48 +136,47 @@
                 android:id="@+id/foodTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="식비"
                 android:layout_marginStart="5dp"
-                app:layout_constraintEnd_toStartOf="@id/sleepTextView"
-                app:layout_constraintTop_toTopOf="parent"
+                android:text="식비"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintEnd_toStartOf="@id/sleepTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/sleepTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="숙박"
                 android:layout_marginStart="25dp"
                 android:layout_marginEnd="10dp"
-                app:layout_constraintStart_toEndOf="@+id/foodTextView"
+                android:text="숙박"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/busTextView"
-                />
+                app:layout_constraintStart_toEndOf="@+id/foodTextView"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/busTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="교통"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="25dp"
-                app:layout_constraintStart_toEndOf="@+id/sleepTextView"
-                app:layout_constraintTop_toTopOf="parent"
+                android:text="교통"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/museumTextView"/>
+                app:layout_constraintEnd_toStartOf="@+id/museumTextView"
+                app:layout_constraintStart_toEndOf="@+id/sleepTextView"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/museumTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="관광"
                 android:layout_marginEnd="5dp"
-                app:layout_constraintStart_toEndOf="@+id/busTextView"
-                app:layout_constraintTop_toTopOf="parent"
+                android:text="관광"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/busTextView"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -186,42 +191,40 @@
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:background="@drawable/ic_btn_shopping_off"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/pay_mobile"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/pay_mobile"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:background="@drawable/ic_btn_mobile_off"
-                app:layout_constraintStart_toEndOf="@+id/pay_shopping"
-                app:layout_constraintEnd_toStartOf="@id/pay_guide"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintEnd_toStartOf="@id/pay_guide"
+                app:layout_constraintStart_toEndOf="@+id/pay_shopping"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <ImageButton
                 android:id="@+id/pay_guide"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:background="@drawable/ic_btn_guide_off"
-                app:layout_constraintStart_toEndOf="@+id/pay_mobile"
-                app:layout_constraintEnd_toStartOf="@id/pay_etc"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintEnd_toStartOf="@id/pay_etc"
+                app:layout_constraintStart_toEndOf="@+id/pay_mobile"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <ImageButton
                 android:id="@+id/pay_etc"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:background="@drawable/btn_etc_off"
-                app:layout_constraintStart_toEndOf="@id/pay_guide"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/pay_guide"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -234,48 +237,47 @@
                 android:id="@+id/shoppingTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="쇼핑"
                 android:layout_marginStart="5dp"
-                app:layout_constraintEnd_toStartOf="@id/mobileTextView"
-                app:layout_constraintTop_toTopOf="parent"
+                android:text="쇼핑"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintEnd_toStartOf="@id/mobileTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/mobileTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="통신"
                 android:layout_marginStart="25dp"
                 android:layout_marginEnd="10dp"
-                app:layout_constraintStart_toEndOf="@+id/shoppingTextView"
+                android:text="통신"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideTextView"
-                />
+                app:layout_constraintStart_toEndOf="@+id/shoppingTextView"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/guideTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="투어"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="25dp"
-                app:layout_constraintStart_toEndOf="@+id/mobileTextView"
-                app:layout_constraintTop_toTopOf="parent"
+                android:text="투어"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/etcTextView"/>
+                app:layout_constraintEnd_toStartOf="@+id/etcTextView"
+                app:layout_constraintStart_toEndOf="@+id/mobileTextView"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/etcTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="기타"
                 android:layout_marginEnd="5dp"
-                app:layout_constraintStart_toEndOf="@+id/guideTextView"
-                app:layout_constraintTop_toTopOf="parent"
+                android:text="기타"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/guideTextView"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -296,20 +298,20 @@
             android:orientation="horizontal">
 
             <Spinner
-                android:background="@drawable/credit_bg"
                 android:id="@+id/pay_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="10dp"
+                android:background="@drawable/credit_bg"
                 android:entries="@array/currency_array"
                 android:padding="8dp" />
 
             <com.wajahatkarim3.easymoneywidgets.EasyMoneyEditText
                 android:id="@+id/moneyEditText"
                 android:layout_width="match_parent"
-                android:layout_marginEnd="40dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="40dp"
                 android:background="@drawable/credit_bg"
                 android:inputType="numberDecimal"
                 android:padding="5dp"

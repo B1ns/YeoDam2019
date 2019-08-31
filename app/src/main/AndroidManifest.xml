@@ -11,9 +11,10 @@
         android:maxSdkVersion="18"
         android:roundIcon="@drawable/ic_logo_yeodam"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.activity.main.ItemMoreActivity"></activity>
+        <activity android:name=".view.activity.main.ItemMoreActivity" />
         <activity android:name=".view.activity.main.DeleteActivity" />
         <activity android:name=".view.activity.map.MapMoreActivity" />
         <!--
@@ -24,10 +25,6 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
-        <activity
-            android:name=".DialogMap"
-            android:label="@string/title_activity_dialog_map"
-            android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".view.activity.main.NotificationActivity"
             android:screenOrientation="portrait" />

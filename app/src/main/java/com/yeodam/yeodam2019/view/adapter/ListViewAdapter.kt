@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Story
+import com.yeodam.yeodam2019.view.activity.main.DeleteActivity
 import com.yeodam.yeodam2019.view.activity.main.loadMapActivity
 
 class ListViewAdapter(val context: Context, private val storyList: ArrayList<Story>) :
@@ -50,7 +51,9 @@ class ListViewAdapter(val context: Context, private val storyList: ArrayList<Sto
             listHashtag.text = story.hashtag
 
             list_nextPage.setOnClickListener {
-
+                val intent = Intent(context, DeleteActivity::class.java)
+                intent.putExtra("index", story.index)
+                ContextCompat.startActivity(context, intent, Bundle())
             }
 
             listLayoit.setOnClickListener {

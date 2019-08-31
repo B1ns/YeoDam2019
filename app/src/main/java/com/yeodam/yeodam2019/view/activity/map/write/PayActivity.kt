@@ -1,12 +1,18 @@
 package com.yeodam.yeodam2019.view.activity.map.write
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import com.yeodam.yeodam2019.R
+import com.yeodam.yeodam2019.toast
 import kotlinx.android.synthetic.main.activity_pay.*
 
 class PayActivity : AppCompatActivity() {
@@ -24,6 +30,11 @@ class PayActivity : AppCompatActivity() {
 
         spinnerListener()
 
+        touch()
+    }
+
+    fun touch() {
+
         food()
 
         sleep()
@@ -39,6 +50,13 @@ class PayActivity : AppCompatActivity() {
         guide()
 
         etc()
+
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(moneyEditText.windowToken, 0)
+        return true
     }
 
     private fun spinnerListener() {
@@ -66,10 +84,10 @@ class PayActivity : AppCompatActivity() {
                         moneyEditText.setCurrency("€")
                     }
 
-                    3-> {
+                    3 -> {
                         moneyEditText.setCurrency("¥")
                     }
-                    4->{
+                    4 -> {
                         moneyEditText.setCurrency("£")
                     }
                 }
@@ -85,9 +103,35 @@ class PayActivity : AppCompatActivity() {
         }
 
         credit_upload.setOnClickListener {
-            getPayText()
-            data()
+            if (moneyEditText.text.toString().isNotEmpty()) {
+                getPayText()
+                data()
+            }else{
+                toast("내용을 입력해주세요.")
+            }
         }
+        pay_info_ET.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // 입력되는 텍스트에 변화가 있을 때
+                if (pay_info_ET.text.toString().isNotEmpty()) {
+                    credit_upload.visibility = View.VISIBLE
+                } else {
+                    credit_upload.visibility = View.GONE
+                    credit_not.visibility = View.VISIBLE
+                }
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // 입력 하기전 호출
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // 입력이 끝났을 떄 호출
+                credit_not.visibility = View.GONE
+            }
+
+        })
     }
 
     private fun data() {

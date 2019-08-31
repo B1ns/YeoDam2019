@@ -24,6 +24,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.YeoDam
+import kotlinx.android.synthetic.main.appbar.*
+import org.jetbrains.anko.startActivity
 
 class loadMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -52,23 +54,36 @@ class loadMapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_load_map)
 
-        getMapdata()
-        getUserData()
+//        getUserData()
+
+        buttonListener()
+
+    }
+
+    private fun buttonListener() {
+
+        mapHome_btn.setOnClickListener {
+            onBackPressed()
+        }
+
+        map_menu.setOnClickListener {
+            startActivity<ItemMoreActivity>()
+        }
     }
 
     private fun getMapdata() {
 
         val intent = intent
-        val index = intent.getStringExtra("index").toInt()
+        val index = intent.getStringExtra("index")
 
 
-        val getData = db.collection("userStory").document("$userName : $userId").collection(index.toString())
+        val getData = db.collection("userStory").document("$userName : $userId").collection(index)
             .document("StoryData")
 
         getData.get()
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    var userData = it.result?.toObject(YeoDam::class.java)
+                    val userData = it.result?.toObject(YeoDam::class.java)
 
                     Map = userData?.Map
                     Memo = userData?.Memo
@@ -173,7 +188,10 @@ class loadMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 userPhoto = photoUrl
             }
             userId = uid
+
+            getMapdata()
         }
+
     }
 
 

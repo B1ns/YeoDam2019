@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.gdacciaro.iOSDialog.iOSDialogBuilder
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Continuation
@@ -22,7 +24,6 @@ import com.google.firebase.storage.UploadTask
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.data.YeoDam
-import com.yeodam.yeodam2019.data.userIndex
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import kotlinx.android.synthetic.main.activity_upload.*
 import org.jetbrains.anko.toast
@@ -63,6 +64,7 @@ class UploadActivity : AppCompatActivity() {
     private var PhotoUri = ArrayList<Uri>()
 
     private var DayCount = 0
+    private val upLoadOK = 10
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,21 +77,20 @@ class UploadActivity : AppCompatActivity() {
 
         firebaseInit()
 
-        loadIndex()
+        updateDay()
 
     }
 
-    private fun loadIndex() {
-        val sharePref = getSharedPreferences("index", Context.MODE_PRIVATE)
-        val getIndex = sharePref.getInt("index", 0)
-        index = getIndex
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(upload_title_editText.windowToken, 0)
+        return true
     }
 
-    private fun saveIndex() {
-        val sharePref = getSharedPreferences("index", Context.MODE_PRIVATE)
-        val editor: SharedPreferences.Editor = sharePref.edit()
-        editor.putInt("index", index)
-        editor.apply()
+    private fun updateDay() {
+        val intent = intent
+        Day = intent.getStringExtra("Day")
+        upload_Date.text = Day
     }
 
     private fun Yeodam() {
@@ -109,7 +110,6 @@ class UploadActivity : AppCompatActivity() {
         PhotoUri = intent.getParcelableArrayListExtra("Uri")
         DayCount = intent.getIntExtra("DayCount", 0)
 
-        upload_Date.text = Day
         Log.d("OK", "yeodam")
     }
 
@@ -136,15 +136,12 @@ class UploadActivity : AppCompatActivity() {
         val storyDay = StoryDay
         val YeodamStory = ArrayList<String>()
 
-        setLoading()
-
-
 
         index++
 
         val dbStoryProfile =
             db.collection("userStory").document("$userName : $userId")
-                .collection(index.toString())
+                .collection(storyTitle)
                 .document("StoryProfile")
 
         dbStoryProfile.set(Story(image, ImageCount, storyTitle, storyCountry, index))
@@ -156,9 +153,21 @@ class UploadActivity : AppCompatActivity() {
                 toast("다시 한번 시도 해주세요 !")
             }
 
+        val hashTitle = hashMapOf(
+            "title" to storyTitle,
+            "story" to "여담"
+        )
+        val dbCount =
+            db.collection("userTitle").document(userName).collection(userId).document("titleName")
+        dbCount.set(hashTitle)
+            .addOnCompleteListener {
+
+            }
+
         val dbData = db.collection("userStory").document("$userName : $userId")
-            .collection(index.toString())
+            .collection(storyTitle)
             .document("StoryData")
+
         dbData.set(
             YeoDam(
                 Map,
@@ -174,18 +183,12 @@ class UploadActivity : AppCompatActivity() {
         )
             .addOnCompleteListener {
                 val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("OK", upLoadOK)
                 intent.putStringArrayListExtra("title", YeodamStory)
                 toast("업로드 성공입니다!")
                 finishLoading()
                 startActivity(intent)
                 finish()
-            }
-
-        val hashIndex = hashMapOf("index" to index)
-        val dbCount = db.collection("userIndex").document("$userName : $userId")
-        dbCount.set(hashIndex)
-            .addOnCompleteListener {
-                saveIndex()
             }
     }
 
@@ -249,11 +252,18 @@ class UploadActivity : AppCompatActivity() {
     private fun buttonLitener() {
 
         Upload_Upload.setOnClickListener {
+            // 성정
+            MainActivity().story = true
+            // 로딩
+            setLoading()
             // 업로드
             Yeodam()
             uploadPhoto()
-            MainActivity().story = true
             uploadImage()
+        }
+
+        upload_small_setting.setOnClickListener {
+            camera()
         }
 
         Upload_Cancle.setOnClickListener {
@@ -298,7 +308,6 @@ class UploadActivity : AppCompatActivity() {
             when (requestCode) {
                 GALLERY_REQUEST_CODE -> {
                     var selectedImage = data?.data
-
 
                     StoryImage = selectedImage.toString()
                     filePath = selectedImage

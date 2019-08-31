@@ -5,6 +5,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:lottie_fileName="air.json" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
@@ -104,7 +109,6 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
-
                         android:id="@+id/main_userImage_Btn"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
@@ -278,6 +282,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_onAir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="52dp"
+            android:layout_marginBottom="42dp"
+            android:src="@drawable/upload_small_settng"
+            android:visibility="gone"
+            app:backgroundTint="#39FF14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/mainRecyclerCardLayout"
@@ -329,7 +345,7 @@
             android:id="@+id/bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="100dp"
             android:gravity="center"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -359,13 +375,6 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:lottie_fileName="air.json" />
-
-
     <com.ncorti.slidetoact.SlideToActView
         android:id="@+id/slider"
         android:layout_width="match_parent"
@@ -386,5 +395,4 @@
         app:text_appearance="@style/TextAppearance.AppCompat.Medium"
         app:text_color="@android:color/black"
         app:text_size="12sp" />
-
 </FrameLayout>

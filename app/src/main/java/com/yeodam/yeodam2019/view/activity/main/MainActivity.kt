@@ -17,7 +17,7 @@ import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.data.UserDTO
-import com.yeodam.yeodam2019.data.userIndex
+import com.yeodam.yeodam2019.data.userTitle
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import com.yeodam.yeodam2019.view.activity.setting.ProfileActivity
 import com.yeodam.yeodam2019.view.activity.setting.SettingActivity
@@ -40,6 +40,9 @@ class MainActivity : AppCompatActivity() {
     private var recyclerCount: Int = 10
     var story = false
 
+    private var setImage: String? = null
+    private var setName: String? = null
+
     private val db = FirebaseFirestore.getInstance()
 
     private val YeodamStory = arrayListOf<Story>()
@@ -58,14 +61,41 @@ class MainActivity : AppCompatActivity() {
 
         refresh()
 
+        getOnAir()
 
+        itemListener()
+
+        addItem()
+
+    }
+
+    private fun itemListener() {
+        val intent = intent
+        val count = intent.getIntExtra("OK", 0)
+        if (count == 10) {
+            bg.visibility = View.INVISIBLE
+        }
+
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun getOnAir() {
+        val intent = intent
+        val onAir = intent.getStringExtra("onAir")
+        if (onAir === "onAir") {
+            fab_main.visibility = View.INVISIBLE
+            fab_onAir.visibility = View.VISIBLE
+        }
+
+        fab_onAir.setOnClickListener {
+            startActivity<MapActivity>()
+        }
     }
 
     private fun runItem() {
         val cardView: RecyclerView = findViewById(R.id.mainCardView)
         val listView: RecyclerView = findViewById(R.id.mainListView)
 
-        bg.visibility = View.GONE
 
         when (recyclerCount) {
             10 -> {
@@ -74,11 +104,10 @@ class MainActivity : AppCompatActivity() {
 
                 listView.visibility = View.GONE
                 cardView.visibility = View.VISIBLE
+
                 cardView.layoutManager = GridLayoutManager(this, 2)
 
-                val mAdapter = CardViewAdapter(this, YeodamStory)
-                cardView.adapter = mAdapter
-                mAdapter.notifyDataSetChanged()
+
             }
             20 -> {
 
@@ -87,15 +116,13 @@ class MainActivity : AppCompatActivity() {
 
                 cardView.visibility = View.GONE
                 listView.visibility = View.VISIBLE
-                listView.layoutManager = LinearLayoutManager(applicationContext)
 
-                val mAdapter = ListViewAdapter(this, YeodamStory)
-                listView.adapter = mAdapter
-                mAdapter.notifyDataSetChanged()
+                listView.layoutManager = LinearLayoutManager(applicationContext)
 
             }
         }
     }
+
 
 
     private fun info() {
@@ -149,7 +176,13 @@ class MainActivity : AppCompatActivity() {
                 // Main
                 Glide.with(this).load(userDTO?.userImage).into(main_userImage)
                 main_userName.text = userDTO?.userName
+
+                setImage = userDTO?.userImage
+                setName = userDTO?.userName
             }
+
+            Glide.with(this).load(setImage).into(main_userImage)
+            main_userName.text = setName
         }
     }
 
@@ -168,6 +201,9 @@ class MainActivity : AppCompatActivity() {
                 sliderListener()
                 background()
             }
+        }
+        main_userImage_Btn.setOnClickListener {
+            startActivity<ProfileActivity>()
         }
 
         setting_btn.setOnClickListener {
@@ -202,48 +238,41 @@ class MainActivity : AppCompatActivity() {
 
     private fun addItem() {
 
-        var counter: Int?
-
-        val docRef = db.collection("userIndex").document("$userName : $userId")
-        docRef.get().addOnCompleteListener {
-            if (it.isSuccessful) {
-                val countData = it.result?.toObject(userIndex::class.java)
-                Log.d("testLog", countData.toString())
-                counter = countData?.index
-
-                addStory(counter)
+        db.collection("userTitle").document(userName).collection(userId)
+            .whereEqualTo("story", "여담")
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                for (dc in querySnapshot!!.documentChanges) {
+                    val doc = dc.document.toObject(userTitle::class.java)
+                    addYeoDam(doc.title)
+                }
             }
-        }
-
     }
 
-    private fun addStory(index: Int?) {
+    private fun addYeoDam(title: String?) {
 
-        val indexCount = index
+        val cardView: RecyclerView = findViewById(R.id.mainCardView)
+        val listView: RecyclerView = findViewById(R.id.mainListView)
 
-        Log.d("testLog", indexCount.toString())
+        val getStory = db.collection("userStory").document("$userName : $userId")
+            .collection(title.toString())
+            .document("StoryProfile")
+        getStory.get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                val Story = it.result?.toObject(Story::class.java)
+                Log.d("testLog", Story.toString())
+                if (Story != null) {
+                    YeodamStory.add(Story)
+                    bg.visibility = View.INVISIBLE
+                    runItem()
 
-        if (indexCount != null) {
+                    val mAdapterCard = CardViewAdapter(this, YeodamStory)
+                    cardView.adapter = mAdapterCard
+                    mAdapterCard.notifyItemInserted(0)
 
-            var i = 0
-
-            while (indexCount > i) {
-
-                val getStory = db.collection("userStory").document("$userName : $userId")
-                    .collection(index.toString())
-                    .document("StoryProfile")
-                getStory.get().addOnCompleteListener {
-                    val Story = it.result?.toObject(Story::class.java)
-                    Log.d("testLog", Story.toString())
-                    if (Story != null) {
-                        Log.d("testLog", indexCount.toString())
-                        YeodamStory.add(Story)
-                        runItem()
-                        i++
-                    }
+                    val mAdapterList = ListViewAdapter(this, YeodamStory)
+                    listView.adapter = mAdapterList
+                    mAdapterList.notifyItemInserted(0)
                 }
-
-
             }
         }
     }
@@ -251,7 +280,6 @@ class MainActivity : AppCompatActivity() {
     private fun refresh() {
 
         addItem()
-
         mainRecyclerCardLayout.setOnRefreshListener {
             runItem()
             mainRecyclerCardLayout.isRefreshing = false
@@ -321,6 +349,9 @@ class MainActivity : AppCompatActivity() {
             .build().show()
     }
 
-
+    override fun onStart() {
+        super.onStart()
+        userInfo()
+    }
 }
 

@@ -16,7 +16,7 @@ data class Story(
 
 data class UserDTO(var userImage: String? = null, var userName: String? = null)
 
-data class userIndex(var index: Int? = null)
+data class userTitle(var title: String? = null, val story: String? = null)
 
 data class YeoDam(
     var Map: ArrayList<LatLng>? = null,
@@ -42,3 +42,10 @@ data class YeoDamData(
 
 
 data class userCount(var DayCount: Int? = null, var KmCount: Int? = null)
+
+data class moreData(
+    var Memo: ArrayList<String>? = null,
+    var Pay: ArrayList<String>?,
+    var PayInfo: ArrayList<String>?,
+    var Photo: ArrayList<Bitmap>? = null
+)

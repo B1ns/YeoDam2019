@@ -2,6 +2,7 @@ package com.yeodam.yeodam2019.view.activity.setting
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -10,7 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.yeodam.yeodam2019.R
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -60,32 +63,37 @@ class ProfileActivity : AppCompatActivity() {
         userInfo()
     }
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(edit_Nickname.windowToken, 0)
+        return true
+    }
+
 
     private fun buttonListener() {
 
         profile_Layout.setOnClickListener {
             profile_Name.visibility = View.GONE
+            edit_Nickname.setText(profile_Name.text.toString())
             edit_Nickname.visibility = View.VISIBLE
         }
 
         profile_Image.setOnClickListener {
 
 
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
-                    PackageManager.PERMISSION_DENIED){
+                    PackageManager.PERMISSION_DENIED
+                ) {
                     //permission denied
                     val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                     //show popup to request runtime permission
                     requestPermissions(permissions, PERMISSION_CODE)
-                }
-                else{
+                } else {
                     //permission already granted
                     pickImageFromGallery()
                 }
-            }
-            else{
+            } else {
                 //system OS is < Marshmallow
                 pickImageFromGallery()
             }
@@ -115,20 +123,25 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun pickImageFromGallery() {
         //Intent to pick image
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        val intent = Intent()
         intent.type = "image/*"
+        intent.action = Intent.ACTION_PICK
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when(requestCode){
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
             PERMISSION_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] ==
-                    PackageManager.PERMISSION_GRANTED){
+                    PackageManager.PERMISSION_GRANTED
+                ) {
                     //permission from popup granted
                     pickImageFromGallery()
-                }
-                else{
+                } else {
                     //permission from popup denied
                     Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
                 }
@@ -227,7 +240,7 @@ class ProfileActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
+        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             if (data == null || data.data == null) {
                 return
             }
@@ -245,25 +258,25 @@ class ProfileActivity : AppCompatActivity() {
             val ref = storageReference?.child("User_Image/$userName/$userId")
             val uploadTask = ref?.putFile(filePath!!)
 
-            val urlTask = uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let {
-                        throw it
+            val urlTask =
+                uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            throw it
+                        }
                     }
-                }
 
-                return@Continuation ref.downloadUrl
+                    return@Continuation ref.downloadUrl
 
-            })?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val downloadUri = task.result
-                    userUpdate(downloadUri.toString())
-                } else {
-                    // Handle 실패할 경우
+                })?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUri = task.result
+                        userUpdate(downloadUri.toString())
+                    } else {
+                        // Handle 실패할 경우
+                    }
+                }?.addOnFailureListener {
                 }
-            }?.addOnFailureListener {
-            }
         }
-
     }
 }

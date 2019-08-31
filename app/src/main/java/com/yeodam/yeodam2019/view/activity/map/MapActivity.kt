@@ -58,7 +58,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     private lateinit var mMap: GoogleMap
 
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
-    private val GALLERY_REQUEST_CODE = 1
     val REQUEST_IMAGE_CAPTURE = 1
     private val CREDIT_CODE = 1111
     private val REQUEST_CODE = 3000
@@ -91,8 +90,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     private val locationOne = Location("1")
     private val locationTwo = Location("1")
 
-    private var customMaker: View? = null
-
     // 핵심 리스트
 
     var Map = ArrayList<LatLng>()
@@ -108,6 +105,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     private var PayLocation = ArrayList<LatLng>()
 
     private var PhotoUri = ArrayList<Uri>()
+
+    private var PhotoBitmap = ArrayList<Bitmap>()
 
     // 여기까지
     @SuppressLint("RestrictedApi")
@@ -156,30 +155,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
         mapHome_btn.setOnClickListener {
 
-            if (story) {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("onAir", "onAir")
+            startActivity(intent)
+            finish()
 
-                iOSDialogBuilder(this@MapActivity)
-                    .setTitle("여행중 입니다.")
-                    .setSubtitle("여행을 종료하시겠습니까?")
-                    .setBoldPositiveLabel(true)
-                    .setCancelable(false)
-                    .setPositiveListener("네") { dialog ->
-                        toast("취소됐습니다 !")
-                        //여행 취소 로직 작성 구 간
-                        finish()
-                        startActivity<MainActivity>()
-                        toggleFab()
-                        dialog.dismiss()
-                    }
-                    .setNegativeListener(
-                        getString(R.string.dismiss)
-                    ) { dialog -> dialog.dismiss() }
-                    .build().show()
-            } else {
-                startServiceYeoDam()
-                startActivity<MainActivity>()
-                finish()
-            }
         }
 
         map_menu.setOnClickListener {
@@ -197,6 +177,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun getMarkerBitmapFromView(bitmap: Bitmap?): Bitmap {
         val customMakerView =
             (getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(
@@ -220,9 +201,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         val canvas = Canvas(returnBitmap)
         canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN)
         val drawble = customMakerView.background
-        if (drawble != null) {
-            drawble.draw(canvas)
-        }
+        drawble?.draw(canvas)
 
 
         customMakerView.draw(canvas)
@@ -539,15 +518,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         }.show()
     }
 
-    override fun onResume() {
-        super.onResume()
-        addLocationListener()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        removeLocationListener()
-    }
 
     @SuppressLint("MissingPermission")
     private fun addLocationListener() {
@@ -557,6 +527,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     private fun removeLocationListener() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
+
+    fun startServiceYeoDam() {
+        val intent = Intent(this, YeoDamService::class.java)
+        ContextCompat.startForegroundService(this, intent)
+        addLocationListener()
+    }
+
+    fun stopServiceYeoDam() {
+        val intent = Intent(this, YeoDamService::class.java)
+        stopService(intent)
+        removeLocationListener()
+    }
+
 
     private fun permissionCheck(cancel: () -> Unit, ok: () -> Unit) {
         if (ContextCompat.checkSelfPermission(
@@ -676,18 +659,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             }
         }
     }
-
-    fun startServiceYeoDam() {
-        val intent = Intent(this, YeoDamService::class.java)
-
-        ContextCompat.startForegroundService(this, intent)
-    }
-
-    fun stopServiceYeoDam() {
-        val intent = Intent(this, YeoDamService::class.java)
-        stopService(intent)
-    }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
