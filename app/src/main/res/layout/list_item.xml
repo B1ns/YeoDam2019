@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/list_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,21 +20,33 @@
         android:paddingEnd="30dp"
         android:paddingBottom="10dp">
 
-        <ImageView
-            android:id="@+id/list_Image"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutImage"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_album_g" />
+            android:layout_margin="2dp"
+            android:background="@drawable/item_card_background"
+            android:elevation="4dp">
+
+            <ImageView
+                android:id="@+id/list_Image"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_album_g"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginStart="20dp"
-            android:layout_toEndOf="@+id/list_Image"
+            android:layout_toEndOf="@+id/layoutImage"
             android:orientation="vertical">
 
             <TextView
@@ -64,20 +82,24 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/list_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="150" />
+                android:text="150"
+                android:textColor="@android:color/black" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="1dp"
                 android:background="@drawable/ic_next" />
 
         </LinearLayout>
@@ -86,7 +108,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="0.5dp"
+        android:layout_marginBottom="10dp"
         android:background="@android:color/darker_gray" />
 
 </LinearLayout>

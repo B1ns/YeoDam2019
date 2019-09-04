@@ -5,6 +5,8 @@ import android.os.Bundle
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.view.adapter.ItemMoreAdapter
 import kotlinx.android.synthetic.main.activity_item_more.*
+import kotlinx.android.synthetic.main.appbar_more.*
+import org.jetbrains.anko.startActivity
 
 class ItemMoreActivity : AppCompatActivity() {
 
@@ -17,5 +19,18 @@ class ItemMoreActivity : AppCompatActivity() {
         itemMoreViewPager.adapter = ItemMoreActivity@ adapter
 
         itemMoreTab.setupWithViewPager(itemMoreViewPager)
+
+        buttonListener()
+    }
+
+    private fun buttonListener() {
+        more_back.setOnClickListener {
+            startActivity<MainActivity>()
+            finish()
+        }
+
+        more_map.setOnClickListener {
+            onBackPressed()
+        }
     }
 }

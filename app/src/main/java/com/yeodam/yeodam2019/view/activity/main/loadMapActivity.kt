@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -54,7 +55,7 @@ class loadMapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_load_map)
 
-//        getUserData()
+        getUserData()
 
         buttonListener()
 
@@ -74,8 +75,9 @@ class loadMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun getMapdata() {
 
         val intent = intent
-        val index = intent.getStringExtra("index")
+        val index = intent.getStringExtra("asd")
 
+        Log.d("fuck2222", index)
 
         val getData = db.collection("userStory").document("$userName : $userId").collection(index)
             .document("StoryData")
@@ -96,7 +98,6 @@ class loadMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 }
             }
-
     }
 
 
@@ -153,15 +154,10 @@ class loadMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun loadLine() {
 
-        val count = Map?.size
-
-        var i = 0
-        if (count != null) {
-            while (count > i) {
-                mMap.addPolyline(polylineOptions.add(Map?.get(i)))
-                i++
-            }
+        for(i in this.Map!!){
+            polylineOptions.add(i)
         }
+
     }
 
     private fun getUserData() {
@@ -241,8 +237,6 @@ class loadMapActivity : AppCompatActivity(), OnMapReadyCallback {
 //                )
 //            )
 //        )
-
-
         return bitmap
     }
 }

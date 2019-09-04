@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="350dp"
+android:layout_height="100dp"
+android:background="@drawable/more_bg"
+android:elevation="4dp"
+android:gravity="center"
+android:orientation="vertical">
+
+<TextView
+    android:id="@+id/more_memo"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="@android:color/black"
+    android:text="오사카 도톤보리는 맛집이 많다." />
+
+<TextView
+    android:id="@+id/more_memo_loaction"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="#오사카" />
+
+</LinearLayout>

@@ -11,8 +11,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.yeodam.yeodam2019.EmployeeDiffCallback
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.view.activity.main.DeleteActivity
@@ -34,7 +36,6 @@ class ListViewAdapter(val context: Context, private val storyList: ArrayList<Sto
         holder.bind(storyList[position], context)
     }
 
-
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val listImageView: ImageView = itemView.findViewById(R.id.list_Image)
         val listImageCount: TextView = itemView.findViewById(R.id.list_count)
@@ -44,6 +45,10 @@ class ListViewAdapter(val context: Context, private val storyList: ArrayList<Sto
         val list_nextPage : LinearLayout = itemView.findViewById(R.id.list_nextPage)
 
         fun bind(story: Story, context: Context) {
+
+            val drawable = context.getDrawable(R.drawable.image_radius)
+            listImageView.background = drawable
+            listImageView.clipToOutline = true
 
             Glide.with(context).load(story.image).into(listImageView)
             listImageCount.text = story.ImageCount.toString()

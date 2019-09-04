@@ -55,6 +55,7 @@ import java.time.format.DateTimeFormatter
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
+
     private lateinit var mMap: GoogleMap
 
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
@@ -156,14 +157,27 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         mapHome_btn.setOnClickListener {
 
             val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("onAir", "onAir")
+            if (this.story) {
+                intent.putExtra("onAir", "onAir")
+            } else {
+                intent.putExtra("onAir", "fail")
+            }
             startActivity(intent)
             finish()
 
         }
 
         map_menu.setOnClickListener {
-            startActivity<MapMoreActivity>()
+            val intent = Intent(this, MapMoreActivity::class.java)
+            intent.putParcelableArrayListExtra("Map", Map)
+            intent.putStringArrayListExtra("Memo", Memo)
+            intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
+            intent.putStringArrayListExtra("Photo", Photo)
+            intent.putParcelableArrayListExtra("PhotoLocation", PhotoLocation)
+            intent.putStringArrayListExtra("Pay", Pay)
+            intent.putStringArrayListExtra("PayInfo", PayInfo)
+            intent.putParcelableArrayListExtra("PayLocation", PayLocation)
+            startActivity(intent)
         }
 
     }
@@ -203,26 +217,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         val drawble = customMakerView.background
         drawble?.draw(canvas)
 
-
         customMakerView.draw(canvas)
         return addImageMarker(returnBitmap)
 
     }
-
-
-    @TargetApi(Build.VERSION_CODES.O)
-    fun date(): Int {
-        val current = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("dd")
-        val endTravel = DateTimeFormatter.ofPattern("yyyy/MM/dd")
-        countLastday = current.format(formatter).toInt()
-        travelEnd = current.format(endTravel)
-
-        countDay = countLastday - countToday
-
-        return countDay
-    }
-
 
     /*
     *  Start double floating action button
@@ -246,6 +244,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                     //여행 취소 로직 작성 구간
                     story = false
                     dialog.dismiss()
+                    stopServiceYeoDam()
                     startActivity<MainActivity>()
                     finish()
 
@@ -277,6 +276,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             map_slider.visibility = View.VISIBLE
             map_slider.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
                 override fun onSlideComplete(view: SlideToActView) {
+                    startServiceYeoDam()
                     map_slider.resetSlider()
                     map_slider.visibility = View.GONE
                     story = true
@@ -284,7 +284,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                 }
             }
             // 중간의 fab
-
         }
 
         // 메인 fab 을 눌렀을시 서브 fab 이 나옴
@@ -320,6 +319,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         val countLast = DateTimeFormatter.ofPattern("dd")
         countLastday = current.format(countLast).toInt()
         travelEnd = current.format(endTravel)
+
+        val meter = locationOne.distanceTo(locationTwo)
 
         val photoCount = Photo.size.toString()
         val memoCount = Memo.size.toString()
@@ -371,6 +372,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             intent.putExtra("Day", dayTotal)
             intent.putParcelableArrayListExtra("Uri", PhotoUri)
             intent.putExtra("DayCount", countToday - countLastday)
+            intent.putExtra("meter", meter / 1000.toFloat())
+
+
 
             Log.d("test", Map.toString())
             Log.d("test", Memo.toString())
@@ -453,6 +457,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         mMap = googleMap
 
         mMap.uiSettings.isMyLocationButtonEnabled = false
+        mMap.uiSettings.isCompassEnabled = false
 
         // Add a marker in Sydney and move the camera
         val korea = LatLng(37.586218, 126.975941)
@@ -460,6 +465,20 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(korea))
 
         MapsInitializer.initialize(this)
+
+        mMap.setOnMarkerClickListener {
+            val intent = Intent(this, MapMoreActivity::class.java)
+            intent.putParcelableArrayListExtra("Map", Map)
+            intent.putStringArrayListExtra("Memo", Memo)
+            intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
+            intent.putStringArrayListExtra("Photo", Photo)
+            intent.putParcelableArrayListExtra("PhotoLocation", PhotoLocation)
+            intent.putStringArrayListExtra("Pay", Pay)
+            intent.putStringArrayListExtra("PayInfo", PayInfo)
+            intent.putParcelableArrayListExtra("PayLocation", PayLocation)
+            startActivity(intent)
+            return@setOnMarkerClickListener true
+        }
 
         permissionCheck(cancel = {
             showPermissionInfoDialog()
@@ -492,14 +511,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
         locationRequest = LocationRequest()
         //GPS 우선
-        locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         // 업데이트 인터벌
         // 위치 정보가 없을때는 업데이트 안 함
         locationRequest.interval = 10000
 
         // 정확함. 이것보다 짧은 업데이트는 하지 않음
-        locationRequest.fastestInterval = 5000
-
+        locationRequest.fastestInterval = 10000
 
     }
 
@@ -671,7 +689,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             val bitmapdraw: BitmapDrawable =
                 resources.getDrawable(R.drawable.box_memo) as BitmapDrawable
             val b = bitmapdraw.bitmap
-            val smallMarkar = Bitmap.createScaledBitmap(b, 125, 125, false)
+            val smallMarkar = Bitmap.createScaledBitmap(b, 150, 150, false)
 
 
 
@@ -698,7 +716,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             val bitmapdraw2: BitmapDrawable =
                 resources.getDrawable(R.drawable.box_pay) as BitmapDrawable
             val b2 = bitmapdraw2.bitmap
-            val smallMarkar2 = Bitmap.createScaledBitmap(b2, 125, 125, false)
+            val smallMarkar2 = Bitmap.createScaledBitmap(b2, 150, 150, false)
 
             val creditInfoPair = creditInfo to creditMoney
 

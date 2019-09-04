@@ -1,5 +1,6 @@
 package com.yeodam.yeodam2019.view.activity.map
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -65,6 +66,7 @@ class UploadActivity : AppCompatActivity() {
 
     private var DayCount = 0
     private val upLoadOK = 10
+    private var meter = 0.0F
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +81,22 @@ class UploadActivity : AppCompatActivity() {
 
         updateDay()
 
+    }
+
+    private fun mainCount() {
+        val sf = getSharedPreferences("Count", Context.MODE_PRIVATE)
+        meter += sf.getInt("km", 0).toFloat()
+        DayCount += sf.getInt("day", 0)
+    }
+
+    @SuppressLint("CommitPrefEdits")
+    private fun setCount() {
+        val sharedPreferences = getSharedPreferences("Count", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("day", DayCount)
+        editor.putInt("km", meter.toInt())
+        Log.d("set", "$DayCount : ${meter.toInt()}")
+        editor.apply()
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -109,7 +127,11 @@ class UploadActivity : AppCompatActivity() {
         Day = intent.getStringExtra("Day")
         PhotoUri = intent.getParcelableArrayListExtra("Uri")
         DayCount = intent.getIntExtra("DayCount", 0)
+        meter = intent.getFloatExtra("meter", 0.0F)
 
+        Log.d("YeoDam", Photo.toString())
+        Log.d("meter", meter.toString())
+        Log.d("day", DayCount.toString())
         Log.d("OK", "yeodam")
     }
 
@@ -118,11 +140,9 @@ class UploadActivity : AppCompatActivity() {
 
         val index = PhotoUri.size
 
-        var i = 0
-        while (index > i) {
-            userFilePath = PhotoUri[i]
-            uploadStory()
-            i++
+        for(i in Photo){
+
+
         }
 
     }
@@ -136,6 +156,8 @@ class UploadActivity : AppCompatActivity() {
         val storyDay = StoryDay
         val YeodamStory = ArrayList<String>()
 
+        mainCount()
+        setCount()
 
         index++
 
@@ -158,10 +180,9 @@ class UploadActivity : AppCompatActivity() {
             "story" to "여담"
         )
         val dbCount =
-            db.collection("userTitle").document(userName).collection(userId).document("titleName")
+            db.collection("userTitle").document(userName).collection(userId).document(storyTitle)
         dbCount.set(hashTitle)
             .addOnCompleteListener {
-
             }
 
         val dbData = db.collection("userStory").document("$userName : $userId")
@@ -190,6 +211,9 @@ class UploadActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             }
+
+        val dbMainData = db.collection("userCount").document("$userName : $userId")
+
     }
 
     private fun finishLoading() {
@@ -380,7 +404,5 @@ class UploadActivity : AppCompatActivity() {
                 }?.addOnFailureListener {
                 }
         }
-
     }
-
 }

@@ -5,12 +5,12 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:lottie_fileName="air.json" />
-
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/main_View"
@@ -18,71 +18,61 @@
         android:layout_height="match_parent"
         tools:context=".view.activity.main.MainActivity">
 
-
         <LinearLayout
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
+            android:elevation="4dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/appBar"
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.appcompat.widget.Toolbar
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="15dp"
+                    android:src="@drawable/ic_logo_yeodam" />
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                <ImageButton
+                    android:id="@+id/setting_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/ic_settings_24dp"
+                    android:backgroundTint="#969696"
+                    android:elevation="2dp" />
 
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:src="@drawable/ic_logo_yeodam" />
+                <ImageButton
+                    android:id="@+id/notification_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@+id/setting_btn"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="40dp"
+                    android:background="@drawable/ic_notifications_24dp"
+                    android:backgroundTint="#969696"
+                    android:elevation="2dp" />
 
-                        <ImageButton
-                            android:id="@+id/setting_btn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerInParent="true"
-                            android:layout_marginEnd="10dp"
-                            android:background="@drawable/ic_settings_24dp"
-                            android:backgroundTint="#969696"
-                            android:contentDescription="TODO" />
-
-                        <ImageButton
-                            android:id="@+id/notification_btn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignEnd="@+id/setting_btn"
-                            android:layout_centerInParent="true"
-                            android:layout_marginEnd="40dp"
-                            android:background="@drawable/ic_notifications_24dp"
-                            android:backgroundTint="#969696"
-                            android:contentDescription="TODO" />
-
-                    </RelativeLayout>
-
-                </androidx.appcompat.widget.Toolbar>
-
-            </com.google.android.material.appbar.AppBarLayout>
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
                 android:background="@android:color/white"
                 android:orientation="horizontal">
@@ -101,8 +91,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/outline"
-                        app:civ_border_color="@color/colorPrimary"
-                        app:civ_border_width="2dp"
+                        android:elevation="1dp"
+                        app:civ_border_color="#bbbbbb"
+                        app:civ_border_width="0.5dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -113,6 +104,7 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:background="@drawable/setting_line"
+                        android:elevation="2dp"
                         android:src="@drawable/ic_setting_small"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent" />
@@ -133,10 +125,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginTop="20dp"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="15dp"
                         android:text=""
                         android:textColor="@android:color/black"
-                        android:textSize="8pt"
+                        android:textSize="9pt"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -169,7 +161,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_width="2dp"
+                            android:layout_width="1dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="15dp"
                             android:layout_marginTop="2dp"
@@ -203,6 +195,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/main_travel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -230,10 +223,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray" />
 
         </LinearLayout>
 
@@ -255,11 +244,13 @@
                 android:layout_marginEnd="15dp">
 
                 <TextView
+                    android:id="@+id/main_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerInParent="true"
-                    android:text="2019년 8월" />
+                    android:layout_marginStart="10dp"
+                    android:text="2019년 9월" />
 
                 <ImageButton
                     android:id="@+id/change_Item"
@@ -288,15 +279,14 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="52dp"
             android:layout_marginBottom="42dp"
-            android:src="@drawable/upload_small_settng"
+            android:src="@drawable/onair"
             android:visibility="gone"
-            app:backgroundTint="#39FF14"
+            app:backgroundTint="#ffffff"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/mainRecyclerCardLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginStart="20dp"
@@ -311,41 +301,22 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mainCardView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent" />
 
-            </androidx.recyclerview.widget.RecyclerView>
-
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/mainRecyclerListLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="10dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dateBar">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mainListView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone">
+                android:visibility="gone" />
 
-            </androidx.recyclerview.widget.RecyclerView>
-
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="150dp"
             android:gravity="center"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -395,4 +366,5 @@
         app:text_appearance="@style/TextAppearance.AppCompat.Medium"
         app:text_color="@android:color/black"
         app:text_size="12sp" />
+
 </FrameLayout>

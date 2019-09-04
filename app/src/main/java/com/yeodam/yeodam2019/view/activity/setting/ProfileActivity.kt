@@ -36,7 +36,6 @@ import org.jetbrains.anko.startActivity
 
 class ProfileActivity : AppCompatActivity() {
 
-    private val PICK_IMAGE_REQUEST = 71
     private lateinit var userName: String
     private lateinit var userEmail: String
     private lateinit var userPhoto: Uri
@@ -45,6 +44,11 @@ class ProfileActivity : AppCompatActivity() {
     private var filePath: Uri? = null
     private var image = false
     private val db = FirebaseFirestore.getInstance()
+
+    // userInfo
+    private var userImageView: String? = null
+    private var userNameTextView: String? = null
+    private var userImageUri: String? = null
 
     companion object {
         //image pick code
@@ -101,15 +105,14 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         ok_btn.setOnClickListener {
+            Log.d("asdddo", "ok")
+            edit_Nickname.visibility = View.GONE
+            profile_Name.visibility = View.VISIBLE
 
-            if (edit_Nickname.text.toString().isNotEmpty() && image) {
-                Log.d("asdddo", "ok")
-                uploadImage()
-                edit_Nickname.visibility = View.GONE
-                profile_Name.visibility = View.VISIBLE
-            } else {
-                toast("사진을 선택해주시고, 닉네임을 입력해주세요 !")
-            }
+            uploadImage()
+            uploadData()
+
+
         }
 
         userDelete.setOnClickListener {
@@ -118,6 +121,12 @@ class ProfileActivity : AppCompatActivity() {
 
         profile_toolbar.setOnClickListener {
             onBackPressed()
+        }
+    }
+
+    private fun uploadData() {
+        if (edit_Nickname.text.toString().isNotEmpty()) {
+            userUpdate(userImageUri.toString(), edit_Nickname.text.toString())
         }
     }
 
@@ -149,20 +158,21 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    fun userUpdate(uri: String) {
+    fun userUpdate(uri: String, name: String) {
 
         val userUpdate_profile = mutableMapOf<String, Any>()
 
         userUpdate_profile["userImage"] = uri
-        userUpdate_profile["userName"] = edit_Nickname.text.toString()
+        userUpdate_profile["userName"] = name
 
         Log.d("hello", "ok")
 
         val updateUser = db.collection("userInfo").document("$userName : $userId")
-        updateUser.update(userUpdate_profile)
+        updateUser.set(userUpdate_profile)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    toast("적용되었습니다.")
+                    Log.d("okok", "okok")
+                    userInfo()
                 } else {
                     toast("오류")
                 }
@@ -211,9 +221,14 @@ class ProfileActivity : AppCompatActivity() {
                 Log.d("asddd", it.result.toString())
                 val userDTO = it.result?.toObject(UserDTO::class.java)
                 // Setting
-                Glide.with(applicationContext).load(userDTO?.userImage).into(profile_Image)
-                profile_Name.text = userDTO?.userName
+                userImageView = userDTO?.userImage
+                userNameTextView = userDTO?.userName
+                userImageUri = userDTO?.userImage
             }
+
+            Glide.with(applicationContext).load(userImageView).into(profile_Image)
+            profile_Name.text = userNameTextView
+
         }
     }
 
@@ -271,7 +286,7 @@ class ProfileActivity : AppCompatActivity() {
                 })?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val downloadUri = task.result
-                        userUpdate(downloadUri.toString())
+                        userImageUri = downloadUri.toString()
                     } else {
                         // Handle 실패할 경우
                     }

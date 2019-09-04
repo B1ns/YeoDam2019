@@ -202,7 +202,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/ic_delete_black_24dp"/>
+            android:background="@drawable/ic_delete"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -211,7 +211,7 @@
             android:layout_margin="15dp"
             android:layout_gravity="center"
             android:textColor="@android:color/black"
-            android:textSize="10pt" />
+            android:textSize="8pt" />
 
     </LinearLayout>
 
