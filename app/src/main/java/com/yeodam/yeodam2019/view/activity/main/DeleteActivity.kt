@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.yeodam.yeodam2019.R
@@ -135,6 +136,15 @@ class DeleteActivity : AppCompatActivity() {
             .setPositiveListener("네") { dialog ->
                 dialog.dismiss()
 
+                val storage = FirebaseStorage.getInstance()
+
+                val storageRef = storage.reference
+
+                val deserRef = storageRef.child("User_Story/$userName : $userId/$title/StoryTitle/StoryProfile")
+
+                deserRef.delete().addOnSuccessListener {
+                }
+
                 val dbStoryProfile =
                     db.collection("userStory").document("$userName : $userId")
                         .collection(title)
@@ -161,7 +171,6 @@ class DeleteActivity : AppCompatActivity() {
         val intent = intent
         val title = intent.getStringExtra("asd")
 
-        uri = uriString
         titleMain = delete_title_editText.text.toString()
         hashtag = delete_travel_editText.text.toString()
 
@@ -170,7 +179,7 @@ class DeleteActivity : AppCompatActivity() {
                 .collection(title)
                 .document("StoryProfile")
 
-        dbStoryProfile.set(Story(uri, imageCount, titleMain, hashtag, index, day))
+        dbStoryProfile.set(Story(uriString, imageCount, titleMain, hashtag, index, day))
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     Log.d("b1ns", "OKOKOK")
@@ -231,6 +240,19 @@ class DeleteActivity : AppCompatActivity() {
 
     private fun uploadImage() {
         if (filePath != null) {
+
+            val intent = intent
+            val title = intent.getStringExtra("asd")
+
+            val storage = FirebaseStorage.getInstance()
+
+            val storageRef = storage.reference
+
+            val deserRef = storageRef.child("User_Story/$userName : $userId/$title/StoryTitle/StoryProfile")
+
+            deserRef.delete().addOnSuccessListener {
+            }
+
             val storyTitle = delete_title_editText.text.toString()
             val ref =
                 storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryTitle/StoryProfile")
@@ -251,6 +273,7 @@ class DeleteActivity : AppCompatActivity() {
                         val downloadUri = task.result
                         if (downloadUri != null) {
                             Log.d("ifand", downloadUri.toString())
+                            updateStoryProfile(downloadUri.toString())
                         }
                     } else {
                         // Handle 실패할 경우
