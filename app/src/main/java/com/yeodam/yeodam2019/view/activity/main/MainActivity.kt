@@ -64,7 +64,6 @@ class MainActivity : AppCompatActivity() {
 
         buttonListener()
 
-
         getOnAir()
 
         itemListener()
@@ -72,6 +71,8 @@ class MainActivity : AppCompatActivity() {
         addItem()
 
         setDate()
+
+        lottie.playAnimation()
     }
 
     @SuppressLint("NewApi", "SetTextI18n")
@@ -364,7 +365,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        lottie.playAnimation()
         userInfo()
     }
 }

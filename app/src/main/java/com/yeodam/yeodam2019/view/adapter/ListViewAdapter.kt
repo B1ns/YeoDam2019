@@ -57,7 +57,7 @@ class ListViewAdapter(val context: Context, private val storyList: ArrayList<Sto
 
             list_nextPage.setOnClickListener {
                 val intent = Intent(context, DeleteActivity::class.java)
-                intent.putExtra("index", story.title)
+                intent.putExtra("asd", story.title)
                 ContextCompat.startActivity(context, intent, Bundle())
             }
 

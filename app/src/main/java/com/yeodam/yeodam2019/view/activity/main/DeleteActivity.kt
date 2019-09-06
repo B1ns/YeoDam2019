@@ -7,7 +7,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -26,8 +25,6 @@ import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.adapter.CardViewAdapter
 import com.yeodam.yeodam2019.view.adapter.ListViewAdapter
 import kotlinx.android.synthetic.main.activity_delete.*
-import kotlinx.android.synthetic.main.activity_upload.*
-import kotlinx.android.synthetic.main.onboarding_silde1.*
 import org.jetbrains.anko.startActivity
 
 class DeleteActivity : AppCompatActivity() {
@@ -55,8 +52,8 @@ class DeleteActivity : AppCompatActivity() {
     private var index: Int? = null
     private var day: String? = null
 
-    private lateinit var cardViewAdapter : CardViewAdapter
-    private lateinit var listViewAdapter : ListViewAdapter
+    private lateinit var cardViewAdapter: CardViewAdapter
+    private lateinit var listViewAdapter: ListViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,6 +141,11 @@ class DeleteActivity : AppCompatActivity() {
                         .document("StoryProfile")
                 dbStoryProfile.delete()
 
+                val dbStoryData =
+                    db.collection("userStory").document("$userName : $userId").collection(title)
+                        .document("StoryData")
+                dbStoryData.delete()
+
                 startActivity<MainActivity>()
                 toast("삭제 완료")
 
@@ -171,11 +173,15 @@ class DeleteActivity : AppCompatActivity() {
         dbStoryProfile.set(Story(uri, imageCount, titleMain, hashtag, index, day))
             .addOnCompleteListener {
                 if (it.isSuccessful) {
+                    Log.d("b1ns", "OKOKOK")
                     toast("수정 성공!")
+                    finishLoading()
                     getStoryProfile()
                 }
             }
-
+            .addOnFailureListener {
+                Log.d("b1ns", it.toString())
+            }
     }
 
     private fun getStoryProfile() {
@@ -224,9 +230,8 @@ class DeleteActivity : AppCompatActivity() {
     }
 
     private fun uploadImage() {
-        Log.d("OK", "yeodam")
         if (filePath != null) {
-            var storyTitle = delete_title_editText.text.toString()
+            val storyTitle = delete_title_editText.text.toString()
             val ref =
                 storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryTitle/StoryProfile")
             val uploadTask = ref?.putFile(filePath!!)
@@ -245,7 +250,7 @@ class DeleteActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         val downloadUri = task.result
                         if (downloadUri != null) {
-                            updateStoryProfile(downloadUri.toString())
+                            Log.d("ifand", downloadUri.toString())
                         }
                     } else {
                         // Handle 실패할 경우
@@ -263,7 +268,7 @@ class DeleteActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 GALLERY_REQUEST_CODE -> {
-                    var selectedImage = data?.data
+                    val selectedImage = data?.data
 
                     filePath = selectedImage
 
@@ -277,12 +282,22 @@ class DeleteActivity : AppCompatActivity() {
 
     private fun setLoading() {
 
-        delete_bg.visibility = View.VISIBLE
+        delete_layout.visibility = View.VISIBLE
 
         delete_bg.visibility = View.VISIBLE
         delete_bg.setBackgroundResource(R.color.background_shadow)
 
         delete_progress.visibility = View.VISIBLE
+
+    }
+
+    private fun finishLoading() {
+
+        delete_layout.visibility = View.GONE
+
+        delete_bg.visibility = View.GONE
+
+        delete_progress.visibility = View.GONE
 
     }
 }
