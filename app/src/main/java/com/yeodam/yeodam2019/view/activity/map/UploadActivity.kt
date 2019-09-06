@@ -166,7 +166,7 @@ class UploadActivity : AppCompatActivity() {
                 .collection(storyTitle)
                 .document("StoryProfile")
 
-        dbStoryProfile.set(Story(image, ImageCount, storyTitle, storyCountry, index))
+        dbStoryProfile.set(Story(image, ImageCount, storyTitle, storyCountry, index, Day))
             .addOnCompleteListener {
                 YeodamStory.add(storyTitle)
                 toast("여담")

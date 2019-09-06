@@ -13,14 +13,10 @@ import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.view.activity.main.DeleteActivity
 import com.yeodam.yeodam2019.view.activity.main.loadMapActivity
-import androidx.recyclerview.widget.DiffUtil
-import com.yeodam.yeodam2019.EmployeeDiffCallback
-
 
 
 open class CardViewAdapter(val context: Context, val storyList: ArrayList<Story>) :
-    RecyclerView.Adapter<CardViewAdapter.Holder>(){
-
+    RecyclerView.Adapter<CardViewAdapter.Holder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -45,7 +41,6 @@ open class CardViewAdapter(val context: Context, val storyList: ArrayList<Story>
         val cardImageCount: TextView = itemView.findViewById(R.id.card_Image_count)
         val cardTitle: TextView = itemView.findViewById(R.id.card_title)
         val cardHashtag: TextView = itemView.findViewById(R.id.card_hashtag)
-
 
         fun bind(story: Story, context: Context) {
 

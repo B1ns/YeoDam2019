@@ -11,7 +11,8 @@ data class Story(
     var ImageCount: Int? = null,
     var title: String? = null,
     var hashtag: String? = null,
-    var index: Int? = null
+    var index: Int? = null,
+    var day: String? = null
 )
 
 data class UserDTO(var userImage: String? = null, var userName: String? = null)
