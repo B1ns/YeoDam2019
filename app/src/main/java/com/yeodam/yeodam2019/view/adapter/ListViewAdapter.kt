@@ -57,13 +57,13 @@ class ListViewAdapter(val context: Context, private val storyList: ArrayList<Sto
 
             list_nextPage.setOnClickListener {
                 val intent = Intent(context, DeleteActivity::class.java)
-                intent.putExtra("index", story.index)
+                intent.putExtra("index", story.title)
                 ContextCompat.startActivity(context, intent, Bundle())
             }
 
             listLayoit.setOnClickListener {
                 val intent = Intent(context , loadMapActivity::class.java)
-                intent.putExtra("index", story.index)
+                intent.putExtra("index", story.title)
                 ContextCompat.startActivity(context, intent, Bundle())
             }
         }
