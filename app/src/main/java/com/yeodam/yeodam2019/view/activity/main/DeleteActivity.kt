@@ -26,6 +26,7 @@ import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.adapter.CardViewAdapter
 import com.yeodam.yeodam2019.view.adapter.ListViewAdapter
 import kotlinx.android.synthetic.main.activity_delete.*
+import kotlinx.android.synthetic.main.onboarding_silde1.*
 import org.jetbrains.anko.startActivity
 
 class DeleteActivity : AppCompatActivity() {
@@ -110,8 +111,12 @@ class DeleteActivity : AppCompatActivity() {
         }
 
         delete_Upload.setOnClickListener {
-            setLoading()
-            uploadImage()
+            if (delete_title_editText.text.toString().isNotEmpty() && delete_travel_editText.text.toString().isNotEmpty()) {
+                setLoading()
+                uploadImage()
+            } else {
+                toast("수정할 내용을 적어주세요.")
+            }
         }
 
         delete_image_layout.setOnClickListener {
@@ -140,7 +145,8 @@ class DeleteActivity : AppCompatActivity() {
 
                 val storageRef = storage.reference
 
-                val deserRef = storageRef.child("User_Story/$userName : $userId/$title/StoryTitle/StoryProfile")
+                val deserRef =
+                    storageRef.child("User_Story/$userName : $userId/$title/StoryTitle/StoryProfile")
 
                 deserRef.delete().addOnSuccessListener {
                 }
@@ -174,23 +180,29 @@ class DeleteActivity : AppCompatActivity() {
         titleMain = delete_title_editText.text.toString()
         hashtag = delete_travel_editText.text.toString()
 
-        val dbStoryProfile =
-            db.collection("userStory").document("$userName : $userId")
-                .collection(title)
-                .document("StoryProfile")
+        if (titleMain != null) {
+            val dbStoryProfile =
+                db.collection("userStory").document("$userName : $userId")
+                    .collection(title)
+                    .document("StoryProfile")
 
-        dbStoryProfile.set(Story(uriString, imageCount, titleMain, hashtag, index, day))
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Log.d("b1ns", "OKOKOK")
-                    toast("수정 성공!")
-                    finishLoading()
-                    getStoryProfile()
+            dbStoryProfile.set(Story(title, uriString, imageCount, titleMain, hashtag, index, day))
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.d("b1ns", "OKOKOK")
+                        toast("수정 성공!")
+                        finishLoading()
+
+                        startActivity<MainActivity>()
+                        getStoryProfile()
+                    }
                 }
-            }
-            .addOnFailureListener {
-                Log.d("b1ns", it.toString())
-            }
+                .addOnFailureListener {
+                    Log.d("b1ns", it.toString())
+                }
+
+
+        }
     }
 
     private fun getStoryProfile() {
@@ -248,38 +260,39 @@ class DeleteActivity : AppCompatActivity() {
 
             val storageRef = storage.reference
 
-            val deserRef = storageRef.child("User_Story/$userName : $userId/$title/StoryTitle/StoryProfile")
+            val deserRef =
+                storageRef.child("User_Story/$userName : $userId/$title/StoryTitle/StoryProfile")
 
             deserRef.delete().addOnSuccessListener {
+                toast("asd")
             }
 
             val storyTitle = delete_title_editText.text.toString()
             val ref =
-                storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryTitle/StoryProfile")
-            val uploadTask = ref?.putFile(filePath!!)
+                storageRef.child("User_Story/$userName : $userId/$storyTitle/StoryTitle/StoryProfile")
+            val uploadTask = ref.putFile(filePath!!)
 
             val urlTask =
-                uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                     if (!task.isSuccessful) {
                         task.exception?.let {
                             throw it
                         }
                     }
-
                     return@Continuation ref.downloadUrl
-
-                })?.addOnCompleteListener { task ->
+                }).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val downloadUri = task.result
-                        if (downloadUri != null) {
-                            Log.d("ifand", downloadUri.toString())
-                            updateStoryProfile(downloadUri.toString())
-                        }
+                        updateStoryProfile(downloadUri.toString())
                     } else {
                         // Handle 실패할 경우
                     }
-                }?.addOnFailureListener {
+                }.addOnFailureListener {
                 }
+        } else {
+            val intent = intent
+            val asd = intent.getStringExtra("image")
+            updateStoryProfile(asd)
         }
 
     }
@@ -291,12 +304,16 @@ class DeleteActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 GALLERY_REQUEST_CODE -> {
-                    val selectedImage = data?.data
 
-                    filePath = selectedImage
+                    if (data != null) {
+                        filePath = data.data
+                        Log.d("file", filePath.toString())
+                    }
 
-                    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
+                    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
                     delete_Image.setImageBitmap(bitmap)
+
+                    Log.d("image", filePath.toString())
                 }
             }
         }

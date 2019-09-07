@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.parcel.Parcelize
 
 data class Story(
+    var firstTitle : String? = null,
     var image: String? = null,
     var ImageCount: Int? = null,
     var title: String? = null,

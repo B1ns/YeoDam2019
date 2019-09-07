@@ -1,5 +1,6 @@
 package com.yeodam.yeodam2019.view.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -57,13 +58,14 @@ class ListViewAdapter(val context: Context, private val storyList: ArrayList<Sto
 
             list_nextPage.setOnClickListener {
                 val intent = Intent(context, DeleteActivity::class.java)
-                intent.putExtra("asd", story.title)
+                intent.putExtra("asd", story.firstTitle)
+                intent.putExtra("image", story.image)
                 ContextCompat.startActivity(context, intent, Bundle())
             }
 
             listLayoit.setOnClickListener {
                 val intent = Intent(context , loadMapActivity::class.java)
-                intent.putExtra("index", story.title)
+                intent.putExtra("index", story.firstTitle)
                 ContextCompat.startActivity(context, intent, Bundle())
             }
         }

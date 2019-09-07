@@ -110,9 +110,6 @@ class ProfileActivity : AppCompatActivity() {
             profile_Name.visibility = View.VISIBLE
 
             uploadImage()
-            uploadData()
-
-
         }
 
         userDelete.setOnClickListener {
@@ -121,12 +118,6 @@ class ProfileActivity : AppCompatActivity() {
 
         profile_toolbar.setOnClickListener {
             onBackPressed()
-        }
-    }
-
-    private fun uploadData() {
-        if (edit_Nickname.text.toString().isNotEmpty()) {
-            userUpdate(userImageUri.toString(), edit_Nickname.text.toString())
         }
     }
 
@@ -172,6 +163,7 @@ class ProfileActivity : AppCompatActivity() {
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     Log.d("okok", "okok")
+                    toast("수정 완료")
                     userInfo()
                 } else {
                     toast("오류")
@@ -270,6 +262,17 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun uploadImage() {
         if (filePath != null) {
+
+            val storage = FirebaseStorage.getInstance()
+
+            val storageRef = storage.reference
+
+            val deserRef =
+                storageRef.child("User_Image/$userName/$userId")
+
+            deserRef.delete().addOnSuccessListener {
+            }
+
             val ref = storageReference?.child("User_Image/$userName/$userId")
             val uploadTask = ref?.putFile(filePath!!)
 
@@ -286,12 +289,15 @@ class ProfileActivity : AppCompatActivity() {
                 })?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val downloadUri = task.result
-                        userImageUri = downloadUri.toString()
+                        userImageView = downloadUri.toString()
+                        userUpdate(userImageView!!, edit_Nickname.text.toString())
                     } else {
                         // Handle 실패할 경우
                     }
                 }?.addOnFailureListener {
                 }
+        } else {
+            userUpdate(userImageUri.toString(), edit_Nickname.text.toString())
         }
     }
 }

@@ -52,6 +52,8 @@ class MainActivity : AppCompatActivity() {
     private val cardViewAdapter: CardViewAdapter? = null
     private val listViewAdapter: ListViewAdapter? = null
 
+    private var mainTitle : String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -71,6 +73,8 @@ class MainActivity : AppCompatActivity() {
         addItem()
 
         setDate()
+
+        updateItem()
 
         lottie.playAnimation()
     }
@@ -220,6 +224,35 @@ class MainActivity : AppCompatActivity() {
                 background()
             }
         }
+
+        mainCardView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0) {
+                    // 아래로 스크롤
+                    fab_main.hide()
+                } else if (dy < 0) {
+                    // 위로 스크롤
+                    fab_main.show()
+                } else {
+                    fab_main.show()
+                }
+            }
+        })
+
+        mainListView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0) {
+                    // 아래로 스크롤
+                    fab_main.hide()
+                } else if (dy < 0) {
+                    // 위로 스크롤
+                    fab_main.show()
+                } else {
+                    fab_main.show()
+                }
+            }
+        })
+
         main_userImage_Btn.setOnClickListener {
             startActivity<ProfileActivity>()
         }
@@ -273,11 +306,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun addYeoDam(title: String?) {
 
+        mainTitle = title
+
         val cardView: RecyclerView = findViewById(R.id.mainCardView)
         val listView: RecyclerView = findViewById(R.id.mainListView)
 
         val getStory = db.collection("userStory").document("$userName : $userId")
-            .collection(title.toString())
+            .collection(mainTitle.toString())
             .document("StoryProfile")
         getStory.get().addOnCompleteListener {
             if (it.isSuccessful) {
@@ -366,6 +401,12 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         userInfo()
+    }
+
+    fun updateItem(){
+        val intent = intent
+        val title = intent.getStringExtra("title")
+        mainTitle = title
     }
 }
 

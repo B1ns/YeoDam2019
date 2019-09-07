@@ -1,5 +1,6 @@
 package com.yeodam.yeodam2019.view.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -44,6 +45,7 @@ open class CardViewAdapter(val context: Context, val storyList: ArrayList<Story>
 
         fun bind(story: Story, context: Context) {
 
+
             val drawable = context.getDrawable(R.drawable.image_radius)
             cardImageView.background = drawable
             cardImageView.clipToOutline = true
@@ -55,18 +57,18 @@ open class CardViewAdapter(val context: Context, val storyList: ArrayList<Story>
 
             card_detail.setOnClickListener {
                 val intent = Intent(context, DeleteActivity::class.java)
-                intent.putExtra("asd", story.title)
+                intent.putExtra("asd", story.firstTitle)
+                intent.putExtra("image", story.image)
                 ContextCompat.startActivity(context, intent, Bundle())
             }
 
             cardImageView.setOnClickListener {
                 val intent = Intent(context, loadMapActivity::class.java)
-                intent.putExtra("asd", story.title)
+                intent.putExtra("asd", story.firstTitle)
                 ContextCompat.startActivity(context, intent, Bundle())
             }
 
         }
     }
-
 
 }
