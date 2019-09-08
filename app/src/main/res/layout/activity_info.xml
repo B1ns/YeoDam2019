@@ -68,6 +68,8 @@
         android:text="완료"
         android:textColor="@android:color/white"
         android:textSize="8pt"
+        android:maxLines="1"
+        android:maxLength="10"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

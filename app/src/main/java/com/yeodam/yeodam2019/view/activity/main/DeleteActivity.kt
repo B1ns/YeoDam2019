@@ -26,7 +26,6 @@ import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.adapter.CardViewAdapter
 import com.yeodam.yeodam2019.view.adapter.ListViewAdapter
 import kotlinx.android.synthetic.main.activity_delete.*
-import kotlinx.android.synthetic.main.onboarding_silde1.*
 import org.jetbrains.anko.startActivity
 
 class DeleteActivity : AppCompatActivity() {
@@ -149,7 +148,6 @@ class DeleteActivity : AppCompatActivity() {
                     storageRef.child("User_Story/$userName : $userId/$title/StoryTitle/StoryProfile")
 
                 deserRef.delete().addOnSuccessListener {
-                    Log.d("delete", "OK")
                 }
 
                 val dbStoryProfile =
@@ -264,7 +262,6 @@ class DeleteActivity : AppCompatActivity() {
             val deserRef =
                 storageRef.child("User_Story/$userName : $userId/$title/StoryTitle/StoryProfile")
             deserRef.delete().addOnSuccessListener {
-                Log.d("delete", "OK2")
             }
 
             val ref =

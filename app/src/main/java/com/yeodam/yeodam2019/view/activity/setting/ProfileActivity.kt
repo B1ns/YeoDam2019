@@ -40,7 +40,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var userEmail: String
     private lateinit var userPhoto: Uri
     private lateinit var userId: String
-    private var storageReference: StorageReference? = null
+    private lateinit var storageReference: StorageReference
     private var filePath: Uri? = null
     private var image = false
     private val db = FirebaseFirestore.getInstance()
@@ -62,9 +62,9 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        buttonListener()
         getUserData()
         userInfo()
+        buttonListener()
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -109,6 +109,7 @@ class ProfileActivity : AppCompatActivity() {
             edit_Nickname.visibility = View.GONE
             profile_Name.visibility = View.VISIBLE
 
+            setLoading()
             uploadImage()
         }
 
@@ -151,27 +152,62 @@ class ProfileActivity : AppCompatActivity() {
 
     fun userUpdate(uri: String, name: String) {
 
-        val userUpdate_profile = mutableMapOf<String, Any>()
+        if (name.isNotEmpty()) {
 
-        userUpdate_profile["userImage"] = uri
-        userUpdate_profile["userName"] = name
+            Log.d("hello", "one")
 
-        Log.d("hello", "ok")
+            val userUpdate_profile = mutableMapOf<String, Any>()
 
-        val updateUser = db.collection("userInfo").document("$userName : $userId")
-        updateUser.set(userUpdate_profile)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Log.d("okok", "okok")
-                    toast("수정 완료")
-                    userInfo()
-                } else {
-                    toast("오류")
+            userUpdate_profile["userImage"] = uri
+            userUpdate_profile["userName"] = name
+
+            Log.d("hello", "ok")
+
+            val updateUser = db.collection("userInfo").document("$userName : $userId")
+            updateUser.set(userUpdate_profile)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+
+                        finishLoading()
+                        Log.d("okok", "okok")
+                        toast("수정 완료")
+                        userInfo()
+                    } else {
+                        toast("오류")
+                    }
+
+                }.addOnFailureListener {
+                    Log.d("asdddo", it.toString())
+                }
+        } else {
+            Log.d("hello", "two")
+            val userUpdate_profile = mutableMapOf<String, Any>()
+
+            userUpdate_profile["userImage"] = uri
+            userUpdate_profile["userName"] = userNameTextView.toString()
+
+            Log.d("hello", "ok")
+
+            val updateUser = db.collection("userInfo").document("$userName : $userId")
+            updateUser.set(userUpdate_profile)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+
+                        finishLoading()
+                        Log.d("okok", "okok")
+                        toast("수정 완료")
+                        userInfo()
+                    } else {
+                        toast("오류")
+                    }
+
+                }.addOnFailureListener {
+                    Log.d("asdddo", it.toString())
                 }
 
-            }.addOnFailureListener {
-                Log.d("asdddo", it.toString())
-            }
+        }
+
+
     }
 
 
@@ -269,35 +305,51 @@ class ProfileActivity : AppCompatActivity() {
 
             val deserRef =
                 storageRef.child("User_Image/$userName/$userId")
-
             deserRef.delete().addOnSuccessListener {
             }
 
-            val ref = storageReference?.child("User_Image/$userName/$userId")
-            val uploadTask = ref?.putFile(filePath!!)
+            val ref = storageRef.child("User_Image/$userName/$userId")
+            val uploadTask = ref.putFile(filePath!!)
 
             val urlTask =
-                uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                     if (!task.isSuccessful) {
                         task.exception?.let {
                             throw it
                         }
                     }
-
                     return@Continuation ref.downloadUrl
-
-                })?.addOnCompleteListener { task ->
+                }).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val downloadUri = task.result
-                        userImageView = downloadUri.toString()
-                        userUpdate(userImageView!!, edit_Nickname.text.toString())
+                        userUpdate(downloadUri.toString(), edit_Nickname.text.toString())
                     } else {
                         // Handle 실패할 경우
                     }
-                }?.addOnFailureListener {
+                }.addOnFailureListener {
                 }
         } else {
             userUpdate(userImageUri.toString(), edit_Nickname.text.toString())
         }
+    }
+
+    private fun setLoading() {
+
+        profile_layout.visibility = View.VISIBLE
+
+        profile_bg.visibility = View.VISIBLE
+
+        profile_progress.visibility = View.VISIBLE
+
+    }
+
+    private fun finishLoading() {
+
+        profile_layout.visibility = View.GONE
+
+        profile_bg.visibility = View.GONE
+
+        profile_progress.visibility = View.GONE
+
     }
 }

@@ -130,7 +130,8 @@
         <EditText
             android:id="@+id/upload_title_editText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLines="1" />
 
     </LinearLayout>
 
@@ -157,7 +158,8 @@
         <EditText
             android:id="@+id/upload_travel_editText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLines="1" />
 
     </LinearLayout>
 
