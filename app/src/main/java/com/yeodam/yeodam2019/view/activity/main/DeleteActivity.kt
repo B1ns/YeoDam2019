@@ -149,6 +149,7 @@ class DeleteActivity : AppCompatActivity() {
                     storageRef.child("User_Story/$userName : $userId/$title/StoryTitle/StoryProfile")
 
                 deserRef.delete().addOnSuccessListener {
+                    Log.d("delete", "OK")
                 }
 
                 val dbStoryProfile =
@@ -262,14 +263,12 @@ class DeleteActivity : AppCompatActivity() {
 
             val deserRef =
                 storageRef.child("User_Story/$userName : $userId/$title/StoryTitle/StoryProfile")
-
             deserRef.delete().addOnSuccessListener {
-                toast("asd")
+                Log.d("delete", "OK2")
             }
 
-            val storyTitle = delete_title_editText.text.toString()
             val ref =
-                storageRef.child("User_Story/$userName : $userId/$storyTitle/StoryTitle/StoryProfile")
+                storageRef.child("User_Story/$userName : $userId/$title/StoryTitle/StoryProfile")
             val uploadTask = ref.putFile(filePath!!)
 
             val urlTask =
