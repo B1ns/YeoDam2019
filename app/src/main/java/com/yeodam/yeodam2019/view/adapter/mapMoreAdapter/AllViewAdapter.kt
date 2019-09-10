@@ -4,7 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Memo
 import com.yeodam.yeodam2019.data.Pay
@@ -29,24 +32,34 @@ class AllViewAdapter(private val context: Context) :
     //----------------PhotoViewHolder | FamilyDataModel------------
     inner class PhotoViewHolder(itemView: View) : BaseViewHolder<Photo>(itemView) {
 
+        val photoImage: ImageView = itemView.findViewById(R.id.more_photo)
         override fun bind(item: Photo) {
             //Do your view assignment here from the data model
+            Glide.with(context).load(item.Photo).into(photoImage)
         }
     }
 
     //----------------MemoViewHolder | FriendDataModel-------------
     inner class MemoViewHolder(itemView: View) : BaseViewHolder<Memo>(itemView) {
 
+        val memoTextView: TextView = itemView.findViewById(R.id.more_memo_textView)
+
         override fun bind(item: Memo) {
             //Do your view assignment here from the data model
+            memoTextView.text = item.Memo
         }
     }
 
     //----------------PayViewHolder | ColleagueDataModel-------
     inner class PayViewHolder(itemView: View) : BaseViewHolder<Pay>(itemView) {
 
+        val payTextView: TextView = itemView.findViewById(R.id.more_pay_Tv)
+        val payInfoTextView: TextView = itemView.findViewById(R.id.more_pay_info_Tv)
         override fun bind(item: Pay) {
             //Do your view assignment here from the data model
+
+            payTextView.text = item.Pay
+            payInfoTextView.text = item.PayInfo
         }
     }
 

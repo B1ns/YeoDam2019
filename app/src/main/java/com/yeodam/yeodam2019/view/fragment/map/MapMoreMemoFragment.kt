@@ -15,7 +15,6 @@ import com.yeodam.yeodam2019.data.MapMoreMemo
 import com.yeodam.yeodam2019.view.adapter.mapMoreAdapter.MemoViewAdapter
 
 
-
 open class MapMoreMemoFragment : Fragment() {
 
     private val MemoStory = arrayListOf<MapMoreMemo>()
@@ -31,19 +30,40 @@ open class MapMoreMemoFragment : Fragment() {
         val mLayoutManager = LinearLayoutManager(activity)
         val recyclerView = v.findViewById<RecyclerView>(R.id.map_memo_recyclerView)
 
-        recyclerView.layoutManager = mLayoutManager
-        recyclerView.adapter = mAdapter
-
-        val extra = this.arguments
+        val extra = arguments
 
         val memo = extra?.getStringArrayList("Memo")
         val memoLocation = extra?.getParcelableArrayList<LatLng>("MemoLocation")
 
         Log.d("memoLoaction", "$memo, s , $memoLocation")
 
-        mAdapter.notifyItemInserted(mAdapter.itemCount + 1)
+        var i = 0
+        if (memo != null) {
+            while (i < memo.size) {
+                Log.d("toto", "asdasd")
+                addItem(i)
+                i++
+            }
+        }
+
+
+        recyclerView.layoutManager = mLayoutManager
+        recyclerView.adapter = mAdapter
+
 
         return v
+    }
+
+    private fun addItem(i: Int) {
+        val extra = arguments
+
+        val memo = extra?.getStringArrayList("Memo")
+        val memoLocation = extra?.getParcelableArrayList<LatLng>("MemoLocation")
+
+        Log.d("toto", "$memo, $memoLocation")
+        MemoStory.add(MapMoreMemo(memo?.get(i), memoLocation?.get(i)))
+
+
     }
 
 }
