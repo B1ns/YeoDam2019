@@ -169,7 +169,6 @@ class DeleteActivity : AppCompatActivity() {
                 getString(R.string.dismiss)
             ) { dialog -> dialog.dismiss() }
             .build().show()
-
     }
 
     private fun updateStoryProfile(uriString: String) {

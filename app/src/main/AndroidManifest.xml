@@ -8,10 +8,10 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_logo_yeodam"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:maxSdkVersion="18"
         android:roundIcon="@drawable/ic_logo_yeodam"
         android:supportsRtl="true"
-        android:largeHeap="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".view.activity.main.ItemMoreActivity" />
@@ -100,6 +100,7 @@
             android:enabled="true"
             android:exported="true" />
     </application>
+
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
@@ -107,7 +108,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

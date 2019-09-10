@@ -3,6 +3,7 @@ package com.yeodam.yeodam2019.view.activity.map
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
@@ -31,13 +32,14 @@ class MapMoreActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map_more)
 
+        getData()
+
         buttonListener()
 
         mapMoreViewPager.adapter = MapMoreActivity@ adapter
 
         mapMoreTab.setupWithViewPager(mapMoreViewPager)
 
-        getData()
     }
 
     private fun getData() {
@@ -53,6 +55,11 @@ class MapMoreActivity : AppCompatActivity() {
         PayInfo = intent.getStringArrayListExtra("PayInfo")
         PayLocation = intent.getParcelableArrayListExtra("PayLocation")
 
+        Log.d(
+            "bundle",
+            "메모 : $Memo, 메모주소 : $MemoLocation, 사진 : $Photo, 사진주소 : $PhotoLocation, 경비 : $Pay, 경비내용 : $PayInfo, 경비주소 : $PayLocation"
+        )
+
         setMain()
         setMemo()
         setPay()
@@ -62,7 +69,7 @@ class MapMoreActivity : AppCompatActivity() {
 
     private fun setMain() {
         val fragment = MapMoreAllFragment()
-        val bundle = Bundle(7)
+        val bundle = Bundle()
 
         bundle.putStringArrayList("Memo", Memo)
         bundle.putParcelableArrayList("MemoLocation", MemoLocation)
@@ -79,35 +86,35 @@ class MapMoreActivity : AppCompatActivity() {
 
 
     private fun setMemo() {
-        val fragment = MapMoreMemoFragment()
-        val bundle = Bundle(2)
+        val fragmentMemo = MapMoreMemoFragment()
+        val bundleMemo = Bundle()
 
-        bundle.putStringArrayList("Memo", Memo)
-        bundle.putParcelableArrayList("MemoLocation", MemoLocation)
+        bundleMemo.putStringArrayList("Memo", Memo)
+        bundleMemo.putParcelableArrayList("MemoLocation", MemoLocation)
 
-        fragment.arguments = bundle
+        fragmentMemo.arguments = bundleMemo
     }
 
     private fun setPay() {
 
-        val fragment = MapMorePayFragment()
-        val bundle = Bundle(3)
+        val fragmentPay = MapMorePayFragment()
+        val bundlePay = Bundle()
 
-        bundle.putStringArrayList("Pay", Pay)
-        bundle.putStringArrayList("PayInfo", PayInfo)
-        bundle.putParcelableArrayList("PayLocation", PayLocation)
+        bundlePay.putStringArrayList("Pay", Pay)
+        bundlePay.putStringArrayList("PayInfo", PayInfo)
+        bundlePay.putParcelableArrayList("PayLocation", PayLocation)
 
-        fragment.arguments = bundle
+        fragmentPay.arguments = bundlePay
     }
 
     private fun setPhoto() {
-        val fragment = MapMorePhotoFragment()
-        val bundle = Bundle(2)
+        val fragmentPhoto = MapMorePhotoFragment()
+        val bundlePhoto = Bundle()
 
-        bundle.putStringArrayList("Photo", Photo)
-        bundle.putParcelableArrayList("PhotoLocation", PhotoLocation)
+        bundlePhoto.putStringArrayList("Photo", Photo)
+        bundlePhoto.putParcelableArrayList("PhotoLocation", PhotoLocation)
 
-        fragment.arguments = bundle
+        fragmentPhoto.arguments = bundlePhoto
     }
 
     private fun buttonListener() {

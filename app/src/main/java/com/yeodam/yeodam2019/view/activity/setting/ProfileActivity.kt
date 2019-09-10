@@ -117,7 +117,7 @@ class ProfileActivity : AppCompatActivity() {
             userDelete()
         }
 
-        profile_toolbar.setOnClickListener {
+        profile_toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
     }

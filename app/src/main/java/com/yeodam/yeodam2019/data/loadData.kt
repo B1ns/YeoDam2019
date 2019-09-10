@@ -1,5 +1,7 @@
 package com.yeodam.yeodam2019.data
 
+import com.google.android.gms.maps.model.LatLng
+
 data class MapMoreAll(
     var imageView: String? = null,
     var Memo: String? = null,
@@ -7,7 +9,7 @@ data class MapMoreAll(
     var PayInfo: String? = null
 )
 
-data class MapMoreMemo(var Memo: String? = null, var MemoLoaction: String? = null)
+data class MapMoreMemo(var Memo: String? = null, var MemoLoaction: LatLng? = null)
 
 data class MapMorePhoto(var Photo: String? = null)
 

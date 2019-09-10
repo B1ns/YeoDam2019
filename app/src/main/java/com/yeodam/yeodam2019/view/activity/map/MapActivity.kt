@@ -51,6 +51,7 @@ import org.jetbrains.anko.yesButton
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import com.yeodam.yeodam2019.view.fragment.map.MapMoreMemoFragment as MapMoreMemoFragment
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
@@ -179,7 +180,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             intent.putParcelableArrayListExtra("PayLocation", PayLocation)
             startActivity(intent)
         }
-
     }
 
     private fun camera() {
@@ -468,7 +468,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
         mMap.setOnMarkerClickListener {
             val intent = Intent(this, MapMoreActivity::class.java)
-            intent.putParcelableArrayListExtra("Map", Map)
             intent.putStringArrayListExtra("Memo", Memo)
             intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
             intent.putStringArrayListExtra("Photo", Photo)

@@ -32,7 +32,7 @@ class MemoViewAdapter(val context: FragmentActivity?, val mapMoreMemo: ArrayList
         fun bind(mapMoreMemo: MapMoreMemo, context: FragmentActivity?){
 
             memoTitle.text = mapMoreMemo.Memo
-            memoLoaction.text = mapMoreMemo.MemoLoaction
+            memoLoaction.text = mapMoreMemo.MemoLoaction.toString()
 
         }
     }
