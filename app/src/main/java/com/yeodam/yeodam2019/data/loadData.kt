@@ -13,7 +13,7 @@ data class MapMoreMemo(var Memo: String? = null, var MemoLoaction: LatLng? = nul
 
 data class MapMorePhoto(var Photo: String? = null)
 
-data class MapMorePay(var Pay: String? = null, var PayInfo: String? = null)
+data class MapMorePay(var Pay: String? = null, var PayInfo: String? = null, var PayLocation : LatLng? = null)
 
 
 data class ItemMoreAll(

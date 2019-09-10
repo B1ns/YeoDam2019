@@ -19,6 +19,7 @@ import kotlin.collections.ArrayList
 
 class MemoViewAdapter(val context: FragmentActivity?, val mapMoreMemo: ArrayList<MapMoreMemo>) :
     RecyclerView.Adapter<MemoViewAdapter.Holder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(context).inflate(R.layout.memo_more, parent, false)
         return Holder(view)
