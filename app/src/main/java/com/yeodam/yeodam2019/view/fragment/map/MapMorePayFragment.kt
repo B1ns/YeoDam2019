@@ -31,8 +31,6 @@ open class MapMorePayFragment : Fragment() {
         val extra = arguments
 
         val Pay = extra?.getStringArrayList("Pay")
-        val PayInfo = extra?.getStringArrayList("PayInfo")
-        val PayLocation = extra?.getParcelableArrayList<LatLng>("PayLocation")
 
         var i = 0
         if (Pay != null){
@@ -59,6 +57,4 @@ open class MapMorePayFragment : Fragment() {
         PayStory.add(MapMorePay(Pay?.get(i), PayInfo?.get(i), PayLocation?.get(i)))
 
     }
-
-
 }

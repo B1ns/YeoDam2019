@@ -1,23 +1,22 @@
 package com.yeodam.yeodam2019.view.adapter.mapMoreAdapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.yeodam.yeodam2019.R
-import com.yeodam.yeodam2019.data.Memo
-import com.yeodam.yeodam2019.data.Pay
-import com.yeodam.yeodam2019.data.Photo
+import com.yeodam.yeodam2019.data.*
 
-class AllViewAdapter(private val context: Context) :
+class AllViewAdapter(
+    private val context: FragmentActivity?,
+    private var adapterDataList: List<Any>
+) :
     RecyclerView.Adapter<AllViewAdapter.BaseViewHolder<*>>() {
-    override fun getItemCount(): Int = 3
-
-    private var adapterDataList: List<Any> = emptyList()
+    override fun getItemCount(): Int = adapterDataList.size
 
     abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bind(item: T)
@@ -35,14 +34,16 @@ class AllViewAdapter(private val context: Context) :
         val photoImage: ImageView = itemView.findViewById(R.id.more_photo)
         override fun bind(item: Photo) {
             //Do your view assignment here from the data model
-            Glide.with(context).load(item.Photo).into(photoImage)
+            if (context != null) {
+                Glide.with(context).load(item.Photo).into(photoImage)
+            }
         }
     }
 
     //----------------MemoViewHolder | FriendDataModel-------------
     inner class MemoViewHolder(itemView: View) : BaseViewHolder<Memo>(itemView) {
 
-        val memoTextView: TextView = itemView.findViewById(R.id.more_memo_textView)
+        val memoTextView: TextView = itemView.findViewById(R.id.more_memo)
 
         override fun bind(item: Memo) {
             //Do your view assignment here from the data model
@@ -97,8 +98,7 @@ class AllViewAdapter(private val context: Context) :
     }
 
     override fun getItemViewType(position: Int): Int {
-        val comparable = adapterDataList[position]
-        return when (comparable) {
+        return when (adapterDataList[position]) {
             is Photo -> TYPE_PHOTO
             is Memo -> TYPE_MEMO
             is Pay -> TYPE_PAY

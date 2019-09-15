@@ -1,18 +1,16 @@
 package com.yeodam.yeodam2019.view.activity.map
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import com.gdacciaro.iOSDialog.iOSDialogBuilder
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Continuation
@@ -25,6 +23,7 @@ import com.google.firebase.storage.UploadTask
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.data.YeoDam
+import com.yeodam.yeodam2019.data.userCount
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import kotlinx.android.synthetic.main.activity_upload.*
 import org.jetbrains.anko.toast
@@ -66,7 +65,7 @@ class UploadActivity : AppCompatActivity() {
 
     private var DayCount = 0
     private val upLoadOK = 10
-    private var meter = 0.0F
+    private var meter = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,20 +82,18 @@ class UploadActivity : AppCompatActivity() {
 
     }
 
-    private fun mainCount() {
-        val sf = getSharedPreferences("Count", Context.MODE_PRIVATE)
-        meter += sf.getInt("km", 0).toFloat()
-        DayCount += sf.getInt("day", 0)
-    }
-
-    @SuppressLint("CommitPrefEdits")
-    private fun setCount() {
-        val sharedPreferences = getSharedPreferences("Count", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putInt("day", DayCount)
-        editor.putInt("km", meter.toInt())
-        Log.d("set", "$DayCount : ${meter.toInt()}")
-        editor.apply()
+    private fun getMainData() {
+        val dbMainData = db.collection("userCount").document("$userName : $userId")
+        dbMainData.get().addOnCompleteListener {
+            if (it.isSuccessful){
+                Log.d("getMainData", "OKOK")
+            }
+            val mainData = it.result?.toObject(userCount::class.java)
+            if (mainData != null) {
+                DayCount += mainData.DayCount!!
+                meter += mainData.KmCount!!
+            }
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -126,13 +123,16 @@ class UploadActivity : AppCompatActivity() {
         PayLocation = intent.getParcelableArrayListExtra("PayLocation")
         Day = intent.getStringExtra("Day")
         PhotoUri = intent.getParcelableArrayListExtra("Uri")
+
         DayCount = intent.getIntExtra("DayCount", 0)
-        meter = intent.getFloatExtra("meter", 0.0F)
+        meter = intent.getFloatExtra("meter", 0.0F).toInt()
 
         Log.d("YeoDam", Photo.toString())
         Log.d("meter", meter.toString())
         Log.d("day", DayCount.toString())
         Log.d("OK", "yeodam")
+
+        getMainData()
     }
 
     private fun uploadPhoto() {
@@ -140,7 +140,7 @@ class UploadActivity : AppCompatActivity() {
 
         val index = PhotoUri.size
 
-        for(i in Photo){
+        for (i in Photo) {
 
 
         }
@@ -156,9 +156,6 @@ class UploadActivity : AppCompatActivity() {
         val storyDay = StoryDay
         val YeodamStory = ArrayList<String>()
 
-        mainCount()
-        setCount()
-
         index++
 
         val dbStoryProfile =
@@ -166,7 +163,17 @@ class UploadActivity : AppCompatActivity() {
                 .collection(storyTitle)
                 .document("StoryProfile")
 
-        dbStoryProfile.set(Story(storyTitle,image, ImageCount, storyTitle, storyCountry, index, Day))
+        dbStoryProfile.set(
+            Story(
+                storyTitle,
+                image,
+                ImageCount,
+                storyTitle,
+                storyCountry,
+                index,
+                Day
+            )
+        )
             .addOnCompleteListener {
                 YeodamStory.add(storyTitle)
                 toast("여담")
@@ -213,28 +220,13 @@ class UploadActivity : AppCompatActivity() {
             }
 
         val dbMainData = db.collection("userCount").document("$userName : $userId")
-
-    }
-
-    private fun finishLoading() {
-
-        upload_layout.visibility = View.GONE
-
-        upload_bg.visibility = View.GONE
-
-        upload_progress.visibility = View.GONE
-
-    }
-
-    private fun setLoading() {
-
-        upload_layout.visibility = View.VISIBLE
-
-        upload_bg.visibility = View.VISIBLE
-        upload_bg.setBackgroundResource(R.color.background_shadow)
-
-        upload_progress.visibility = View.VISIBLE
-
+        dbMainData.set(userCount(DayCount, meter)).addOnCompleteListener {
+            if (it.isSuccessful) {
+                Log.d("MainData", "OK")
+            } else {
+                Log.d("MainData", "NO")
+            }
+        }
     }
 
 
@@ -377,32 +369,26 @@ class UploadActivity : AppCompatActivity() {
 
     }
 
-    private fun uploadStory() {
-        if (userFilePath != null) {
-            val storyTitle = upload_title_editText.text.toString()
-            val ref =
-                storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryPhoto/StoryData")
-            val uploadTask = ref?.putFile(filePath!!)
 
-            val urlTask =
-                uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                    if (!task.isSuccessful) {
-                        task.exception?.let {
-                            throw it
-                        }
-                    }
+    private fun finishLoading() {
 
-                    return@Continuation ref.downloadUrl
+        upload_layout.visibility = View.GONE
 
-                })?.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val downloadUri = task.result
-//                    Upload(downloadUri.toString())
-                    } else {
-                        // Handle 실패할 경우
-                    }
-                }?.addOnFailureListener {
-                }
-        }
+        upload_bg.visibility = View.GONE
+
+        upload_progress.visibility = View.GONE
+
     }
+
+    private fun setLoading() {
+
+        upload_layout.visibility = View.VISIBLE
+
+        upload_bg.visibility = View.VISIBLE
+        upload_bg.setBackgroundResource(R.color.background_shadow)
+
+        upload_progress.visibility = View.VISIBLE
+
+    }
+
 }

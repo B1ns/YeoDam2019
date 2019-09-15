@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activity.more.PayInfoActivity">
+    tools:context=".MemoInfoActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/payInfoToolbar"
+        android:id="@+id/memoInfoToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
@@ -37,7 +37,7 @@
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/payInfoToolbar" />
+        app:layout_constraintTop_toBottomOf="@id/memoInfoToolbar" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/payInfoToolbar">
+        app:layout_constraintTop_toBottomOf="@+id/memoInfoToolbar">
 
 
         <TextView
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
-            android:text="소비 내용 "
+            android:text="메모 내용 "
             android:textColor="@color/colorPrimary"
             android:textSize="8pt"
             android:textStyle="italic" />
@@ -72,7 +72,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/payInfo_pay"
+                android:id="@+id/memoInfo_pay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -86,36 +86,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:text="금액 "
-                android:textColor="@color/colorPrimary"
-                android:textSize="8pt"
-                android:textStyle="italic" />
-
-            <TextView
-                android:id="@+id/payInfo_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:text="asd"
-                android:textSize="10pt" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray" />
-
-        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -141,7 +111,7 @@
                 android:src="@drawable/ic_place_black_24dp" />
 
             <TextView
-                android:id="@+id/payInfoLocation"
+                android:id="@+id/memoInfoLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

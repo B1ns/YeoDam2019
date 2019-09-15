@@ -1,6 +1,7 @@
 package com.yeodam.yeodam2019.view.activity.map
 
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -34,7 +35,7 @@ class MapMoreActivity : AppCompatActivity() {
 
     private var Memo = ArrayList<String>()
     private var MemoLocation = ArrayList<LatLng>()
-    private var Photo = ArrayList<String>()
+    private var Photo = ArrayList<Bitmap>()
     private var PhotoLocation = ArrayList<LatLng>()
     private var Pay = ArrayList<String>()
     private var PayInfo = ArrayList<String>()
@@ -62,7 +63,7 @@ class MapMoreActivity : AppCompatActivity() {
         // Get Data
         Memo = intent.getStringArrayListExtra("Memo")
         MemoLocation = intent.getParcelableArrayListExtra("MemoLocation")
-        Photo = intent.getStringArrayListExtra("Photo")
+        Photo = intent.getParcelableArrayListExtra("Photo")
         PhotoLocation = intent.getParcelableArrayListExtra("PhotoLocation")
         Pay = intent.getStringArrayListExtra("Pay")
         PayInfo = intent.getStringArrayListExtra("PayInfo")

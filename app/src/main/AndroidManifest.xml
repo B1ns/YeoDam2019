@@ -23,8 +23,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".MemoInfoActivity"></activity>
+        <activity android:name=".view.activity.more.PhotoMoreActivity" />
         <activity
-            android:name=".PayInfoActivity"
+            android:name=".view.activity.more.PayInfoActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.main.ItemMoreActivity"

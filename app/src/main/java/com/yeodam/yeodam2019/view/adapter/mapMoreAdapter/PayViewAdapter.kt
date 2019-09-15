@@ -1,6 +1,5 @@
 package com.yeodam.yeodam2019.view.adapter.mapMoreAdapter
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +10,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.yeodam.yeodam2019.PayInfoActivity
+import com.yeodam.yeodam2019.view.activity.more.PayInfoActivity
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.MapMorePay
 
@@ -38,26 +37,21 @@ class PayViewAdapter(val context: FragmentActivity?, val mapMorePay: ArrayList<M
 
         val pay : TextView = itemView.findViewById(R.id.more_pay)
         val payInfo : TextView = itemView.findViewById(R.id.more_pay_info)
+        val payLayout : LinearLayout = itemView.findViewById(R.id.PayItem)
 
         fun bind(mapMorePay: MapMorePay, context: FragmentActivity?) {
 
             pay.text = mapMorePay.Pay
             payInfo.text = mapMorePay.PayInfo
 
-            pay.setOnClickListener {
+            payLayout.setOnClickListener {
                 val intent = Intent(context, PayInfoActivity::class.java)
                 intent.putExtra("Pay", mapMorePay.Pay)
                 intent.putExtra("PayInfo", mapMorePay.PayInfo)
                 intent.putExtra("PayLocation", mapMorePay.PayLocation)
                 ContextCompat.startActivity(context!!, intent, Bundle())
             }
-            payInfo.setOnClickListener {
-                val intent = Intent(context, PayInfoActivity::class.java)
-                intent.putExtra("Pay", mapMorePay.Pay)
-                intent.putExtra("PayInfo", mapMorePay.PayInfo)
-                intent.putExtra("PayLocation", mapMorePay.PayLocation)
-                ContextCompat.startActivity(context!!, intent, Bundle())
-            }
+
         }
     }
 }

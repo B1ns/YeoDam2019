@@ -1,6 +1,8 @@
 package com.yeodam.yeodam2019.data
 
-data class Photo(var Photo: String? = null)
+import android.graphics.Bitmap
+
+data class Photo(var Photo: Bitmap? = null)
 
 data class Memo(var Memo: String? = null)
 

@@ -17,6 +17,7 @@ import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.data.UserDTO
+import com.yeodam.yeodam2019.data.userCount
 import com.yeodam.yeodam2019.data.userTitle
 import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
@@ -49,10 +50,10 @@ class MainActivity : AppCompatActivity() {
 
     private val YeodamStory = arrayListOf<Story>()
 
-    private val cardViewAdapter: CardViewAdapter? = null
-    private val listViewAdapter: ListViewAdapter? = null
+    private var mainTitle: String? = null
 
-    private var mainTitle : String? = null
+    private var Day: Int? = null
+    private var Km: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +77,28 @@ class MainActivity : AppCompatActivity() {
 
         updateItem()
 
-        lottie.playAnimation()
+        travelData()
+
+    }
+
+    private fun travelData() {
+        val dbMainData = db.collection("userCount").document("$userName : $userId")
+        dbMainData.get().addOnCompleteListener {
+            val userTravelData = it.result?.toObject(userCount::class.java)
+            if (userTravelData != null) {
+                Day = userTravelData.DayCount
+                Km = userTravelData.KmCount
+
+                Log.d("asdasd1", userTravelData.DayCount.toString())
+                Log.d("asdasd2", userTravelData.KmCount.toString())
+
+                Log.d("asdasd3", Day.toString())
+                Log.d("asdasd4", Km.toString())
+            }
+
+            count_day.text = Day.toString()
+            count_km.text = Km.toString()
+        }
     }
 
     @SuppressLint("NewApi", "SetTextI18n")
@@ -153,6 +175,8 @@ class MainActivity : AppCompatActivity() {
         if (!InfoActivity().info) {
             userInfo()
             startActivity<InfoActivity>()
+        } else {
+            lottie.playAnimation()
         }
     }
 
@@ -233,8 +257,6 @@ class MainActivity : AppCompatActivity() {
                 } else if (dy < 0) {
                     // 위로 스크롤
                     fab_main.show()
-                } else {
-                    fab_main.show()
                 }
             }
         })
@@ -246,8 +268,6 @@ class MainActivity : AppCompatActivity() {
                     fab_main.hide()
                 } else if (dy < 0) {
                     // 위로 스크롤
-                    fab_main.show()
-                } else {
                     fab_main.show()
                 }
             }
@@ -403,7 +423,7 @@ class MainActivity : AppCompatActivity() {
         userInfo()
     }
 
-    fun updateItem(){
+    fun updateItem() {
         val intent = intent
         val title = intent.getStringExtra("title")
         mainTitle = title

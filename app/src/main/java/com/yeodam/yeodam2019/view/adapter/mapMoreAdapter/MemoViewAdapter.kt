@@ -1,5 +1,6 @@
 package com.yeodam.yeodam2019.view.adapter.mapMoreAdapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,11 @@ import com.yeodam.yeodam2019.data.MapMoreMemo
 import android.widget.Toast
 import android.location.Geocoder
 import android.location.Address
+import android.os.Bundle
+import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
+import com.yeodam.yeodam2019.MemoInfoActivity
 import com.yeodam.yeodam2019.R
 import java.io.IOException
 import java.util.*
@@ -37,12 +42,20 @@ class MemoViewAdapter(val context: FragmentActivity?, val mapMoreMemo: ArrayList
 
         val memoTitle: TextView = itemView.findViewById(R.id.more_memo_textView)
         val memoLoaction: TextView = itemView.findViewById(R.id.more_memo_loaction)
+        val memoLayout : LinearLayout = itemView.findViewById(R.id.memoLayout)
 
         fun bind(mapMoreMemo: MapMoreMemo, context: FragmentActivity?) {
 
             memoTitle.text = mapMoreMemo.Memo
             memoLoaction.text = getCurrentAddress(mapMoreMemo.MemoLoaction!!)
 
+
+            memoLayout.setOnClickListener {
+                val intent = Intent(context, MemoInfoActivity::class.java)
+                intent.putExtra("Memo", mapMoreMemo.Memo)
+                intent.putExtra("MemoLocation", mapMoreMemo.MemoLoaction)
+                ContextCompat.startActivity(context!!, intent, Bundle())
+            }
         }
     }
 

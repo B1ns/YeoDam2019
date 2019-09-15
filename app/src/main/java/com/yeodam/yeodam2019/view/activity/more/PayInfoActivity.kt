@@ -1,4 +1,4 @@
-package com.yeodam.yeodam2019
+package com.yeodam.yeodam2019.view.activity.more
 
 import android.location.Address
 import android.location.Geocoder
@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.google.android.gms.maps.model.LatLng
+import com.yeodam.yeodam2019.R
 import kotlinx.android.synthetic.main.activity_pay_info.*
 import java.io.IOException
 import java.util.*

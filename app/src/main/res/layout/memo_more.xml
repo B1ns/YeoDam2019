@@ -8,6 +8,7 @@
     android:background="@drawable/more_bg"
     android:elevation="4dp"
     android:gravity="center"
+    android:id="@+id/memoLayout"
     android:orientation="vertical">
 
     <TextView

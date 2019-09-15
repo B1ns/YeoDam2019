@@ -2,7 +2,6 @@ package com.yeodam.yeodam2019.view.activity.map
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.net.Uri
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -48,12 +46,15 @@ import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.yesButton
+import java.io.ByteArrayOutputStream
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import com.yeodam.yeodam2019.view.fragment.map.MapMoreMemoFragment as MapMoreMemoFragment
 
-@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+@Suppress(
+    "RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "DEPRECATION",
+    "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS"
+)
 class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
 
@@ -173,7 +174,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             intent.putParcelableArrayListExtra("Map", Map)
             intent.putStringArrayListExtra("Memo", Memo)
             intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
-            intent.putStringArrayListExtra("Photo", Photo)
+            intent.putExtra("Photo", PhotoBitmap)
             intent.putParcelableArrayListExtra("PhotoLocation", PhotoLocation)
             intent.putStringArrayListExtra("Pay", Pay)
             intent.putStringArrayListExtra("PayInfo", PayInfo)
@@ -371,10 +372,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             intent.putParcelableArrayListExtra("PayLocation", PayLocation)
             intent.putExtra("Day", dayTotal)
             intent.putParcelableArrayListExtra("Uri", PhotoUri)
-            intent.putExtra("DayCount", countToday - countLastday)
+            intent.putExtra("DayCount", countLastday - countToday)
             intent.putExtra("meter", meter / 1000.toFloat())
 
-
+            Log.d("uploadCount", "$countToday - $countLastday = ${countToday - countLastday} ")
+            Log.d("uploadCount", "${meter / 1000.toFloat()}")
+            Log.d("uploadCount", "$meter")
 
             Log.d("test", Map.toString())
             Log.d("test", Memo.toString())
@@ -470,7 +473,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             val intent = Intent(this, MapMoreActivity::class.java)
             intent.putStringArrayListExtra("Memo", Memo)
             intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
-            intent.putStringArrayListExtra("Photo", Photo)
+            intent.putExtra("Photo", PhotoBitmap)
             intent.putParcelableArrayListExtra("PhotoLocation", PhotoLocation)
             intent.putStringArrayListExtra("Pay", Pay)
             intent.putStringArrayListExtra("PayInfo", PayInfo)
@@ -489,6 +492,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     private fun addImageMarker(bitmap: Bitmap): Bitmap {
 
         val ImageLatLng = LatLng(myLatitude, myLongitude)
+
         mMap.addMarker(
             MarkerOptions().position(ImageLatLng).icon(
                 BitmapDescriptorFactory.fromBitmap(
@@ -498,6 +502,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         )
 
         Photo.add(bitmap.toString())
+
         PhotoLocation.add(ImageLatLng)
 
         return bitmap
@@ -717,7 +722,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             val b2 = bitmapdraw2.bitmap
             val smallMarkar2 = Bitmap.createScaledBitmap(b2, 150, 150, false)
 
-            val creditInfoPair = creditInfo to creditMoney
 
             Pay.add(creditInfo)
             PayInfo.add(creditMoney)
@@ -738,9 +742,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
             val imageBitmap = data?.extras?.get("data") as Bitmap
 
-            val data = data.data
+            val dataUri = data.data
 
-            PhotoUri.add(data)
+            PhotoUri.add(dataUri)
+
+
+
+            PhotoBitmap.add(imageBitmap)
 
             getMarkerBitmapFromView(imageBitmap)
 

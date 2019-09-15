@@ -1,5 +1,6 @@
 package com.yeodam.yeodam2019.view.adapter
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -11,11 +12,12 @@ import com.yeodam.yeodam2019.view.fragment.map.MapMoreMemoFragment
 import com.yeodam.yeodam2019.view.fragment.map.MapMorePayFragment
 import com.yeodam.yeodam2019.view.fragment.map.MapMorePhotoFragment
 
+@Suppress("DEPRECATION")
 class MapMoreAdapter(
     fm: FragmentManager,
     memo: ArrayList<String>,
     memoLocation: ArrayList<LatLng>,
-    photo: ArrayList<String>,
+    photo: ArrayList<Bitmap>,
     photoLoaction: ArrayList<LatLng>,
     pay: ArrayList<String>,
     payInfo: ArrayList<String>,
@@ -46,7 +48,7 @@ class MapMoreAdapter(
                 bundle.putStringArrayList("PayInfo", PayInfo)
                 bundle.putParcelableArrayList("PayLocation", PayLocation)
 
-                bundle.putStringArrayList("Photo", Photo)
+                bundle.putParcelableArrayList("Photo", Photo)
                 bundle.putParcelableArrayList("PhotoLocation", PhotoLocation)
 
                 fragment.arguments = bundle
@@ -58,7 +60,7 @@ class MapMoreAdapter(
                 val fragmentPhoto = MapMorePhotoFragment()
                 val bundlePhoto = Bundle()
 
-                bundlePhoto.putStringArrayList("Photo", Photo)
+                bundlePhoto.putParcelableArrayList("Photo", Photo)
                 bundlePhoto.putParcelableArrayList("PhotoLocation", PhotoLocation)
 
                 fragmentPhoto.arguments = bundlePhoto
@@ -102,7 +104,7 @@ class MapMoreAdapter(
                 bundle.putStringArrayList("PayInfo", PayInfo)
                 bundle.putParcelableArrayList("PayLocation", PayLocation)
 
-                bundle.putStringArrayList("Photo", Photo)
+                bundle.putParcelableArrayList("Photo", Photo)
                 bundle.putParcelableArrayList("PhotoLocation", PhotoLocation)
 
                 fragment.arguments = bundle
