@@ -85,7 +85,7 @@ class UploadActivity : AppCompatActivity() {
     private fun getMainData() {
         val dbMainData = db.collection("userCount").document("$userName : $userId")
         dbMainData.get().addOnCompleteListener {
-            if (it.isSuccessful){
+            if (it.isSuccessful) {
                 Log.d("getMainData", "OKOK")
             }
             val mainData = it.result?.toObject(userCount::class.java)
@@ -135,17 +135,7 @@ class UploadActivity : AppCompatActivity() {
         getMainData()
     }
 
-    private fun uploadPhoto() {
-        Log.d("OK", "yeodam")
 
-        val index = PhotoUri.size
-
-        for (i in Photo) {
-
-
-        }
-
-    }
 
     private fun Upload(uri: String) {
 
@@ -155,6 +145,8 @@ class UploadActivity : AppCompatActivity() {
         val storyCountry = upload_travel_editText.text.toString()
         val storyDay = StoryDay
         val YeodamStory = ArrayList<String>()
+
+        uploadUri(PhotoUri)
 
         index++
 
@@ -229,6 +221,14 @@ class UploadActivity : AppCompatActivity() {
         }
     }
 
+    private fun uploadUri(uri: ArrayList<Uri>) {
+
+        for (i in uri) {
+            uploadUriFirebase(i)
+        }
+
+    }
+
 
     private fun firebaseInit() {
         firebaseStore = FirebaseStorage.getInstance()
@@ -274,7 +274,6 @@ class UploadActivity : AppCompatActivity() {
             setLoading()
             // 업로드
             Yeodam()
-            uploadPhoto()
             uploadImage()
         }
 
@@ -333,7 +332,6 @@ class UploadActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 
     private fun uploadImage() {
@@ -369,6 +367,36 @@ class UploadActivity : AppCompatActivity() {
 
     }
 
+    private fun uploadUriFirebase(uri: Uri) {
+        val storage = FirebaseStorage.getInstance()
+
+        val storageRef = storage.reference
+
+        val storyTitle = upload_title_editText.text.toString()
+
+        val ref = storageRef.child("User_Story/$userName : $userId/$storyTitle/StoryPhoto/$uri")
+        val uploadTask = ref.putFile(uri)
+
+        val urlTask =
+            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
+                return@Continuation ref.downloadUrl
+            }).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUri = task.result
+
+                } else {
+                    // Handle 실패할 경우
+                }
+            }.addOnFailureListener {
+            }
+
+    }
+
 
     private fun finishLoading() {
 
@@ -390,5 +418,4 @@ class UploadActivity : AppCompatActivity() {
         upload_progress.visibility = View.VISIBLE
 
     }
-
 }

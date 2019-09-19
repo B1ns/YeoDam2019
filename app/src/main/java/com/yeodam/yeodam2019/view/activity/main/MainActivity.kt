@@ -94,6 +94,9 @@ class MainActivity : AppCompatActivity() {
 
                 Log.d("asdasd3", Day.toString())
                 Log.d("asdasd4", Km.toString())
+            } else {
+                Day = 0
+                Km = 0
             }
 
             count_day.text = Day.toString()
