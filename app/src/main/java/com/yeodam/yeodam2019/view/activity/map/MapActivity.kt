@@ -57,11 +57,10 @@ import java.time.format.DateTimeFormatter
 )
 class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
-
     private lateinit var mMap: GoogleMap
 
     private val REQUEST_ACCESS_FINE_LOCATION = 1000
-    val REQUEST_IMAGE_CAPTURE = 1
+    private val REQUEST_IMAGE_CAPTURE = 1
     private val CREDIT_CODE = 1111
     private val REQUEST_CODE = 3000
 
