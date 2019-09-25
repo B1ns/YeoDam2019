@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activity.map.MapMoreActivity">
+    tools:context=".view.activity.main.ItemMoreActivity">
 
     <LinearLayout
         android:id="@+id/line"
@@ -14,7 +14,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mapMoreTab" />
+        app:layout_constraintTop_toBottomOf="@+id/itemMoreTab" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/itemMoreViewPager"

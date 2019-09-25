@@ -33,7 +33,7 @@ open class YeoDamService : Service() {
     var mapPay = ArrayList<String>()
     var mapPayInfo = ArrayList<String>()
     var mapPayLocation = ArrayList<LatLng>()
-    
+
     var lastLatitude: Double = 0.0
     var lastLongitude: Double = 0.0
 

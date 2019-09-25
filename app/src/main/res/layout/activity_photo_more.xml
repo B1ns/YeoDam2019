@@ -33,6 +33,32 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/photoLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/photoMoreToolbar">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_place_black_24dp" />
+
+        <TextView
+            android:id="@+id/photoLocation_More"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="asd"
+            android:textSize="7pt" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,47 +66,26 @@
         app:layout_constraintTop_toBottomOf="@id/photoMoreToolbar" />
 
     <LinearLayout
+        android:id="@+id/photoLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/more_bg"
         android:elevation="4dp"
         android:orientation="vertical"
-        android:padding="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/photoMoreToolbar">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_place_black_24dp" />
-
-            <TextView
-                android:id="@+id/photoLocation_More"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="asd"
-                android:textSize="7pt" />
-
-        </LinearLayout>
 
         <ImageView
             android:id="@+id/photoMoreImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
             android:scaleType="fitXY" />
 
     </LinearLayout>

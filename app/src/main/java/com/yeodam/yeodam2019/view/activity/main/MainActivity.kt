@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity() {
             userInfo()
             startActivity<InfoActivity>()
         } else {
-            lottie.playAnimation()
+//            lottie.playAnimation()
         }
     }
 

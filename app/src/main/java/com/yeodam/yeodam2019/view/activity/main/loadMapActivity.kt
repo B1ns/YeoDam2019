@@ -55,7 +55,7 @@ class loadMapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_load_map)
 
-        getUserData()
+//        getUserData()
 
         buttonListener()
 

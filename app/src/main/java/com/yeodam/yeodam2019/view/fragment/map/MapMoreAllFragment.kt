@@ -27,7 +27,7 @@ open class MapMoreAllFragment : Fragment() {
 
         val mAdapter = AllViewAdapter(activity, adapterDataList)
 
-        val mLayoutManager = GridLayoutManager(context, 3)
+        val mLayoutManager = GridLayoutManager(context, 4)
         val recyclerView = v.findViewById<RecyclerView>(R.id.map_all_recyclerView)
 
         val extra = arguments
