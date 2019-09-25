@@ -77,12 +77,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     private var story = true
     private var isFabOpen = false
 
-    private var count = 0
-
     var myLatitude: Double = 0.0
     var myLongitude: Double = 0.0
 
-    private var countDay = 0
     private var countToday = 0
     private var countLastday = 0
 
@@ -91,6 +88,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
     private val locationOne = Location("1")
     private val locationTwo = Location("1")
+
+    private lateinit var location : LatLng
 
     // 핵심 리스트
 
@@ -753,5 +752,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // 권한 요청 ⑨
+        permissionCheck(cancel = {
+            // 위치 정보가 필요한 이유 다이얼로그 표시 ⑩
+            showPermissionInfoDialog()
+        }, ok = {
+            // 현재 위치를 주기적으로 요청 (권한이 필요한 부분) ⑪
+            addLocationListener()
+        })
     }
 }
