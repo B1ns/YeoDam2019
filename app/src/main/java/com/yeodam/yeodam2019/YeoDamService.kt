@@ -3,6 +3,7 @@ package com.yeodam.yeodam2019
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -23,6 +24,16 @@ open class YeoDamService : Service() {
     var mapLatitude = ArrayList<String>()
     var mapLongitude = ArrayList<String>()
 
+    var mapMemo = ArrayList<String>()
+    var mapMemoLocation = ArrayList<LatLng>()
+
+    var mapPhoto = ArrayList<Bitmap>()
+    var mapPhotoLocation = ArrayList<LatLng>()
+
+    var mapPay = ArrayList<String>()
+    var mapPayInfo = ArrayList<String>()
+    var mapPayLocation = ArrayList<LatLng>()
+    
     var lastLatitude: Double = 0.0
     var lastLongitude: Double = 0.0
 
@@ -106,4 +117,5 @@ open class YeoDamService : Service() {
     }
 
     open fun mapLine(): LatLng = LatLng(lastLatitude, lastLongitude)
+
 }

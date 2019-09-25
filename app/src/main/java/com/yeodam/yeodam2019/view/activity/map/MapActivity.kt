@@ -693,8 +693,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             val b = bitmapdraw.bitmap
             val smallMarkar = Bitmap.createScaledBitmap(b, 150, 150, false)
 
-
-
             Memo.add(memo)
             MemoLocation.add(memoLatLng)
 
@@ -705,8 +703,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                     "메모"
                 ).snippet(memo)
             )
-
-
         }
 
         if (requestCode == CREDIT_CODE && resultCode == RESULT_OK) {
@@ -737,14 +733,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
-
             val imageBitmap = data?.extras?.get("data") as Bitmap
 
             val dataUri = data.data
 
             PhotoUri.add(dataUri)
-
-
 
             PhotoBitmap.add(imageBitmap)
 
