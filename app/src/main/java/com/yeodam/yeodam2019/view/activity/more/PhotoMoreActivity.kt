@@ -31,9 +31,9 @@ class PhotoMoreActivity : AppCompatActivity() {
         val photo = intent.getParcelableExtra<Bitmap>("Photo")
         val photoLocation = intent.getParcelableExtra<LatLng>("PhotoLocation")
 
-        val drawable = applicationContext.getDrawable(R.drawable.image_radius)
-        photoMoreImage.background = drawable
-        photoMoreImage.clipToOutline = true
+//        val drawable = applicationContext.getDrawable(R.drawable.image_radius)
+//        photoMoreImage.background = drawable
+//        photoMoreImage.clipToOutline = true
 
         Glide.with(applicationContext).load(photo).into(photoMoreImage)
         photoLocation_More.text = getCurrentAddress(photoLocation)

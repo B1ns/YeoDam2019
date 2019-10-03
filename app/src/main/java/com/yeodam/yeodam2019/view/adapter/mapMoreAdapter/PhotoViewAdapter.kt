@@ -36,7 +36,7 @@ class PhotoViewAdapter(val context: FragmentActivity?, val photo: ArrayList<MapM
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val photoImage : ImageView = itemView.findViewById(R.id.more_photo)
-        val photoLayout : LinearLayout = itemView.findViewById(R.id.photoLayout)
+        val photoLayout : LinearLayout = itemView.findViewById(R.id.more_photoLayout)
 
         fun bind(photo: MapMorePhoto, context: FragmentActivity?) {
 

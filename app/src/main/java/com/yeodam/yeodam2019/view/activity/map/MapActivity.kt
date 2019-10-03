@@ -352,7 +352,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
         val mAlertDialog = mBuilder.show()
 
-        mAlertDialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        mAlertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         mDialogView.dialog_yes.setOnClickListener {
             mAlertDialog.dismiss()
@@ -516,10 +516,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         // 업데이트 인터벌
         // 위치 정보가 없을때는 업데이트 안 함
-        locationRequest.interval = 10000
+        locationRequest.interval = 50000
 
         // 정확함. 이것보다 짧은 업데이트는 하지 않음
-        locationRequest.fastestInterval = 10000
+        locationRequest.fastestInterval = 50000
 
     }
 
@@ -737,7 +737,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
             val dataUri = data.data
 
-            PhotoUri.add(dataUri)
+            PhotoUri.add(dataUri!!)
 
             PhotoBitmap.add(imageBitmap)
 
