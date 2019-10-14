@@ -23,20 +23,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_N"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:elevation="20dp"
-        android:src="@drawable/ic_near"
-        app:backgroundTint="@android:color/white"
-        app:fabSize="mini"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fab_mylocation"
-
-        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_mylocation"
@@ -120,7 +106,7 @@
         android:id="@+id/mapNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#80ffffff"
+        android:background="@drawable/map_bottom_round"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"

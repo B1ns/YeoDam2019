@@ -41,7 +41,7 @@ class InfoActivity : AppCompatActivity() {
     lateinit var userPhoto: Uri
     lateinit var userId: String
     var clearText = ""
-    var info = true
+    var info = false
     var image = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,7 +120,7 @@ class InfoActivity : AppCompatActivity() {
         val handler = Handler()
         handler.postDelayed({
             // Lottie 작성구간
-            info = false
+            info = true
             startActivity<MainActivity>()
             finish()
         }, 2000)

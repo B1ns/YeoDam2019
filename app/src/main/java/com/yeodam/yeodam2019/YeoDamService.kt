@@ -4,7 +4,11 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.graphics.Bitmap
+import android.location.Address
+import android.location.Geocoder
 import android.os.IBinder
+import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -14,6 +18,9 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import com.yeodam.yeodam2019.App.Companion.CHANNEL_ID
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
+import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 open class YeoDamService : Service() {
 
@@ -33,6 +40,8 @@ open class YeoDamService : Service() {
     var mapPay = ArrayList<String>()
     var mapPayInfo = ArrayList<String>()
     var mapPayLocation = ArrayList<LatLng>()
+
+    var loadMap = false
 
     var lastLatitude: Double = 0.0
     var lastLongitude: Double = 0.0
@@ -76,25 +85,28 @@ open class YeoDamService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // 서비스 처음 시작시 할 동작 정의
 
-
+        Log.d("wow", "start")
 
         return START_NOT_STICKY
     }
 
     override fun onDestroy() {
         // 서비스 종료시 할 것들 정리
+        Log.d("wow", "start")
+
         val localBroadcastManager = LocalBroadcastManager.getInstance(this)
         val intent = Intent("intent_action")
 
+        loadMap = true
+
         intent.putExtra("mapLatitude", mapLatitude)
         intent.putExtra("mapLongitude", mapLongitude)
+        intent.putExtra("loadMap", loadMap)
 
         super.onDestroy()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-
-
         return null
     }
 
@@ -106,6 +118,8 @@ open class YeoDamService : Service() {
 
             location?.run {
 
+                Log.d("service", getCurrentAddress(LatLng(latitude, longitude)))
+
                 lastLatitude = latitude
                 lastLongitude = longitude
 
@@ -116,6 +130,39 @@ open class YeoDamService : Service() {
         }
     }
 
-    open fun mapLine(): LatLng = LatLng(lastLatitude, lastLongitude)
+
+    fun getCurrentAddress(latlng: LatLng): String {
+
+        //지오코더... GPS를 주소로 변환
+        val geocoder = Geocoder(applicationContext, Locale.getDefault())
+
+        val addresses: List<Address>?
+
+        try {
+            addresses = geocoder.getFromLocation(
+                latlng.latitude,
+                latlng.longitude,
+                1
+            )
+        } catch (ioException: IOException) {
+            //네트워크 문제
+            Toast.makeText(applicationContext, "서비스 사용불가", Toast.LENGTH_LONG).show()
+            return "서비스 사용불가 지역"
+        } catch (illegalArgumentException: IllegalArgumentException) {
+            Toast.makeText(applicationContext, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show()
+            return "잘못된 GPS 좌표"
+
+        }
+
+
+        if (addresses == null || addresses.isEmpty()) {
+            Toast.makeText(applicationContext, "주소 미발견", Toast.LENGTH_LONG).show()
+            return "주소 미발견"
+
+        } else {
+            val address = addresses[0]
+            return address.getAddressLine(0).toString()
+        }
+    }
 
 }

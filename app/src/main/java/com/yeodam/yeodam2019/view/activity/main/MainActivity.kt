@@ -59,8 +59,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        info()
-
         getUserData()
 
         userInfo()
@@ -174,14 +172,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun info() {
-        if (!InfoActivity().info) {
-            userInfo()
-            startActivity<InfoActivity>()
-        } else {
-//            lottie.playAnimation()
-        }
-    }
+
 
     private fun getUserData() {
 

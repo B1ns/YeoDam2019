@@ -21,9 +21,9 @@ class PhotoMoreActivity : AppCompatActivity() {
 
         getData()
 
-        photoMoreToolbar.setNavigationOnClickListener {
-            onBackPressed()
-        }
+//        photoMoreToolbar.setNavigationOnClickListener {
+//            onBackPressed()
+//        }
     }
 
     private fun getData() {
@@ -35,8 +35,8 @@ class PhotoMoreActivity : AppCompatActivity() {
 //        photoMoreImage.background = drawable
 //        photoMoreImage.clipToOutline = true
 
-        Glide.with(applicationContext).load(photo).into(photoMoreImage)
-        photoLocation_More.text = getCurrentAddress(photoLocation)
+//        Glide.with(applicationContext).load(photo).into(photoMoreImage)
+//        photoLocation_More.text = getCurrentAddress(photoLocation)
     }
 
     fun getCurrentAddress(latlng: LatLng): String {

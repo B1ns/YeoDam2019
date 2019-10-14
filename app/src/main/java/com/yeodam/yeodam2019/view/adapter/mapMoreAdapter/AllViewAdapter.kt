@@ -133,38 +133,4 @@ class AllViewAdapter(
             else -> throw IllegalArgumentException("Invalid type of data $position")
         }
     }
-
-    fun getCurrentAddress(latlng: LatLng): String {
-
-        //지오코더... GPS를 주소로 변환
-        val geocoder = Geocoder(context, Locale.getDefault())
-
-        val addresses: List<Address>?
-
-        try {
-            addresses = geocoder.getFromLocation(
-                latlng.latitude,
-                latlng.longitude,
-                1
-            )
-        } catch (ioException: IOException) {
-            //네트워크 문제
-            Toast.makeText(context, "서비스 사용불가", Toast.LENGTH_LONG).show()
-            return "서비스 사용불가 지역"
-        } catch (illegalArgumentException: IllegalArgumentException) {
-            Toast.makeText(context, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show()
-            return "잘못된 GPS 좌표"
-
-        }
-
-
-        if (addresses == null || addresses.isEmpty()) {
-            Toast.makeText(context, "주소 미발견", Toast.LENGTH_LONG).show()
-            return "주소 미발견"
-
-        } else {
-            val address = addresses[0]
-            return address.getAddressLine(0).toString()
-        }
-    }
 }

@@ -23,77 +23,95 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MemoInfoActivity" />
-        <activity android:name=".view.activity.more.PhotoMoreActivity" />
+
+        <activity
+            android:name=".MemoInfoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".view.activity.more.PhotoMoreActivity"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.more.PayInfoActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.main.ItemMoreActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.main.DeleteActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.map.MapMoreActivity"
             android:screenOrientation="portrait" />
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
+
         <activity
             android:name=".view.activity.main.NotificationActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.main.loadMapActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.map.UploadActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.PushInfoActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.map.write.PayActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.map.write.MemoActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.setting.ServiceActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.setting.ProfileActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.setting.SettingActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.splash.InfoActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".view.activity.splash.OnboardingActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.map.MapActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".view.activity.main.MainActivity"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.splash.SplashActivity"
             android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity
-            android:name=".view.activity.main.MainActivity"
-            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -115,10 +133,12 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <service
             android:name=".YeoDamService"
             android:enabled="true"
             android:exported="true" />
+
     </application>
 
 </manifest>
