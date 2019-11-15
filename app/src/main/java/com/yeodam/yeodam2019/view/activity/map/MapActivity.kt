@@ -77,6 +77,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     private val REQUEST_CODE = 3000
 
     private val polylineOptions = PolylineOptions().width(10f).color(Color.argb(50, 89, 211, 238))
+    private val rePolylineOptions = PolylineOptions().width(10f).color(Color.argb(50, 89, 211, 238))
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -794,6 +795,33 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             // 현재 위치를 주기적으로 요청 (권한이 필요한 부분) ⑪
             addLocationListener()
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        for(location in Map){
+
+            Log.d("wow", location.toString())
+            rePolylineOptions.add(location)
+            mMap.addPolyline(rePolylineOptions)
+
+
+        }
+
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+
+        for(location in Map){
+
+            Log.d("wow2", location.toString())
+            rePolylineOptions.add(location)
+            mMap.addPolyline(rePolylineOptions)
+
+        }
+
     }
 
     /// @param folderName can be your app's name

@@ -53,9 +53,6 @@ class DeleteActivity : AppCompatActivity() {
     private var index: Int? = null
     private var day: String? = null
 
-    private lateinit var cardViewAdapter: CardViewAdapter
-    private lateinit var listViewAdapter: ListViewAdapter
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_delete)

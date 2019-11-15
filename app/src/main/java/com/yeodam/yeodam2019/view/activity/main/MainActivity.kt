@@ -183,9 +183,6 @@ class MainActivity : AppCompatActivity() {
             val email = user.email
             val photoUrl = user.photoUrl
 
-            // Check if user's email is verified
-            val emailVerified = user.isEmailVerified
-
             // The user's ID, unique to the Firebase project. Do NOT use this value to
             // authenticate with your backend server, if you have one. Use
             // FirebaseUser.getToken() instead.
@@ -396,7 +393,7 @@ class MainActivity : AppCompatActivity() {
         backSpace()
     }
 
-    fun backSpace() {
+    private fun backSpace() {
         iOSDialogBuilder(this@MainActivity)
             .setTitle("여담 : 여행을 담다")
             .setSubtitle("종료하시겠습니까?")
@@ -417,7 +414,7 @@ class MainActivity : AppCompatActivity() {
         userInfo()
     }
 
-    fun updateItem() {
+    private fun updateItem() {
         val intent = intent
         val title = intent.getStringExtra("title")
         mainTitle = title

@@ -2,10 +2,10 @@ package com.yeodam.yeodam2019
 
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.location.Address
-import android.location.Geocoder
+import android.location.*
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
@@ -21,12 +21,25 @@ import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
+import android.os.Bundle
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.location.LocationManager
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
 
 open class YeoDamService : Service() {
-
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: MyLocationCallBack
 
     var mapLatitude = ArrayList<String>()
     var mapLongitude = ArrayList<String>()
@@ -43,30 +56,64 @@ open class YeoDamService : Service() {
 
     var loadMap = false
 
+    val TAG = "WOW"
+
     var lastLatitude: Double = 0.0
     var lastLongitude: Double = 0.0
 
-    private fun locationInit() {
-        fusedLocationProviderClient = FusedLocationProviderClient(this)
+    private var mLocationManager: LocationManager? = null
+    private val LOCATION_INTERVAL = 1000
+    private val LOCATION_DISTANCE = 10f
 
-        locationCallback = MyLocationCallBack()
+    private inner class LocationListener(provider: String) : android.location.LocationListener {
 
-        locationRequest = LocationRequest()
-        // GPS 우선
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        // 업데이트 인터벌
-        // 위치 정보가 없을 때는 업데이트 안 함
-        // 상황에 따라 짧아질 수 있음, 정확하지 않음
-        // 다른 앱에서 짧은 인터벌로 위치 정보를 요청하면 짧아질 수 있음
-        locationRequest.interval = 10000
-        // 정확함. 이것보다 짧은 업데이트는 하지 않음
-        locationRequest.fastestInterval = 5000
+        internal var mLastLocation: Location
+
+        init {
+            Log.e(TAG, "LocationListener $provider")
+            mLastLocation = Location(provider)
+        }
+
+        override fun onLocationChanged(location: Location?) {
+            mLastLocation.set(location)
+        }
+
+        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+            Log.e(TAG, "onProviderDisabled: $provider")
+        }
+
+        override fun onProviderEnabled(provider: String?) {
+            Log.e(TAG, "onProviderDisabled: $provider")
+        }
+
+        override fun onProviderDisabled(provider: String?) {
+            Log.e(TAG, "onProviderDisabled: $provider")
+        }
+
     }
+
+    private var mLocationListeners = arrayOf(LocationListener(LocationManager.PASSIVE_PROVIDER))
+
 
     override fun onCreate() {
         super.onCreate()
 
-        locationInit()
+        initializeLocationManager()
+
+        try {
+//            mLocationManager.requestLocationUpdates(
+//                LocationManager.PASSIVE_PROVIDER,
+//                LOCATION_INTERVAL,
+//                LOCATION_DISTANCE,
+//                mLocationListeners[0]
+//            )
+
+        } catch (ex: SecurityException) {
+            Log.i(TAG, "fail to request location update, ignore", ex)
+        } catch (ex: IllegalArgumentException) {
+            Log.d(TAG, "network provider does not exist, " + ex.message)
+        }
+
 
         val notificationIntent = Intent(this, MapActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
@@ -87,6 +134,8 @@ open class YeoDamService : Service() {
 
         Log.d("wow", "start")
 
+        super.onStartCommand(intent, flags, startId)
+
         return START_NOT_STICKY
     }
 
@@ -94,7 +143,27 @@ open class YeoDamService : Service() {
         // 서비스 종료시 할 것들 정리
         Log.d("wow", "start")
 
-        val localBroadcastManager = LocalBroadcastManager.getInstance(this)
+        if (mLocationManager != null) {
+            for (element in mLocationListeners) {
+                try {
+                    if (ActivityCompat.checkSelfPermission(
+                            this,
+                            android.Manifest.permission.ACCESS_FINE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                            this,
+                            android.Manifest.permission.ACCESS_COARSE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        return
+                    }
+                    mLocationManager!!.removeUpdates(element)
+                } catch (ex: Exception) {
+                    Log.i(TAG, "fail to remove location listener, ignore", ex)
+                }
+
+            }
+        }
+
         val intent = Intent("intent_action")
 
         loadMap = true
@@ -110,59 +179,15 @@ open class YeoDamService : Service() {
         return null
     }
 
-    open inner class MyLocationCallBack : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult?) {
-            super.onLocationResult(locationResult)
 
-            val location = locationResult?.lastLocation
-
-            location?.run {
-
-                Log.d("service", getCurrentAddress(LatLng(latitude, longitude)))
-
-                lastLatitude = latitude
-                lastLongitude = longitude
-
-                mapLatitude.add(latitude.toString())
-                mapLongitude.add(longitude.toString())
-
-            }
+    private fun initializeLocationManager() {
+        Log.e(
+            TAG,
+            "initializeLocationManager - LOCATION_INTERVAL: $LOCATION_INTERVAL LOCATION_DISTANCE: $LOCATION_DISTANCE"
+        )
+        if (mLocationManager == null) {
+            mLocationManager =
+                applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         }
     }
-
-
-    fun getCurrentAddress(latlng: LatLng): String {
-
-        //지오코더... GPS를 주소로 변환
-        val geocoder = Geocoder(applicationContext, Locale.getDefault())
-
-        val addresses: List<Address>?
-
-        try {
-            addresses = geocoder.getFromLocation(
-                latlng.latitude,
-                latlng.longitude,
-                1
-            )
-        } catch (ioException: IOException) {
-            //네트워크 문제
-            Toast.makeText(applicationContext, "서비스 사용불가", Toast.LENGTH_LONG).show()
-            return "서비스 사용불가 지역"
-        } catch (illegalArgumentException: IllegalArgumentException) {
-            Toast.makeText(applicationContext, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show()
-            return "잘못된 GPS 좌표"
-
-        }
-
-
-        if (addresses == null || addresses.isEmpty()) {
-            Toast.makeText(applicationContext, "주소 미발견", Toast.LENGTH_LONG).show()
-            return "주소 미발견"
-
-        } else {
-            val address = addresses[0]
-            return address.getAddressLine(0).toString()
-        }
-    }
-
 }

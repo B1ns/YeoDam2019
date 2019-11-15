@@ -44,7 +44,7 @@ class DialogMap : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(korea))
 
         if (test) {
-            var lan = mapArray
+            val lan = mapArray
             mMap.moveCamera(CameraUpdateFactory.newLatLng(lan[0]))
             for (i in lan) {
                 mMap.addPolyline(PolylineOptions().add(i))

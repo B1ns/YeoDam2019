@@ -35,6 +35,23 @@ class PayActivity : AppCompatActivity() {
 
     fun touch() {
 
+        val touchList = arrayListOf(
+            R.id.pay_food,
+            R.id.pay_sleep,
+            R.id.pay_bus,
+            R.id.pay_museum,
+            R.id.pay_shopping,
+            R.id.pay_mobile,
+            R.id.pay_guide,
+            R.id.pay_etc
+        )
+
+//        when(touchList){
+//            touchList.get(0)->{
+//
+//            }
+//        }
+
         food()
 
         sleep()
@@ -50,7 +67,6 @@ class PayActivity : AppCompatActivity() {
         guide()
 
         etc()
-
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -106,7 +122,7 @@ class PayActivity : AppCompatActivity() {
             if (moneyEditText.text.toString().isNotEmpty()) {
                 getPayText()
                 data()
-            }else{
+            } else {
                 toast("내용을 입력해주세요.")
             }
         }
