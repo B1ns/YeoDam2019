@@ -30,43 +30,7 @@ class PayActivity : AppCompatActivity() {
 
         spinnerListener()
 
-        touch()
-    }
-
-    fun touch() {
-
-        val touchList = arrayListOf(
-            R.id.pay_food,
-            R.id.pay_sleep,
-            R.id.pay_bus,
-            R.id.pay_museum,
-            R.id.pay_shopping,
-            R.id.pay_mobile,
-            R.id.pay_guide,
-            R.id.pay_etc
-        )
-
-//        when(touchList){
-//            touchList.get(0)->{
-//
-//            }
-//        }
-
-        food()
-
-        sleep()
-
-        bus()
-
-        museum()
-
-        shopping()
-
-        mobile()
-
-        guide()
-
-        etc()
+        categoryListener()
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -92,6 +56,7 @@ class PayActivity : AppCompatActivity() {
                     0 -> {
                         moneyEditText.setCurrency("￦")
                     }
+
                     1 -> {
                         moneyEditText.setCurrency("\$")
                     }
@@ -103,6 +68,7 @@ class PayActivity : AppCompatActivity() {
                     3 -> {
                         moneyEditText.setCurrency("¥")
                     }
+
                     4 -> {
                         moneyEditText.setCurrency("£")
                     }
@@ -167,122 +133,108 @@ class PayActivity : AppCompatActivity() {
     여기부터 카테고리 UI 코드입니다
      */
 
-    private fun food() {
+    private fun categoryListener() {
 
         var food = false
-
-        pay_food.setOnClickListener {
-            food = if (!food) {
-                pay_food.setBackgroundResource(R.drawable.ic_btn_food_on)
-                true
-            } else {
-                pay_food.setBackgroundResource(R.drawable.ic_btn_food_off)
-                false
-            }
-        }
-    }
-
-    private fun sleep() {
-
         var sleep = false
-
-        pay_sleep.setOnClickListener {
-            sleep = if (!sleep) {
-                pay_sleep.setBackgroundResource(R.drawable.ic_btn_sleep_on)
-                true
-            } else {
-                pay_sleep.setBackgroundResource(R.drawable.ic_btn_sleep_off)
-                false
-            }
-        }
-    }
-
-    private fun bus() {
-
         var bus = false
-
-        pay_bus.setOnClickListener {
-            bus = if (!bus) {
-                pay_bus.setBackgroundResource(R.drawable.ic_btn_bus_on)
-                true
-            } else {
-                pay_bus.setBackgroundResource(R.drawable.ic_btn_bus_off)
-                false
-            }
-        }
-    }
-
-    private fun museum() {
         var museum = false
-
-        pay_museum.setOnClickListener {
-            museum = if (!museum) {
-                pay_museum.setBackgroundResource(R.drawable.ic_btn_museum_on)
-                true
-            } else {
-                pay_museum.setBackgroundResource(R.drawable.ic_btn_museum_off)
-                false
-            }
-        }
-    }
-
-    // 2번째 라인
-
-    private fun shopping() {
         var shopping = false
-
-        pay_shopping.setOnClickListener {
-            shopping = if (!shopping) {
-                pay_shopping.setBackgroundResource(R.drawable.ic_btn_shopping_on)
-                true
-            } else {
-                pay_shopping.setBackgroundResource(R.drawable.ic_btn_shopping_off)
-                false
-            }
-        }
-    }
-
-    private fun mobile() {
         var mobile = false
-
-        pay_mobile.setOnClickListener {
-            mobile = if (!mobile) {
-                pay_mobile.setBackgroundResource(R.drawable.ic_btn_mobile_on)
-                true
-            } else {
-                pay_mobile.setBackgroundResource(R.drawable.ic_btn_mobile_off)
-                false
-            }
-        }
-    }
-
-    private fun guide() {
         var guide = false
-
-        pay_guide.setOnClickListener {
-            guide = if (!guide) {
-                pay_guide.setBackgroundResource(R.drawable.ic_btn_guide_on)
-                true
-            } else {
-                pay_guide.setBackgroundResource(R.drawable.ic_btn_guide_off)
-                false
-            }
-        }
-    }
-
-    private fun etc() {
-
         var etc = false
 
+        pay_food.setOnClickListener {
+            if (!food) {
+                clearCategory()
+                pay_food.setBackgroundResource(R.drawable.ic_btn_food_on)
+                food = true
+            } else {
+                pay_food.setBackgroundResource(R.drawable.ic_btn_food_off)
+            }
+        }
+
+        pay_sleep.setOnClickListener {
+            if (!sleep) {
+                clearCategory()
+                pay_sleep.setBackgroundResource(R.drawable.ic_btn_sleep_on)
+                sleep = true
+            } else {
+                pay_sleep.setBackgroundResource(R.drawable.ic_btn_sleep_off)
+            }
+        }
+
+        pay_bus.setOnClickListener {
+            if (!bus) {
+                clearCategory()
+                pay_bus.setBackgroundResource(R.drawable.ic_btn_bus_on)
+                bus = true
+            } else {
+                pay_bus.setBackgroundResource(R.drawable.ic_btn_bus_off)
+            }
+        }
+
+        pay_museum.setOnClickListener {
+            if (!museum) {
+                clearCategory()
+                pay_museum.setBackgroundResource(R.drawable.ic_btn_museum_on)
+                museum = true
+            } else {
+                pay_museum.setBackgroundResource(R.drawable.ic_btn_museum_off)
+            }
+        }
+
+        pay_shopping.setOnClickListener {
+            if (!shopping) {
+                clearCategory()
+                pay_shopping.setBackgroundResource(R.drawable.ic_btn_shopping_on)
+                shopping = true
+            } else {
+                pay_shopping.setBackgroundResource(R.drawable.ic_btn_shopping_off)
+            }
+        }
+
+        pay_mobile.setOnClickListener {
+            if (!mobile) {
+                clearCategory()
+                pay_mobile.setBackgroundResource(R.drawable.ic_btn_mobile_on)
+                mobile = true
+            } else {
+                pay_mobile.setBackgroundResource(R.drawable.ic_btn_mobile_off)
+            }
+        }
+
+        pay_guide.setOnClickListener {
+            if (!guide) {
+                clearCategory()
+                pay_guide.setBackgroundResource(R.drawable.ic_btn_guide_on)
+                guide = true
+            } else {
+                pay_guide.setBackgroundResource(R.drawable.ic_btn_guide_off)
+            }
+        }
+
         pay_etc.setOnClickListener {
-            etc = if (!etc) {
+            if (!etc) {
+                clearCategory()
                 pay_etc.setBackgroundResource(R.drawable.btn_etc_on)
-                true
+                etc = true
             } else {
                 pay_etc.setBackgroundResource(R.drawable.btn_etc_off)
-                false
             }
         }
 
     }
+
+    private fun clearCategory() {
+        pay_food.setBackgroundResource(R.drawable.ic_btn_food_off)
+        pay_sleep.setBackgroundResource(R.drawable.ic_btn_sleep_off)
+        pay_bus.setBackgroundResource(R.drawable.ic_btn_bus_off)
+        pay_museum.setBackgroundResource(R.drawable.ic_btn_museum_off)
+        pay_shopping.setBackgroundResource(R.drawable.ic_btn_shopping_off)
+        pay_mobile.setBackgroundResource(R.drawable.ic_btn_mobile_off)
+        pay_guide.setBackgroundResource(R.drawable.ic_btn_guide_off)
+        pay_etc.setBackgroundResource(R.drawable.btn_etc_off)
+    }
+
 }

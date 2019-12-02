@@ -26,12 +26,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.yeodam.yeodam2019.data.UserDTO
-import com.yeodam.yeodam2019.fcm.FcmCheck
 import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.view.activity.splash.OnboardingActivity
-import kotlinx.android.synthetic.main.activity_info.*
 import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.activity_setting.*
 import org.jetbrains.anko.startActivity
 
 class ProfileActivity : AppCompatActivity() {
