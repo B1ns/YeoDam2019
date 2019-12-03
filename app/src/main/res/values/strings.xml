@@ -6,7 +6,7 @@
         <item>¥(엔)</item>
         <item>£(파운드)</item>
     </array>
-    <string name="app_name">YeoDam</string>
+    <string name="app_name">Yeodam</string>
     <string name="next">Next</string>
     <string name="skip">Skip</string>
     <string name="get_started">Google 계정으로 로그인</string>

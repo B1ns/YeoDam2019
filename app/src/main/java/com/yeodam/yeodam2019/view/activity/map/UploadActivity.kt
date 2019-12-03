@@ -322,7 +322,7 @@ class UploadActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 GALLERY_REQUEST_CODE -> {
-                    var selectedImage = data?.data
+                    val selectedImage = data?.data
 
                     StoryImage = selectedImage.toString()
                     filePath = selectedImage
