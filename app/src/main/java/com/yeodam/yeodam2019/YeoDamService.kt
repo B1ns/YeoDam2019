@@ -56,8 +56,6 @@ open class YeoDamService : Service() {
 
     var loadMap = false
 
-    val TAG = "WOW"
-
     var lastLatitude: Double = 0.0
     var lastLongitude: Double = 0.0
 
@@ -67,8 +65,6 @@ open class YeoDamService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-
-
 
         val notificationIntent = Intent(this, MapActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
