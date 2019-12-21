@@ -77,6 +77,7 @@ dependencies {
     implementation 'com.gdacciaro:iosdialog:1.0.3'
     implementation 'com.wajahatkarim3.EasyMoney-Widgets:EasyMoney-Widgets:1.0.0'
     implementation 'jp.wasabeef:blurry:3.0.0'
+    implementation 'com.github.tntkhang:full-screen-image-view-library:1.1.0'
 
     // Lottie
     implementation 'com.airbnb.android:lottie:3.0.0'
@@ -91,7 +92,7 @@ dependencies {
     implementation "org.jetbrains.anko:anko:$anko_version"
 
     // CameraX Libs
-    def camerax_version = "1.0.0-alpha07"
+    def camerax_version = "1.0.0-alpha08"
     implementation "androidx.camera:camera-core:${camerax_version}"
     implementation "androidx.camera:camera-camera2:${camerax_version}"
 

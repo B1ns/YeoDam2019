@@ -3,9 +3,7 @@ package com.yeodam.yeodam2019.view.activity.map
 import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
-import android.content.ContentValues
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
@@ -16,6 +14,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.os.IBinder
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
@@ -50,10 +49,7 @@ import kotlinx.android.synthetic.main.activity_map_activity.*
 import kotlinx.android.synthetic.main.appbar.*
 import kotlinx.android.synthetic.main.map_finish_dialog.view.*
 import kotlinx.io.OutputStream
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.noButton
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.yesButton
+import org.jetbrains.anko.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.File.separator
@@ -141,8 +137,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         locationInit()
 
         buttonListener()
-
-        startServiceYeoDam()
 
         val requestCamera = permissionsBuilder(Manifest.permission.CAMERA).build()
         requestCamera.send()
@@ -431,9 +425,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
     }
 
-//    private fun showMap() {
-//        startActivity<DialogMap>()
-//    }
 
     @SuppressLint("RestrictedApi")
     fun fab_Hide() {
@@ -800,13 +791,40 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     override fun onStart() {
         super.onStart()
 
-        for(location in Map){
+        // 바인딩
+        val intent = Intent(this, YeoDamService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
 
-            Log.d("wow", location.toString())
-            rePolylineOptions.add(location)
-            mMap.addPolyline(rePolylineOptions)
+
+    }
 
 
+    override fun onStop() {
+        super.onStop()
+
+        // 언 바인딩
+        unbindService(serviceConnection)
+        bound = false
+    }
+
+    private lateinit var bindingService: YeoDamService
+    private var bound: Boolean = false
+
+    private val serviceConnection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName?, service: IBinder?) {
+            val binder = service as YeoDamService.LocalBinder
+            bindingService = binder.getService()
+            bound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName?) {
+            bound = false
         }
 
     }
@@ -814,7 +832,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     override fun onRestart() {
         super.onRestart()
 
-        for(location in Map){
+        for (location in Map) {
 
             Log.d("wow2", location.toString())
             rePolylineOptions.add(location)

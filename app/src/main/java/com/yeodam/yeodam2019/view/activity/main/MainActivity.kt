@@ -173,7 +173,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun getUserData() {
 
         val user = FirebaseAuth.getInstance().currentUser
