@@ -478,6 +478,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        val mapStyleOptions = MapStyleOptions.loadRawResourceStyle(this, R.raw.google_style)
+
+        mMap.setMapStyle(mapStyleOptions)
+
         mMap.uiSettings.isMyLocationButtonEnabled = false
         mMap.uiSettings.isCompassEnabled = false
 
@@ -895,4 +899,5 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             }
         }
     }
+
 }

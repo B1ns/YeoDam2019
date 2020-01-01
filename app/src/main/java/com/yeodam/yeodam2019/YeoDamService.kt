@@ -134,12 +134,12 @@ open class YeoDamService : Service() {
     override fun onBind(intent: Intent?): IBinder? {
         return locaalBinder
     }
-
-    fun gpsTracker(context: Context) {
-        this.mContext = context
-//        tracking()
-    }
-
+//
+//    fun gpsTracker(context: Context) {
+//        this.mContext = context
+////        tracking()
+//    }
+//
 //    fun tracking(): Location {
 //
 //        try {
