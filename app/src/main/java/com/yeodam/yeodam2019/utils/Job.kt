@@ -4,7 +4,7 @@ import android.net.Uri
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 
-class job(uri: Uri) : Any(), ClusterItem {
+class Job(uri: Uri) : Any(), ClusterItem {
 
     private var lat: Double = 0.0
     private var lon: Double = 0.0

@@ -18,6 +18,9 @@ class ServiceActivity : AppCompatActivity() {
         serviceViewpager.adapter = ServiceActivity@ adapter
         serviceTab.setupWithViewPager(serviceViewpager)
 
+        setting_toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
     }
 
 }

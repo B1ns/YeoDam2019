@@ -42,6 +42,15 @@ data class YeoDamData(
     var PhotoUri: ArrayList<Uri>? = null
 ) : Parcelable
 
+@Parcelize
+data class latData(
+    var lat: ArrayList<Double>
+) : Parcelable
+
+@Parcelize
+data class lonData(
+    var lon: ArrayList<Double>
+) : Parcelable
 
 data class userCount(var DayCount: Int? = null, var KmCount: Int? = null)
 

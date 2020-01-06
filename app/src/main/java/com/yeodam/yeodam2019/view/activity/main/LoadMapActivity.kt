@@ -28,7 +28,7 @@ import com.yeodam.yeodam2019.data.YeoDam
 import kotlinx.android.synthetic.main.appbar.*
 import org.jetbrains.anko.startActivity
 
-class loadMapActivity : AppCompatActivity(), OnMapReadyCallback {
+class LoadMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private lateinit var mMap: GoogleMap

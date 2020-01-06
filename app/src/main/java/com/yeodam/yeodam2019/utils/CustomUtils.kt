@@ -16,8 +16,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions
 import com.nostra13.universalimageloader.core.ImageLoader
 import com.yeodam.yeodam2019.R
 
-class customUtils
-    (context: Context, googleMap: GoogleMap, clusterManager: ClusterManager<job>) : DefaultClusterRenderer<job>(
+class CustomUtils
+    (context: Context, googleMap: GoogleMap, clusterManager: ClusterManager<Job>) : DefaultClusterRenderer<Job>(
     context,
     googleMap,
     clusterManager
@@ -59,20 +59,20 @@ class customUtils
             .build()
     }
 
-    override fun onBeforeClusterItemRendered(jobItem: job, markerOptions: MarkerOptions?) {
+    override fun onBeforeClusterItemRendered(jobItem: Job, markerOptions: MarkerOptions?) {
         ImageLoader.getInstance().displayImage(jobItem.getUri(), imageView, options)
 //        var icon = iconGenerator?.makeIcon(job.getName())
 //        markerOptions?.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(job.getName())
     }
 
-    override fun onBeforeClusterRendered(cluster: Cluster<job>?, markerOptions: MarkerOptions?) {
+    override fun onBeforeClusterRendered(cluster: Cluster<Job>?, markerOptions: MarkerOptions?) {
         var iterator = cluster?.items?.iterator()
         ImageLoader.getInstance().displayImage(iterator?.next()?.getUri(), clusterImageView, options)
         var icon = clusterIconGenerator?.makeIcon(iterator?.next()?.getName())
         markerOptions?.icon(BitmapDescriptorFactory.fromBitmap(icon))
     }
 
-    override fun shouldRenderAsCluster(cluster: Cluster<job>?): Boolean {
+    override fun shouldRenderAsCluster(cluster: Cluster<Job>?): Boolean {
         return cluster!!.size > 1
     }
 }

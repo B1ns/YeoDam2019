@@ -3,6 +3,7 @@ package com.yeodam.yeodam2019.view.activity.map
 import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.app.ActivityManager
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.*
@@ -28,6 +29,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.gdacciaro.iOSDialog.iOSDialogBuilder
 import com.yeodam.yeodam2019.R
@@ -129,7 +131,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
         locationInit()
 
-        buttonListener()
+        buttonListener(story)
 
         val requestCamera = permissionsBuilder(Manifest.permission.CAMERA).build()
         requestCamera.send()
@@ -145,9 +147,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         toast.show()
     }
 
-    private fun buttonListener() {
+    private fun buttonListener(e: Boolean) {
 
-        if (!storyStop) {
+        val storyAction = e
+
+        if (storyAction) {
             editLayout.setOnClickListener {
                 val intent = Intent(this, MemoActivity::class.java)
                 startActivityForResult(intent, REQUEST_CODE)
@@ -161,7 +165,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                 val intent = Intent(this, PayActivity::class.java)
                 startActivityForResult(intent, CREDIT_CODE)
             }
-        } else if (storyStop) {
+        } else {
             editLayout.setOnClickListener {
                 reStartToast()
             }
@@ -310,16 +314,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
         fab_stop.setOnClickListener {
             toggleFab()
-            story = false
-            storyStop = true
             fab_Hide()
+
+            buttonListener(false)
             map_slider.visibility = View.VISIBLE
             map_slider.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
                 override fun onSlideComplete(view: SlideToActView) {
                     map_slider.resetSlider()
+                    buttonListener(true)
                     map_slider.visibility = View.GONE
                     story = true
-                    storyStop = false
                     fab_Show()
                 }
             }
@@ -533,10 +537,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         // 업데이트 인터벌
         // 위치 정보가 없을때는 업데이트 안 함
-        locationRequest.interval = 50000
+        locationRequest.interval = 20000
 
         // 정확함. 이것보다 짧은 업데이트는 하지 않음
-        locationRequest.fastestInterval = 50000
+        locationRequest.fastestInterval = 10000
 
     }
 
@@ -570,7 +574,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         stopService(intent)
         removeLocationListener()
     }
-
 
     private fun permissionCheck(cancel: () -> Unit, ok: () -> Unit) {
         if (ContextCompat.checkSelfPermission(
@@ -683,7 +686,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                     yeodamLatLng = LatLng(myLatitude, myLongitude)
                     Map.add(yeodamLatLng)
 
-                    Log.d("test", Map.toString())
 
                 }
 
@@ -788,30 +790,42 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             val yeoDamService = YeoDamService()
-            if (yeoDamService.serviceRun()) {
+            if (isMyServiceRunning(YeoDamService::class.java)) {
 
                 toast("여행은 즐거우신가요 ?")
 
-                var myLat = ArrayList<Double>()
-                var myLon = ArrayList<Double>()
+                yeoDamService.contextInit(this)
+                yeoDamService.sendLocation()
 
-                for (latitude in yeoDamService.myLatitude) {
-                    myLat.add(latitude)
+                val messageReceiver = object : BroadcastReceiver() {
+                    override fun onReceive(context: Context, intent: Intent) {
+
+                        val myLat = intent.getSerializableExtra("lat") as ArrayList<Double>
+                        val myLon = intent.getSerializableExtra("lon") as ArrayList<Double>
+
+                        Log.d("TestLog", myLat.toString())
+                        Log.d("TestLog", myLon.toString())
+
+                        val size = myLat.size + myLon.size / 2
+
+                        Log.d("TestSize", size.toString())
+                        var count = 0
+                        while (size > count) {
+
+                            Log.d("logTest", "ok3")
+                            Log.d("logTest", size.toString())
+
+                            polylineOptions.add(LatLng(myLat[count], myLon[count]))
+                            mMap.addPolyline(polylineOptions)
+
+                            count++
+                        }
+                    }
                 }
 
-                for (longitude in yeoDamService.myLongitude) {
-                    myLon.add(longitude)
-                }
+                LocalBroadcastManager.getInstance(this)
+                    .registerReceiver(messageReceiver, IntentFilter("intent_action"))
 
-                val size = myLat.size + myLon.size / 2
-                var count = 0
-                while (size > count) {
-
-                    polylineOptions.add(LatLng(myLat[count], myLon[count]))
-                    mMap.addPolyline(polylineOptions)
-
-                    count++
-                }
 
             } else {
 
@@ -826,32 +840,42 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         } else {
 
             val yeoDamService = YeoDamService()
-            if (yeoDamService.serviceRun()) {
+            if (isMyServiceRunning(YeoDamService::class.java)) {
 
                 toast("여행은 즐거우신가요 ?")
 
-                var myLat = ArrayList<Double>()
-                var myLon = ArrayList<Double>()
+                yeoDamService.contextInit(this)
+                yeoDamService.sendLocation()
 
-                for (latitude in yeoDamService.myLatitude) {
-                    myLat.add(latitude)
+                val messageReceiver = object : BroadcastReceiver() {
+                    override fun onReceive(context: Context, intent: Intent) {
+
+                        val myLat = intent.getSerializableExtra("lat") as ArrayList<Double>
+                        val myLon = intent.getSerializableExtra("lon") as ArrayList<Double>
+
+                        Log.d("TestLog", myLat.toString())
+                        Log.d("TestLog", myLon.toString())
+
+                        val size = myLat.size + myLon.size / 2
+
+                        Log.d("TestSize", size.toString())
+                        var count = 0
+                        while (size > count) {
+
+                            Log.d("logTest", "ok3")
+                            Log.d("logTest", size.toString())
+
+                            polylineOptions.add(LatLng(myLat[count], myLon[count]))
+                            mMap.addPolyline(polylineOptions)
+
+                            count++
+                        }
+                    }
                 }
 
-                for (longitude in yeoDamService.myLongitude) {
-                    myLon.add(longitude)
-                }
+                LocalBroadcastManager.getInstance(this)
+                    .registerReceiver(messageReceiver, IntentFilter("intent_action"))
 
-                val size = myLat.size + myLon.size / 2
-                var count = 0
-                while (size > count) {
-
-                    polylineOptions.add(LatLng(myLat[count], myLon[count]))
-                    mMap.addPolyline(polylineOptions)
-
-                    Log.d("Log", "Log")
-
-                    count++
-                }
 
             } else {
                 yeoDamService.contextInit(this)
@@ -866,6 +890,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        removeLocationListener()
+    }
 
     private val mapServiceConnection = object : ServiceConnection {
 
@@ -885,6 +914,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             Log.d("TAG", "not bind")
 
         }
+    }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+
+        return false
     }
 
 }

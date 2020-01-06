@@ -1,6 +1,5 @@
 package com.yeodam.yeodam2019.view.adapter
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.view.activity.main.DeleteActivity
-import com.yeodam.yeodam2019.view.activity.main.loadMapActivity
+import com.yeodam.yeodam2019.view.activity.main.LoadMapActivity
 
 
 open class CardViewAdapter(val context: Context, val storyList: ArrayList<Story>) :
@@ -63,7 +62,7 @@ open class CardViewAdapter(val context: Context, val storyList: ArrayList<Story>
             }
 
             cardImageView.setOnClickListener {
-                val intent = Intent(context, loadMapActivity::class.java)
+                val intent = Intent(context, LoadMapActivity::class.java)
                 intent.putExtra("asd", story.firstTitle)
                 ContextCompat.startActivity(context, intent, Bundle())
             }

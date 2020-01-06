@@ -1,9 +1,7 @@
 package com.yeodam.yeodam2019.view.adapter
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +10,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.yeodam.yeodam2019.EmployeeDiffCallback
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.view.activity.main.DeleteActivity
-import com.yeodam.yeodam2019.view.activity.main.loadMapActivity
+import com.yeodam.yeodam2019.view.activity.main.LoadMapActivity
 
 class ListViewAdapter(val context: Context, private val storyList: ArrayList<Story>) :
     RecyclerView.Adapter<ListViewAdapter.Holder>() {
@@ -64,7 +60,7 @@ class ListViewAdapter(val context: Context, private val storyList: ArrayList<Sto
             }
 
             listLayoit.setOnClickListener {
-                val intent = Intent(context , loadMapActivity::class.java)
+                val intent = Intent(context , LoadMapActivity::class.java)
                 intent.putExtra("index", story.firstTitle)
                 ContextCompat.startActivity(context, intent, Bundle())
             }

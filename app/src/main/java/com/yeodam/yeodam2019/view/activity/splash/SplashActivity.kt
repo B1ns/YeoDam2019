@@ -49,7 +49,7 @@ class SplashActivity : AppCompatActivity() {
                 finish()
             }
 
-        }, 2000)
+        }, 1200)
     }
 
     private fun getUserData() {

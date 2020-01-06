@@ -3,6 +3,7 @@ package com.yeodam.yeodam2019.view.activity.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.yeodam.yeodam2019.R
+import kotlinx.android.synthetic.main.activity_notification.*
 import kotlinx.android.synthetic.main.appbar.*
 
 class NotificationActivity : AppCompatActivity() {
@@ -15,10 +16,10 @@ class NotificationActivity : AppCompatActivity() {
     }
 
     private fun buttonListener() {
-        mapHome_btn.setOnClickListener {
+
+        notification_toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
-
 
     }
 }
