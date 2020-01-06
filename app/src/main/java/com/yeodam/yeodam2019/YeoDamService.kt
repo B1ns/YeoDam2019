@@ -14,6 +14,10 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import com.yeodam.yeodam2019.App.Companion.CHANNEL_ID
 import com.yeodam.yeodam2019.App.Companion.CHANNEL_NAME
@@ -35,27 +39,34 @@ open class YeoDamService : Service() {
     var mapPayInfo = ArrayList<String>()
     var mapPayLocation = ArrayList<LatLng>()
 
-    var loadMap = false
 
-    var lastLatitude: Double = 0.0
-    var lastLongitude: Double = 0.0
+    var lat: Double = 0.0
+    var lon: Double = 0.0
+    var count: Int = 0
+    var startYeoDam = false
 
-    private var mLocationManager: LocationManager? = null
-    private val LOCATION_INTERVAL = 1000
-    private val LOCATION_DISTANCE = 10f
+    // data
+
+    var myLatitude = ArrayList<Double>()
+    var myLongitude = ArrayList<Double>()
 
     // 바인더 객체
 
-    private val locaalBinder = LocalBinder()
+    private val localBinder = LocalBinder()
 
-    // Location 객체
+    // Location
 
-    lateinit var location: Location
-    protected lateinit var locationManager: LocationManager
+    lateinit var locationCallback: MyLocationCallback
+    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    lateinit var locationRequest: LocationRequest
 
     // context
 
     private lateinit var mContext: Context
+
+    fun contextInit(context: Context) {
+        mContext = context
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -97,67 +108,70 @@ open class YeoDamService : Service() {
 
     }
 
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return super.onStartCommand(intent, flags, startId)
 
-        /* startService()를 호출하면 이 콜백 메서드가 호출이 됩니다. 이 부분에서 Intent를 전달받습니다. */
-
-        // MapActivity 데이터를 받아오는 작업
-
-
-        super.onStartCommand(intent, flags, startId)
-
-        return START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
-        // 서비스 종료시 할 것들 정리
-        Log.d("wow", "start")
-
-
-        val intent = Intent("intent_action")
-
-        loadMap = true
-
-        intent.putExtra("mapLatitude", mapLatitude)
-        intent.putExtra("mapLongitude", mapLongitude)
-        intent.putExtra("loadMap", loadMap)
-
         super.onDestroy()
+
     }
 
+
+    fun locationInit() {
+
+        fusedLocationProviderClient = FusedLocationProviderClient(mContext)
+
+        locationCallback = MyLocationCallback()
+
+        locationRequest = LocationRequest()
+
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
+        locationRequest.interval = 20000
+
+        locationRequest.fastestInterval = 8000
+
+        addLocationListener()
+    }
+
+    fun addLocationListener() {
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
+    }
+
+    inner class MyLocationCallback : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult?) {
+            super.onLocationResult(locationResult)
+
+            val location = locationResult?.lastLocation
+
+            location?.run {
+                lat = latitude
+                lon = longitude
+
+                myLatitude.add(lat)
+                myLongitude.add(lon)
+
+                Log.d("Hello", "$count | $lat, $lon")
+
+                count++
+            }
+
+        }
+    }
+
+    override fun onBind(intent: Intent?): IBinder? {
+
+        return localBinder
+    }
 
     inner class LocalBinder : Binder() {
         fun getService(): YeoDamService = this@YeoDamService
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return locaalBinder
+    fun serviceRun(): Boolean {
+        return startYeoDam
     }
-//
-//    fun gpsTracker(context: Context) {
-//        this.mContext = context
-////        tracking()
-//    }
-//
-//    fun tracking(): Location {
-//
-//        try {
-//
-//            locationManager = mContext.getSystemService(LOCATION_SERVICE) as LocationManager
-//
-//            val isGPSEnabled =
-//                locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-//            val isNetworkEnabled =
-//                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-//
-//
-//
-//
-//        } catch (e: Exception) {
-//
-//        }
-////        return location
-//    }
 
 }

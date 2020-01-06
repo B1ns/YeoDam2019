@@ -13,7 +13,6 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.os.IBinder
 import android.provider.MediaStore
 import android.util.Log
@@ -26,7 +25,6 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -42,27 +40,19 @@ import com.google.android.gms.maps.model.*
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.YeoDamService
 import com.yeodam.yeodam2019.toast
+import com.yeodam.yeodam2019.utils.SaveImage
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import com.yeodam.yeodam2019.view.activity.map.write.MemoActivity
 import com.yeodam.yeodam2019.view.activity.map.write.PayActivity
 import kotlinx.android.synthetic.main.activity_map_activity.*
 import kotlinx.android.synthetic.main.appbar.*
 import kotlinx.android.synthetic.main.map_finish_dialog.view.*
-import kotlinx.io.OutputStream
 import org.jetbrains.anko.*
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.File.separator
-import java.io.FileOutputStream
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.random.Random
 
-@Suppress(
-    "RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "DEPRECATION",
-    "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS"
-)
+
 class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
     private lateinit var mMap: GoogleMap
@@ -73,7 +63,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     private val REQUEST_CODE = 3000
 
     private val polylineOptions = PolylineOptions().width(10f).color(Color.argb(50, 89, 211, 238))
-    private val rePolylineOptions = PolylineOptions().width(10f).color(Color.argb(50, 89, 211, 238))
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -116,6 +105,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     private var PhotoUri = ArrayList<Uri>()
 
     private var PhotoBitmap = ArrayList<Bitmap>()
+
+    // binding data
+    private lateinit var bindingService: YeoDamService
+    private var bound: Boolean = false
 
     // 여기까지
     @SuppressLint("RestrictedApi")
@@ -249,6 +242,25 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
     }
 
+    private fun addImageMarker(bitmap: Bitmap): Bitmap {
+
+        val ImageLatLng = LatLng(myLatitude, myLongitude)
+
+        mMap.addMarker(
+            MarkerOptions().position(ImageLatLng).icon(
+                BitmapDescriptorFactory.fromBitmap(
+                    bitmap
+                )
+            )
+        )
+
+        Photo.add(bitmap.toString())
+
+        PhotoLocation.add(ImageLatLng)
+
+        return bitmap
+    }
+
     /*
     *  Start double floating action button
     */
@@ -304,7 +316,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             map_slider.visibility = View.VISIBLE
             map_slider.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
                 override fun onSlideComplete(view: SlideToActView) {
-                    startServiceYeoDam()
                     map_slider.resetSlider()
                     map_slider.visibility = View.GONE
                     story = true
@@ -512,25 +523,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         })
     }
 
-    private fun addImageMarker(bitmap: Bitmap): Bitmap {
-
-        val ImageLatLng = LatLng(myLatitude, myLongitude)
-
-        mMap.addMarker(
-            MarkerOptions().position(ImageLatLng).icon(
-                BitmapDescriptorFactory.fromBitmap(
-                    bitmap
-                )
-            )
-        )
-
-        Photo.add(bitmap.toString())
-
-        PhotoLocation.add(ImageLatLng)
-
-        return bitmap
-    }
-
     private fun locationInit() {
         fusedLocationProviderClient = FusedLocationProviderClient(this)
 
@@ -571,11 +563,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
     private fun removeLocationListener() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-    }
-
-    fun startServiceYeoDam() {
-        val intent = Intent(this, YeoDamService::class.java)
-        ContextCompat.startForegroundService(this, intent)
     }
 
     fun stopServiceYeoDam() {
@@ -763,7 +750,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
             val imageBitmap = data?.extras?.get("data") as Bitmap
 
-            saveImage(imageBitmap, applicationContext, title)
+//            saveImage(imageBitmap, applicationContext, title)
+
+            val imageSave = SaveImage()
+            imageSave.saveImage(imageBitmap, applicationContext, title)
 
             val dataUri = data.data
 
@@ -798,105 +788,68 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         // 바인딩
         val intent = Intent(this, YeoDamService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            val yeoDamService = YeoDamService()
+            if (yeoDamService.serviceRun()) {
+
+                toast("여행은 즐거우신가요 ?")
+
+                var myLat = ArrayList<Double>()
+                var myLon = ArrayList<Double>()
+
+                for (latitude in yeoDamService.myLatitude){
+                    myLat.add(latitude)
+                }
+
+                for (longitude in yeoDamService.myLongitude){
+                    myLon.add(longitude)
+                }
+
+
+
+            } else {
+                yeoDamService.contextInit(this)
+                yeoDamService.locationInit()
+                yeoDamService.startYeoDam = true
+
+            }
+
             startForegroundService(intent)
+            bindService(intent, mapServiceConnection, Context.BIND_NOT_FOREGROUND)
+
         } else {
+
             startService(intent)
+            bindService(intent, mapServiceConnection, Context.BIND_NOT_FOREGROUND)
+
         }
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
 
 
     }
 
 
-    override fun onStop() {
-        super.onStop()
+    private val mapServiceConnection = object : ServiceConnection {
 
-        // 언 바인딩
-        unbindService(serviceConnection)
-        bound = false
-    }
-
-    private lateinit var bindingService: YeoDamService
-    private var bound: Boolean = false
-
-    private val serviceConnection = object : ServiceConnection {
-
-        override fun onServiceConnected(className: ComponentName?, service: IBinder?) {
+        // 서비스와 연결되었을 때
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
             val binder = service as YeoDamService.LocalBinder
             bindingService = binder.getService()
             bound = true
+
+            Log.d("TAG", "bind ok")
         }
 
-        override fun onServiceDisconnected(arg0: ComponentName?) {
+        // 서비스와 연결해제되었을 때
+        override fun onServiceDisconnected(arg0: ComponentName) {
             bound = false
-        }
 
-    }
+            Log.d("TAG", "not bind")
 
-    override fun onRestart() {
-        super.onRestart()
-
-        for (location in Map) {
-
-            Log.d("wow2", location.toString())
-            rePolylineOptions.add(location)
-            mMap.addPolyline(rePolylineOptions)
-
-        }
-
-    }
-
-    /// @param folderName can be your app's name
-    private fun saveImage(bitmap: Bitmap, context: Context, folderName: String) {
-        if (Build.VERSION.SDK_INT >= 29) {
-            val values = contentValues()
-            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$folderName")
-            values.put(MediaStore.Images.Media.IS_PENDING, true)
-            // RELATIVE_PATH and IS_PENDING are introduced in API 29.
-
-            val uri: Uri? =
-                context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-            if (uri != null) {
-                saveImageToStream(bitmap, context.contentResolver.openOutputStream(uri))
-                values.put(MediaStore.Images.Media.IS_PENDING, false)
-                context.contentResolver.update(uri, values, null, null)
-            }
-        } else {
-            val directory =
-                File(Environment.getExternalStorageDirectory().toString() + separator + folderName)
-            // getExternalStorageDirectory is deprecated in API 29
-
-            if (!directory.exists()) {
-                directory.mkdirs()
-            }
-            val fileName = "Yeodam" + System.currentTimeMillis().toString() + ".png"
-            val file = File(directory, fileName)
-            saveImageToStream(bitmap, FileOutputStream(file))
-            if (file.absolutePath != null) {
-                val values = contentValues()
-                values.put(MediaStore.Images.Media.DATA, file.absolutePath)
-                // .DATA is deprecated in API 29
-                context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-            }
-        }
-    }
-
-    private fun contentValues(): ContentValues {
-        val values = ContentValues()
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
-        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
-        return values
-    }
-
-    private fun saveImageToStream(bitmap: Bitmap, outputStream: OutputStream?) {
-        if (outputStream != null) {
-            try {
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                outputStream.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
         }
     }
 
