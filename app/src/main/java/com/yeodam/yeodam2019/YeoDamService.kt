@@ -184,8 +184,4 @@ open class YeoDamService : Service(), Serializable {
         fun getService(): YeoDamService = this@YeoDamService
     }
 
-    fun serviceRun(): Boolean {
-        return startYeoDam
-    }
-
 }
