@@ -46,10 +46,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:tabRippleColor="@android:color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/service_Appbar"
-        app:tabBackground="@android:color/white"
+        app:tabBackground="@drawable/tab_color_selector"
+        app:tabRippleColor="@android:color/black"
         app:tabTextColor="@android:color/black" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

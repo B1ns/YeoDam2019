@@ -750,8 +750,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
             val imageBitmap = data?.extras?.get("data") as Bitmap
 
-//            saveImage(imageBitmap, applicationContext, title)
-
             val imageSave = SaveImage()
             imageSave.saveImage(imageBitmap, applicationContext, title)
 
@@ -797,38 +795,74 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                 var myLat = ArrayList<Double>()
                 var myLon = ArrayList<Double>()
 
-                for (latitude in yeoDamService.myLatitude){
+                for (latitude in yeoDamService.myLatitude) {
                     myLat.add(latitude)
                 }
 
-                for (longitude in yeoDamService.myLongitude){
+                for (longitude in yeoDamService.myLongitude) {
                     myLon.add(longitude)
                 }
 
+                val size = myLat.size + myLon.size / 2
+                var count = 0
+                while (size > count) {
 
+                    polylineOptions.add(LatLng(myLat[count], myLon[count]))
+                    mMap.addPolyline(polylineOptions)
+
+                    count++
+                }
+
+            } else {
+
+                yeoDamService.contextInit(this)
+                yeoDamService.locationInit()
+                yeoDamService.startYeoDam = true
+
+                startForegroundService(intent)
+                bindService(intent, mapServiceConnection, Context.BIND_NOT_FOREGROUND)
+            }
+
+        } else {
+
+            val yeoDamService = YeoDamService()
+            if (yeoDamService.serviceRun()) {
+
+                toast("여행은 즐거우신가요 ?")
+
+                var myLat = ArrayList<Double>()
+                var myLon = ArrayList<Double>()
+
+                for (latitude in yeoDamService.myLatitude) {
+                    myLat.add(latitude)
+                }
+
+                for (longitude in yeoDamService.myLongitude) {
+                    myLon.add(longitude)
+                }
+
+                val size = myLat.size + myLon.size / 2
+                var count = 0
+                while (size > count) {
+
+                    polylineOptions.add(LatLng(myLat[count], myLon[count]))
+                    mMap.addPolyline(polylineOptions)
+
+                    Log.d("Log", "Log")
+
+                    count++
+                }
 
             } else {
                 yeoDamService.contextInit(this)
                 yeoDamService.locationInit()
                 yeoDamService.startYeoDam = true
 
+                startService(intent)
+                bindService(intent, mapServiceConnection, Context.BIND_NOT_FOREGROUND)
             }
 
-            startForegroundService(intent)
-            bindService(intent, mapServiceConnection, Context.BIND_NOT_FOREGROUND)
-
-        } else {
-
-            startService(intent)
-            bindService(intent, mapServiceConnection, Context.BIND_NOT_FOREGROUND)
-
         }
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
 
     }
 
