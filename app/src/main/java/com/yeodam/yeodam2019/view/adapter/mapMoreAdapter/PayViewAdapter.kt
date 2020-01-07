@@ -37,7 +37,7 @@ class PayViewAdapter(val context: FragmentActivity?, val mapMorePay: ArrayList<M
 
         val pay : TextView = itemView.findViewById(R.id.more_pay)
         val payInfo : TextView = itemView.findViewById(R.id.more_pay_info)
-        val payLayout : LinearLayout = itemView.findViewById(R.id.more_pay_layout)
+        val payLayout : LinearLayout = itemView.findViewById(R.id.PayItem)
 
         fun bind(mapMorePay: MapMorePay, context: FragmentActivity?) {
 

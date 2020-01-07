@@ -26,7 +26,7 @@ open class MapMorePhotoFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_map_more_photo, container, false)
 
         val mAdapter = PhotoViewAdapter(activity, photoStory)
-        val mLayoutManager = GridLayoutManager(context, 3)
+        val mLayoutManager = GridLayoutManager(context, 4)
         val recyclerView = v.findViewById<RecyclerView>(R.id.map_photo_recyclerView)
 
         val extra = arguments

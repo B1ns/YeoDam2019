@@ -339,7 +339,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
             val cameraPosition = CameraPosition.Builder()
                 .target(LatLng(myLatitude, myLongitude))
-                .zoom(17f)
+                .zoom(16f)
                 .bearing(0F)
                 .build()
 
@@ -395,8 +395,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
         mDialogView.dialog_yes.setOnClickListener {
             mAlertDialog.dismiss()
-
-            stopServiceYeoDam()
 
             val intent = Intent(this, UploadActivity::class.java)
             intent.putParcelableArrayListExtra("Map", Map)
@@ -630,6 +628,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                     toggleFab()
                     dialog.dismiss()
                     finish()
+                    stopServiceYeoDam()
                     startActivity<MainActivity>()
                 }
                 .setNegativeListener(
@@ -790,12 +789,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             val yeoDamService = YeoDamService()
+            yeoDamService.contextInit(this)
+
             if (isMyServiceRunning(YeoDamService::class.java)) {
 
                 toast("여행은 즐거우신가요 ?")
 
-                yeoDamService.contextInit(this)
-                yeoDamService.sendLocation()
+
+                val localBroadcastManager = LocalBroadcastManager.getInstance(this)
+                val putIntent = Intent("intent_action")
+                putIntent.putExtra("OK", "on_Start_OK")
+                localBroadcastManager.sendBroadcast(intent)
+
 
                 val messageReceiver = object : BroadcastReceiver() {
                     override fun onReceive(context: Context, intent: Intent) {
@@ -829,7 +834,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
             } else {
 
-                yeoDamService.contextInit(this)
                 yeoDamService.locationInit()
                 yeoDamService.startYeoDam = true
 
@@ -844,8 +848,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
                 toast("여행은 즐거우신가요 ?")
 
-                yeoDamService.contextInit(this)
-                yeoDamService.sendLocation()
+                val localBroadcastManager = LocalBroadcastManager.getInstance(this)
+                val putIntent = Intent("intent_action")
+                putIntent.putExtra("OK", "on_Start_OK")
+                localBroadcastManager.sendBroadcast(intent)
 
                 val messageReceiver = object : BroadcastReceiver() {
                     override fun onReceive(context: Context, intent: Intent) {

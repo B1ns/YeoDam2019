@@ -8,5 +8,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/map_photo_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="2dp" />
 </FrameLayout>

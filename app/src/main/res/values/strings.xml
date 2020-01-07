@@ -1,6 +1,6 @@
 <resources>
     <array name="currency_array">
-        <item>￦(원)</item>
+        <item>₩(원)</item>
         <item>$(달러)</item>
         <item>€(유로)</item>
         <item>¥(엔)</item>

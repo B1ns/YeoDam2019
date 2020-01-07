@@ -48,6 +48,7 @@
         android:layout_marginBottom="180dp"
         android:background="@drawable/more_bg"
         android:elevation="4dp"
+        android:gravity="center"
         android:orientation="vertical"
         android:padding="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -60,11 +61,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="20dp"
             android:text="메모 내용 "
             android:textColor="@color/colorPrimary"
             android:textSize="8pt"
-            android:textStyle="italic" />
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,12 +92,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="20dp"
             android:text="위치 "
             android:textColor="@color/colorPrimary"
             android:textSize="8pt"
-            android:textStyle="italic" />
+            android:textStyle="bold
+" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -130,6 +132,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        android:textSize="5pt"
         android:text="Yeodam : 여행을 담다"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

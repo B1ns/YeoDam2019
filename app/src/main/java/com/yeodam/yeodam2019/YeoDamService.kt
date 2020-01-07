@@ -4,8 +4,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.os.Binder
 import android.os.Build
@@ -160,19 +162,33 @@ open class YeoDamService : Service(), Serializable {
 
                 count++
 
+
+                val messageReceiver = object : BroadcastReceiver() {
+                    override fun onReceive(context: Context, intent: Intent) {
+
+                        Log.d("Service", " messageReceiver OK")
+
+                        val onStartAction = intent.getStringExtra("OK")
+
+                        if (onStartAction == "on_Start_OK") {
+
+                            Log.d("sendLocation", "OK")
+                            Log.d("sendLocation", "| { $myLatitude, $myLongitude } ")
+                            val localBroadcastManager = LocalBroadcastManager.getInstance(mContext)
+                            val putIntent = Intent("intent_action")
+                            putIntent.putExtra("lat", myLatitude)
+                            putIntent.putExtra("lon", myLongitude)
+                            localBroadcastManager.sendBroadcast(intent)
+                        }
+                    }
+                }
+
+                LocalBroadcastManager.getInstance(mContext)
+                    .registerReceiver(messageReceiver, IntentFilter("intent_action"))
+
             }
 
         }
-    }
-
-    fun sendLocation(){
-        Log.d("sendLocation", "OK")
-        Log.d("sendLocation", "| { $myLatitude, $myLongitude } ")
-        val localBroadcastManager = LocalBroadcastManager.getInstance(mContext)
-        val intent = Intent("intent_action")
-        intent.putExtra("lat", myLatitude)
-        intent.putExtra("lon", myLongitude)
-        localBroadcastManager.sendBroadcast(intent)
     }
 
     override fun onBind(intent: Intent?): IBinder? {

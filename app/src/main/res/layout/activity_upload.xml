@@ -131,6 +131,7 @@
             android:id="@+id/upload_title_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="text"
             android:maxLines="1" />
 
     </LinearLayout>
@@ -159,6 +160,7 @@
             android:id="@+id/upload_travel_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="text"
             android:maxLines="1" />
 
     </LinearLayout>
@@ -195,6 +197,16 @@
             android:text="2019/08/20~2019/08/20"
             android:textColor="@android:color/black" />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:text="여행을 담다 : 여담"
+        android:textSize="5pt"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <FrameLayout
         android:id="@+id/upload_layout"

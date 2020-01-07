@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/more_pay_layout"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:layout_marginStart="1dp"
-    android:layout_marginTop="1dp"
+    android:layout_width="95dp"
+    android:layout_height="95dp"
+    android:layout_marginStart="0.5dp"
+    android:layout_marginTop="6dp"
     android:background="@drawable/more_all"
     android:elevation="4dp"
     android:gravity="center"
@@ -15,7 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="산 물품" />
+        android:text="산 물품"
+        android:textSize="6pt" />
 
     <TextView
         android:id="@+id/more_pay_info_Tv"
@@ -23,7 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="$123"
-        android:textStyle="bold" />
+        android:textColor="@android:color/black"
+        android:textSize="6pt" />
 
 </LinearLayout>
 

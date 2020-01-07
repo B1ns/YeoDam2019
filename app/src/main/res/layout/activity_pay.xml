@@ -285,8 +285,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="30dp"
-            android:paddingTop="30dp"
-            android:paddingBottom="10dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
             android:text="금액"
             android:textColor="#59d3ee"
             android:textSize="8pt"
@@ -300,9 +300,10 @@
             <Spinner
                 android:id="@+id/pay_spinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
-                android:layout_marginRight="10dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="2dp"
                 android:background="@drawable/credit_bg"
                 android:entries="@array/currency_array"
                 android:padding="8dp" />
@@ -310,11 +311,12 @@
             <com.wajahatkarim3.easymoneywidgets.EasyMoneyEditText
                 android:id="@+id/moneyEditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="1dp"
                 android:layout_marginEnd="40dp"
                 android:background="@drawable/credit_bg"
                 android:inputType="numberDecimal"
-                android:padding="5dp"
+                android:paddingStart="5dp"
                 app:currency_symbol="￦"
                 app:show_commas="true"
                 app:show_currency="true" />
@@ -340,7 +342,18 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp"
             android:layout_marginEnd="35dp"
-            android:hint="무엇을 사셨나요?" />
+            android:hint="무엇을 사셨나요?"
+            android:inputType="text" />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:text="여행을 담다 : 여담"
+        android:textSize="5pt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

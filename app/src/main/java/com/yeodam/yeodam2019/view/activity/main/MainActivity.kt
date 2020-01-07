@@ -87,11 +87,11 @@ class MainActivity : AppCompatActivity() {
                 Day = userTravelData.DayCount
                 Km = userTravelData.KmCount
 
-                Log.d("asdasd1", userTravelData.DayCount.toString())
-                Log.d("asdasd2", userTravelData.KmCount.toString())
+                Log.d("DayCountData | ", userTravelData.DayCount.toString())
+                Log.d("KmCountData | ", userTravelData.KmCount.toString())
 
-                Log.d("asdasd3", Day.toString())
-                Log.d("asdasd4", Km.toString())
+                Log.d("Setting Day | ", Day.toString())
+                Log.d("Setting Km | ", Km.toString())
             } else {
                 Day = 0
                 Km = 0
@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity() {
 
         docRef.get().addOnCompleteListener {
             if (it.isSuccessful) {
-                Log.d("asddd", it.result.toString())
+                Log.d("USER_INFO_SETTING | ", it.result.toString())
                 val userDTO = it.result?.toObject(UserDTO::class.java)
                 // Main
                 Glide.with(this).load(userDTO?.userImage).into(main_userImage)

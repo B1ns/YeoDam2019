@@ -21,6 +21,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.yeodam.yeodam2019.R
+import com.yeodam.yeodam2019.YeoDamService
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.data.YeoDam
 import com.yeodam.yeodam2019.data.userCount
@@ -145,6 +146,9 @@ class UploadActivity : AppCompatActivity() {
         val storyCountry = upload_travel_editText.text.toString()
         val storyDay = StoryDay
         val YeodamStory = ArrayList<String>()
+
+        val intent = Intent(this, YeoDamService::class.java)
+        stopService(intent)
 
         uploadUri(PhotoUri)
 
