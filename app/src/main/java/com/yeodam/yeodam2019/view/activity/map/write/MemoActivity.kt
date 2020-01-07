@@ -31,10 +31,18 @@ class MemoActivity : AppCompatActivity() {
     }
 
     private fun buttonListener() {
+
+        memo_Cancle.setOnClickListener {
+            onBackPressed()
+        }
+
         memo_OK.setOnClickListener {
-            if (memoText.text.toString().isNotEmpty()) {
+
+            val memoText = "${memoTextOne.text}\n${memoTextTwo.text}\n${memoTextThree.text}"
+
+            if (memoText.isNotEmpty()) {
                 val intent = Intent()
-                intent.putExtra("memo", memoText.text.toString())
+                intent.putExtra("memo", memoText)
                 setResult(Activity.RESULT_OK, intent)
                 finish()
             } else {
@@ -42,13 +50,9 @@ class MemoActivity : AppCompatActivity() {
             }
         }
 
-        memo_Cancle.setOnClickListener {
-            onBackPressed()
-        }
-
-        memoText.addTextChangedListener(object : TextWatcher {
+        memoTextOne.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if (memoText.text.toString().isNotEmpty()) {
+                if (memoTextOne.text.toString().isNotEmpty()) {
                     memo_OK.visibility = View.VISIBLE
                 } else {
                     memo_OK.visibility = View.GONE
@@ -69,7 +73,7 @@ class MemoActivity : AppCompatActivity() {
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(memoText.windowToken, 0)
+        imm.hideSoftInputFromWindow(memoTextOne.windowToken, 0)
         return true
     }
 

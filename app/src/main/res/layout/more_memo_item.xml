@@ -8,13 +8,16 @@
     android:background="@drawable/more_all"
     android:elevation="4dp"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="2dp">
 
     <TextView
         android:id="@+id/more_memo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:ellipsize="end"
+        android:maxLines="3"
         android:text="메모"
         android:textSize="6pt" />
 
