@@ -78,7 +78,7 @@ dependencies {
     implementation 'com.wajahatkarim3.EasyMoney-Widgets:EasyMoney-Widgets:1.0.0'
     implementation 'jp.wasabeef:blurry:3.0.0'
     implementation 'com.github.tntkhang:full-screen-image-view-library:1.1.0'
-
+    implementation 'com.r4sh33d:AnimatedCountTextView:0.0.1'
     // Lottie
     implementation 'com.airbnb.android:lottie:3.0.0'
 

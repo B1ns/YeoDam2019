@@ -97,8 +97,15 @@ class MainActivity : AppCompatActivity() {
                 Km = 0
             }
 
-            count_day.text = Day.toString()
-            count_km.text = Km.toString()
+            count_day.startWith(0)
+            count_km.startWith(0)
+
+            count_day.endWith(Day as Number)
+            count_km.endWith(Km as Number)
+
+            count_day.start()
+            count_km.start()
+
         }
     }
 
