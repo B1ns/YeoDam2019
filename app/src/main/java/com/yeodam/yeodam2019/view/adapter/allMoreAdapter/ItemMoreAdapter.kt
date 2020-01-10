@@ -1,4 +1,4 @@
-package com.yeodam.yeodam2019.view.adapter
+package com.yeodam.yeodam2019.view.adapter.allMoreAdapter
 
 import android.content.Intent
 import android.os.Bundle

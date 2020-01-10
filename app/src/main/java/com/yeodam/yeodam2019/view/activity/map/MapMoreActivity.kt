@@ -7,14 +7,8 @@ import android.os.Bundle
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.yeodam.yeodam2019.R
-import com.yeodam.yeodam2019.view.activity.main.ItemMoreActivity
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
-import com.yeodam.yeodam2019.view.adapter.ItemMoreAdapter
-import com.yeodam.yeodam2019.view.adapter.MapMoreAdapter
-import com.yeodam.yeodam2019.view.fragment.map.MapMoreAllFragment
-import com.yeodam.yeodam2019.view.fragment.map.MapMoreMemoFragment
-import com.yeodam.yeodam2019.view.fragment.map.MapMorePayFragment
-import com.yeodam.yeodam2019.view.fragment.map.MapMorePhotoFragment
+import com.yeodam.yeodam2019.view.adapter.allMoreAdapter.MapMoreAdapter
 import kotlinx.android.synthetic.main.activity_map_more.*
 import kotlinx.android.synthetic.main.appbar_more.*
 

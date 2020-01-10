@@ -3,14 +3,18 @@ package com.yeodam.yeodam2019.view.activity.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.yeodam.yeodam2019.R
-import com.yeodam.yeodam2019.view.adapter.ItemMoreAdapter
+import com.yeodam.yeodam2019.view.adapter.allMoreAdapter.ItemMoreAdapter
 import kotlinx.android.synthetic.main.activity_item_more.*
 import kotlinx.android.synthetic.main.appbar_more.*
 import org.jetbrains.anko.startActivity
 
 class ItemMoreActivity : AppCompatActivity() {
 
-    private val adapter by lazy { ItemMoreAdapter(supportFragmentManager) }
+    private val adapter by lazy {
+        ItemMoreAdapter(
+            supportFragmentManager
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,8 +1,6 @@
 package com.yeodam.yeodam2019.view.adapter.mapMoreAdapter
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

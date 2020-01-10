@@ -3,7 +3,6 @@ package com.yeodam.yeodam2019.view.activity.setting
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.yeodam.yeodam2019.R
-import com.yeodam.yeodam2019.view.adapter.MapMoreAdapter
 import com.yeodam.yeodam2019.view.adapter.ServiceAdapter
 import kotlinx.android.synthetic.main.activity_service.*
 
