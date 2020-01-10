@@ -26,11 +26,17 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     sourceSets { debug { assets.srcDirs = ['src/debug/assets', 'src/main/assets/'] } }
@@ -79,6 +85,8 @@ dependencies {
     implementation 'jp.wasabeef:blurry:3.0.0'
     implementation 'com.github.tntkhang:full-screen-image-view-library:1.1.0'
     implementation 'com.r4sh33d:AnimatedCountTextView:0.0.1'
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
     // Lottie
     implementation 'com.airbnb.android:lottie:3.0.0'
 

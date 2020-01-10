@@ -139,6 +139,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         val requestLocal = permissionsBuilder(Manifest.permission.WRITE_EXTERNAL_STORAGE).build()
         requestLocal.send()
 
+        val requestLocation = permissionsBuilder(Manifest.permission.ACCESS_COARSE_LOCATION).build()
+        requestLocation.send()
+
+        addLocationListener()
     }
 
     private fun reStartToast() {
@@ -538,7 +542,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         locationRequest.interval = 20000
 
         // 정확함. 이것보다 짧은 업데이트는 하지 않음
-        locationRequest.fastestInterval = 10000
+        locationRequest.fastestInterval = 12000
 
     }
 
@@ -795,11 +799,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
                 toast("여행은 즐거우신가요 ?")
 
+                Log.d("MapOnStart", "OK")
 
                 val localBroadcastManager = LocalBroadcastManager.getInstance(this)
-                val putIntent = Intent("intent_action")
+                val putIntent = Intent("map_action")
                 putIntent.putExtra("OK", "on_Start_OK")
-                localBroadcastManager.sendBroadcast(intent)
+                localBroadcastManager.sendBroadcast(putIntent)
 
 
                 val messageReceiver = object : BroadcastReceiver() {
@@ -811,10 +816,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                         Log.d("TestLog", myLat.toString())
                         Log.d("TestLog", myLon.toString())
 
-                        val size = myLat.size + myLon.size / 2
+                        val size = myLat.size + myLon.size / 2 - 1
 
                         Log.d("TestSize", size.toString())
+
                         var count = 0
+
                         while (size > count) {
 
                             Log.d("logTest", "ok3")
@@ -852,6 +859,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                 val putIntent = Intent("intent_action")
                 putIntent.putExtra("OK", "on_Start_OK")
                 localBroadcastManager.sendBroadcast(intent)
+
+                Log.d("MapOnStart", "OK")
 
                 val messageReceiver = object : BroadcastReceiver() {
                     override fun onReceive(context: Context, intent: Intent) {

@@ -133,7 +133,7 @@ open class YeoDamService : Service(), Serializable {
 
         locationRequest.interval = 20000
 
-        locationRequest.fastestInterval = 10000
+        locationRequest.fastestInterval = 12000
 
         addLocationListener()
     }
@@ -178,13 +178,13 @@ open class YeoDamService : Service(), Serializable {
                             val putIntent = Intent("intent_action")
                             putIntent.putExtra("lat", myLatitude)
                             putIntent.putExtra("lon", myLongitude)
-                            localBroadcastManager.sendBroadcast(intent)
+                            localBroadcastManager.sendBroadcast(putIntent)
                         }
                     }
                 }
 
                 LocalBroadcastManager.getInstance(mContext)
-                    .registerReceiver(messageReceiver, IntentFilter("intent_action"))
+                    .registerReceiver(messageReceiver, IntentFilter("map_action"))
 
             }
 
