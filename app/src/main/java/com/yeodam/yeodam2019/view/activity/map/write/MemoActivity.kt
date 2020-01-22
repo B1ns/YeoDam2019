@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.toast
+import com.yeodam.yeodam2019.utils.LinedEditText
 import com.yeodam.yeodam2019.view.activity.map.MapActivity
 import kotlinx.android.synthetic.main.activity_memo.*
 
@@ -28,6 +29,7 @@ class MemoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_memo)
 
         buttonListener()
+
     }
 
     private fun buttonListener() {

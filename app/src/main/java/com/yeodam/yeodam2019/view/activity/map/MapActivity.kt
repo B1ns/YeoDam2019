@@ -30,6 +30,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.fondesa.kpermissions.extension.listeners
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.gdacciaro.iOSDialog.iOSDialogBuilder
 import com.yeodam.yeodam2019.R
@@ -43,6 +44,7 @@ import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.YeoDamService
 import com.yeodam.yeodam2019.toast
 import com.yeodam.yeodam2019.utils.SaveImage
+import com.yeodam.yeodam2019.utils.SharedpreferenceUtil
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import com.yeodam.yeodam2019.view.activity.map.write.MemoActivity
 import com.yeodam.yeodam2019.view.activity.map.write.PayActivity
@@ -59,7 +61,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
     private lateinit var mMap: GoogleMap
 
-    private val REQUEST_ACCESS_FINE_LOCATION = 1000
     private val REQUEST_IMAGE_CAPTURE = 1
     private val CREDIT_CODE = 1111
     private val REQUEST_CODE = 3000
@@ -127,19 +128,49 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             .findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        val request = permissionsBuilder(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ).build()
-        request.send()
-
-
         fab()
 
         locationInit()
 
         buttonListener(story)
+
+        requestPermissionMap()
+
+    }
+
+    private fun requestPermissionMap() {
+
+        val resultPermission = SharedpreferenceUtil.getData(applicationContext, "MapPermisson")
+
+        if (resultPermission == "OK") {
+            Log.d("mapOK", "OK")
+            addLocationListener()
+        } else {
+            val request = permissionsBuilder(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ).build()
+            request.send()
+
+            request.listeners {
+                onAccepted { permissions ->
+                    // Notified when the permissions are accepted.
+                    addLocationListener()
+                    mMap.isMyLocationEnabled = true
+
+                    val okRequest = "OK"
+                    SharedpreferenceUtil.saveData(applicationContext, "MapPermisson", okRequest)
+
+                    onStart()
+                }
+                onDenied { permissions ->
+                    // Notified when the permissions are denied.
+                    toast("권한을 허락하신 뒤 서비스 사용이 가능하십니다")
+                    request.send()
+                }
+            }
+        }
     }
 
     @SuppressLint("NewApi", "InflateParams")
@@ -436,7 +467,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
         }
 
-
     }
 
 
@@ -488,44 +518,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         }
     }
 
-
-    @SuppressLint("MissingPermission")
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-
-        val mapStyleOptions = MapStyleOptions.loadRawResourceStyle(this, R.raw.google_style)
-
-        mMap.setMapStyle(mapStyleOptions)
-
-        mMap.uiSettings.isMyLocationButtonEnabled = false
-        mMap.uiSettings.isCompassEnabled = false
-
-        // Add a marker in Sydney and move the camera
-        val korea = LatLng(37.586218, 126.975941)
-        mMap.addMarker(MarkerOptions().position(korea).title("대한민국 청와대"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(korea))
-
-        MapsInitializer.initialize(this)
-
-        mMap.setOnMarkerClickListener {
-            val intent = Intent(this, MapMoreActivity::class.java)
-            intent.putStringArrayListExtra("Memo", Memo)
-            intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
-            intent.putExtra("Photo", PhotoBitmap)
-            intent.putParcelableArrayListExtra("PhotoLocation", PhotoLocation)
-            intent.putStringArrayListExtra("Pay", Pay)
-            intent.putStringArrayListExtra("PayInfo", PayInfo)
-            intent.putParcelableArrayListExtra("PayLocation", PayLocation)
-            startActivity(intent)
-            return@setOnMarkerClickListener true
-        }
-
-        permissionCheck(cancel = {
-            showPermissionInfoDialog()
-        }, ok = {
-            mMap.isMyLocationEnabled = true
-        })
-    }
+    /* Google Map Part */
 
     private fun locationInit() {
         fusedLocationProviderClient = FusedLocationProviderClient(this)
@@ -545,82 +538,42 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
     }
 
     @SuppressLint("MissingPermission")
-    private fun addLocationListener() {
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
-    }
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
 
-    private fun removeLocationListener() {
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-    }
+        val mapStyleOptions = MapStyleOptions.loadRawResourceStyle(this, R.raw.google_style)
 
-    fun stopServiceYeoDam() {
-        val intent = Intent(this, YeoDamService::class.java)
-        stopService(intent)
-        removeLocationListener()
-    }
+        mMap.setMapStyle(mapStyleOptions)
 
-    private fun showPermissionInfoDialog() {
-        alert("현재 위치 정보와 서비스를 위해서 권한이 필요합니다.", "권한이 필요한이유.") {
-            yesButton {
-                ActivityCompat.requestPermissions(
-                    this@MapActivity,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_ACCESS_FINE_LOCATION
-                )
-            }
+        mMap.uiSettings.isMyLocationButtonEnabled = false
+        mMap.uiSettings.isCompassEnabled = false
 
-            noButton {
-                toast("거절")
-            }
-        }.show()
-    }
+        MapsInitializer.initialize(this)
 
+        val korea = LatLng(37.586218, 126.975941)
 
-    private fun permissionCheck(cancel: () -> Unit, ok: () -> Unit) {
-        // 위치 권한이 있는지 검사
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // 권한이 허용되지 않음
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            ) {
-                // 이전에 권한을 한 번 거부한 적이 있는 경우에 실행할 함수
-                cancel()
-            } else {
-                // 권한 요청
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    REQUEST_ACCESS_FINE_LOCATION
-                )
-            }
-        } else {
-            // 권한을 수락 했을 때 실행할 함수
-            ok()
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(korea))
+
+        mMap.setOnMarkerClickListener {
+            val intent = Intent(this, MapMoreActivity::class.java)
+            intent.putStringArrayListExtra("Memo", Memo)
+            intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
+            intent.putExtra("Photo", PhotoBitmap)
+            intent.putParcelableArrayListExtra("PhotoLocation", PhotoLocation)
+            intent.putStringArrayListExtra("Pay", Pay)
+            intent.putStringArrayListExtra("PayInfo", PayInfo)
+            intent.putParcelableArrayListExtra("PayLocation", PayLocation)
+            startActivity(intent)
+            return@setOnMarkerClickListener true
         }
-    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            REQUEST_ACCESS_FINE_LOCATION -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    addLocationListener()
-                } else {
-                    //권한 거부
-                    toast("권한 거부 됨")
-                }
-                return
-            }
+        val resultPermission = SharedpreferenceUtil.getData(applicationContext, "MapPermisson")
+
+        if (resultPermission == "OK") {
+            Log.d("mapOK", "OK2")
+            mMap.isMyLocationEnabled = true
         }
+
     }
 
     open inner class MyLocationCallback : LocationCallback() {
@@ -748,23 +701,23 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // 권한 요청 ⑨
-        permissionCheck(cancel = {
-            // 위치 정보가 필요한 이유 다이얼로그 표시 ⑩
-            showPermissionInfoDialog()
-        }, ok = {
-            // 현재 위치를 주기적으로 요청 (권한이 필요한 부분) ⑪
-            addLocationListener()
-        })
+    @SuppressLint("MissingPermission")
+    private fun addLocationListener() {
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
-    override fun onStart() {
-        super.onStart()
+    private fun removeLocationListener() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+    }
 
-        // 바인딩
+    fun stopServiceYeoDam() {
+        val intent = Intent(this, YeoDamService::class.java)
+        stopService(intent)
+        removeLocationListener()
+    }
+
+    private fun startBackground() {
+
         val intent = Intent(this, YeoDamService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
@@ -880,7 +833,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             }
 
         }
+    }
 
+    override fun onStart() {
+        super.onStart()
+
+        val resultPermission = SharedpreferenceUtil.getData(applicationContext, "MapPermisson")
+
+        if (resultPermission == "OK") {
+            startBackground()
+        }
     }
 
     override fun onDestroy() {

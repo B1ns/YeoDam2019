@@ -220,7 +220,7 @@ class OnboardingActivity : AppCompatActivity(), GoogleApiClient.OnConnectionFail
 
     private fun loginSucceed(user: FirebaseUser?) {
         if (user != null) {
-            toast("로그인 성공 !")
+            toast("인증완료")
             finish()
             startActivity<InfoActivity>()
         }

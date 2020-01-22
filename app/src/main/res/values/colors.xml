@@ -22,5 +22,6 @@
     <color name="trackingLine">#59d3ee</color>
     <color name="background_shadow">#80000000</color>
     <color name="background" >#00ff0000</color>
+    <color name="edit_note_line" >#000000</color>
 
 </resources>

@@ -54,9 +54,9 @@ class AllViewAdapter(
             }
 
             photoLayout.setOnClickListener {
-//                val intent = Intent(context, PhotoMoreActivity::class.java)
-//                intent.putExtra("Photo", item.Photo)
-//                ContextCompat.startActivity(context!!, intent, Bundle())
+                val intent = Intent(context, PhotoMoreActivity::class.java)
+                intent.putExtra("Photo", item.Photo)
+                context?.startActivity(Intent(intent).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
 
             }
         }
@@ -73,10 +73,10 @@ class AllViewAdapter(
             memoTextView.text = item.Memo
 
             memoLayout.setOnClickListener {
-//                val intent = Intent(context, MemoInfoActivity::class.java)
-//                intent.putExtra("Memo", item.Memo)
-//                intent.putExtra("MemoLocation", item.memoLocation)
-//                ContextCompat.startActivity(context!!, intent, Bundle())
+                val intent = Intent(context, MemoInfoActivity::class.java)
+                intent.putExtra("Memo", item.Memo)
+                intent.putExtra("MemoLocation", item.memoLocation)
+                context?.startActivity(Intent(intent).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             }
         }
     }
@@ -95,11 +95,11 @@ class AllViewAdapter(
             payInfoTextView.text = item.PayInfo
 
             payLayout.setOnClickListener {
-//                val intent = Intent(context, PayInfoActivity::class.java)
-//                intent.putExtra("Pay", item.Pay)
-//                intent.putExtra("PayInfo", item.PayInfo)
-//                intent.putExtra("PayLocation", item.payLocation)
-//                ContextCompat.startActivity(context!!, intent, Bundle())
+                val intent = Intent(context, PayInfoActivity::class.java)
+                intent.putExtra("Pay", item.Pay)
+                intent.putExtra("PayInfo", item.PayInfo)
+                intent.putExtra("PayLocation", item.payLocation)
+                context?.startActivity(Intent(intent).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             }
         }
     }
