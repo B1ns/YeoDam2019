@@ -127,22 +127,111 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             .findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
+        val request = permissionsBuilder(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ).build()
+        request.send()
+
+
         fab()
 
         locationInit()
 
         buttonListener(story)
+    }
 
-        val requestCamera = permissionsBuilder(Manifest.permission.CAMERA).build()
-        requestCamera.send()
+    @SuppressLint("NewApi", "InflateParams")
+    private fun showFinish() {
 
-        val requestLocal = permissionsBuilder(Manifest.permission.WRITE_EXTERNAL_STORAGE).build()
-        requestLocal.send()
+        val current = LocalDateTime.now()
+        val endTravel = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+        val countLast = DateTimeFormatter.ofPattern("dd")
+        countLastday = current.format(countLast).toInt()
+        travelEnd = current.format(endTravel)
 
-        val requestLocation = permissionsBuilder(Manifest.permission.ACCESS_COARSE_LOCATION).build()
-        requestLocation.send()
+        val meter = locationOne.distanceTo(locationTwo)
 
-        addLocationListener()
+        Log.d("meter", meter.toString())
+
+        val photoCount = Photo.size.toString()
+        val memoCount = Memo.size.toString()
+        val creditCount = Pay.size.toString()
+        val dayTotal = "$travelStart ~ $travelEnd"
+
+
+        Log.d("LogTest", "$photoCount + $memoCount")
+
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.map_finish_dialog, null)
+        val photoID = mDialogView.findViewById<TextView>(R.id.dialog_photo)
+        val memoID = mDialogView.findViewById<TextView>(R.id.dialog_edit)
+        val dayId = mDialogView.findViewById<TextView>(R.id.story_day)
+        val payId = mDialogView.findViewById<TextView>(R.id.dialog_credit)
+        val mapID = mDialogView.findViewById<ImageView>(R.id.dialog_map)
+
+
+        val mBuilder = AlertDialog.Builder(this)
+            .setView(mDialogView)
+
+        val callback = GoogleMap.SnapshotReadyCallback {
+            mapID.setImageBitmap(it)
+        }
+        mMap.snapshot(callback)
+        photoID.text = photoCount
+        memoID.text = memoCount
+        dayId.text = dayTotal
+        payId.text = creditCount
+
+
+        val mAlertDialog = mBuilder.show()
+
+        mAlertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        mDialogView.dialog_yes.setOnClickListener {
+            mAlertDialog.dismiss()
+
+            val intent = Intent(this, UploadActivity::class.java)
+            intent.putParcelableArrayListExtra("Map", Map)
+            intent.putStringArrayListExtra("Memo", Memo)
+            intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
+            intent.putStringArrayListExtra("Photo", Photo)
+            intent.putExtra("PhotoBitmap", PhotoBitmap)
+            intent.putParcelableArrayListExtra("PhotoLocation", PhotoLocation)
+            intent.putStringArrayListExtra("Pay", Pay)
+            intent.putStringArrayListExtra("PayInfo", PayInfo)
+            intent.putParcelableArrayListExtra("PayLocation", PayLocation)
+            intent.putParcelableArrayListExtra("Uri", PhotoUri)
+            intent.putExtra("Day", dayTotal)
+            intent.putExtra("DayCount", countLastday - countToday)
+            intent.putExtra("meter", meter / 1000.toFloat())
+
+            Log.d("uploadCount", "$countToday - $countLastday = ${countToday - countLastday} ")
+            Log.d("uploadCount", "${meter / 1000.toFloat()}")
+            Log.d("uploadCount", "$meter")
+
+            Log.d("test", Map.toString())
+            Log.d("test", Memo.toString())
+
+            startActivity(intent)
+
+            story = false
+            fab_Hide()
+            map_slider.visibility = View.VISIBLE
+            map_slider.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
+                override fun onSlideComplete(view: SlideToActView) {
+                    map_slider.resetSlider()
+                    map_slider.visibility = View.GONE
+                    story = true
+                    fab_Show()
+                }
+            }
+        }
+        mDialogView.dialog_no.setOnClickListener {
+            mAlertDialog.dismiss()
+
+        }
+
     }
 
     private fun reStartToast() {
@@ -151,64 +240,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         toast.show()
     }
 
-    private fun buttonListener(e: Boolean) {
-
-        val storyAction = e
-
-        if (storyAction) {
-            editLayout.setOnClickListener {
-                val intent = Intent(this, MemoActivity::class.java)
-                startActivityForResult(intent, REQUEST_CODE)
-            }
-
-            cameraLayout.setOnClickListener {
-                camera()
-            }
-
-            creditLayout.setOnClickListener {
-                val intent = Intent(this, PayActivity::class.java)
-                startActivityForResult(intent, CREDIT_CODE)
-            }
-        } else {
-            editLayout.setOnClickListener {
-                reStartToast()
-            }
-            cameraLayout.setOnClickListener {
-                reStartToast()
-            }
-            creditLayout.setOnClickListener {
-                reStartToast()
-            }
-
-        }
-
-
-        mapHome_btn.setOnClickListener {
-
-            val intent = Intent(this, MainActivity::class.java)
-            if (this.story) {
-                intent.putExtra("onAir", "onAir")
-            } else {
-                intent.putExtra("onAir", "fail")
-            }
-            startActivity(intent)
-            finish()
-
-        }
-
-        map_menu.setOnClickListener {
-            val intent = Intent(this, MapMoreActivity::class.java)
-            intent.putParcelableArrayListExtra("Map", Map)
-            intent.putStringArrayListExtra("Memo", Memo)
-            intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
-            intent.putExtra("Photo", PhotoBitmap)
-            intent.putParcelableArrayListExtra("PhotoLocation", PhotoLocation)
-            intent.putStringArrayListExtra("Pay", Pay)
-            intent.putStringArrayListExtra("PayInfo", PayInfo)
-            intent.putParcelableArrayListExtra("PayLocation", PayLocation)
-            startActivity(intent)
-        }
-    }
 
     private fun camera() {
 
@@ -267,6 +298,61 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         PhotoLocation.add(ImageLatLng)
 
         return bitmap
+    }
+
+
+    private fun buttonListener(e: Boolean) {
+
+        val storyAction = e
+
+        if (storyAction) {
+            editLayout.setOnClickListener {
+                val intent = Intent(this, MemoActivity::class.java)
+                startActivityForResult(intent, REQUEST_CODE)
+            }
+
+            cameraLayout.setOnClickListener {
+                camera()
+            }
+
+            creditLayout.setOnClickListener {
+                val intent = Intent(this, PayActivity::class.java)
+                startActivityForResult(intent, CREDIT_CODE)
+            }
+        } else {
+            editLayout.setOnClickListener {
+                reStartToast()
+            }
+            cameraLayout.setOnClickListener {
+                reStartToast()
+            }
+            creditLayout.setOnClickListener {
+                reStartToast()
+            }
+
+        }
+
+
+        mapHome_btn.setOnClickListener {
+
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+
+        }
+
+        map_menu.setOnClickListener {
+            val intent = Intent(this, MapMoreActivity::class.java)
+            intent.putParcelableArrayListExtra("Map", Map)
+            intent.putStringArrayListExtra("Memo", Memo)
+            intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
+            intent.putExtra("Photo", PhotoBitmap)
+            intent.putParcelableArrayListExtra("PhotoLocation", PhotoLocation)
+            intent.putStringArrayListExtra("Pay", Pay)
+            intent.putStringArrayListExtra("PayInfo", PayInfo)
+            intent.putParcelableArrayListExtra("PayLocation", PayLocation)
+            startActivity(intent)
+        }
     }
 
     /*
@@ -353,95 +439,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
     }
 
-    @SuppressLint("NewApi", "InflateParams")
-    private fun showFinish() {
-
-        val current = LocalDateTime.now()
-        val endTravel = DateTimeFormatter.ofPattern("yyyy/MM/dd")
-        val countLast = DateTimeFormatter.ofPattern("dd")
-        countLastday = current.format(countLast).toInt()
-        travelEnd = current.format(endTravel)
-
-        val meter = locationOne.distanceTo(locationTwo)
-
-        val photoCount = Photo.size.toString()
-        val memoCount = Memo.size.toString()
-        val creditCount = Pay.size.toString()
-        val dayTotal = "$travelStart ~ $travelEnd"
-
-
-        Log.d("LogTest", "$photoCount + $memoCount")
-
-        val mDialogView = LayoutInflater.from(this).inflate(R.layout.map_finish_dialog, null)
-        val photoID = mDialogView.findViewById<TextView>(R.id.dialog_photo)
-        val memoID = mDialogView.findViewById<TextView>(R.id.dialog_edit)
-        val dayId = mDialogView.findViewById<TextView>(R.id.story_day)
-        val payId = mDialogView.findViewById<TextView>(R.id.dialog_credit)
-        val mapID = mDialogView.findViewById<ImageView>(R.id.dialog_map)
-
-
-        val mBuilder = AlertDialog.Builder(this)
-            .setView(mDialogView)
-
-        val callback = GoogleMap.SnapshotReadyCallback {
-            mapID.setImageBitmap(it)
-        }
-        mMap.snapshot(callback)
-        photoID.text = photoCount
-        memoID.text = memoCount
-        dayId.text = dayTotal
-        payId.text = creditCount
-
-
-        val mAlertDialog = mBuilder.show()
-
-        mAlertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        mDialogView.dialog_yes.setOnClickListener {
-            mAlertDialog.dismiss()
-
-            val intent = Intent(this, UploadActivity::class.java)
-            intent.putParcelableArrayListExtra("Map", Map)
-            intent.putStringArrayListExtra("Memo", Memo)
-            intent.putParcelableArrayListExtra("MemoLocation", MemoLocation)
-            intent.putStringArrayListExtra("Photo", Photo)
-            intent.putParcelableArrayListExtra("PhotoLocation", PhotoLocation)
-            intent.putStringArrayListExtra("Pay", Pay)
-            intent.putStringArrayListExtra("PayInfo", PayInfo)
-            intent.putParcelableArrayListExtra("PayLocation", PayLocation)
-            intent.putExtra("Day", dayTotal)
-            intent.putParcelableArrayListExtra("Uri", PhotoUri)
-            intent.putExtra("DayCount", countLastday - countToday)
-            intent.putExtra("meter", meter / 1000.toFloat())
-
-            Log.d("uploadCount", "$countToday - $countLastday = ${countToday - countLastday} ")
-            Log.d("uploadCount", "${meter / 1000.toFloat()}")
-            Log.d("uploadCount", "$meter")
-
-            Log.d("test", Map.toString())
-            Log.d("test", Memo.toString())
-
-            startActivity(intent)
-
-            story = false
-            fab_Hide()
-            map_slider.visibility = View.VISIBLE
-            map_slider.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener {
-                override fun onSlideComplete(view: SlideToActView) {
-                    map_slider.resetSlider()
-                    map_slider.visibility = View.GONE
-                    story = true
-                    fab_Show()
-                }
-            }
-        }
-        mDialogView.dialog_no.setOnClickListener {
-            mAlertDialog.dismiss()
-
-        }
-
-    }
-
 
     @SuppressLint("RestrictedApi")
     fun fab_Hide() {
@@ -490,6 +487,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
             isFabOpen = true
         }
     }
+
 
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
@@ -542,25 +540,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         locationRequest.interval = 20000
 
         // 정확함. 이것보다 짧은 업데이트는 하지 않음
-        locationRequest.fastestInterval = 12000
+        locationRequest.fastestInterval = 18000
 
     }
-
-    private fun showPermissionInfoDialog() {
-        alert("현재 위치 정보를 얻기 위해서 위치 권한이 필요합니다.", "권한이 필요한 이유") {
-            yesButton {
-                ActivityCompat.requestPermissions(
-                    this@MapActivity,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_ACCESS_FINE_LOCATION
-                )
-            }
-
-            noButton {
-                toast("거절")
-            }
-        }.show()
-    }
-
 
     @SuppressLint("MissingPermission")
     private fun addLocationListener() {
@@ -577,25 +559,47 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         removeLocationListener()
     }
 
+    private fun showPermissionInfoDialog() {
+        alert("현재 위치 정보와 서비스를 위해서 권한이 필요합니다.", "권한이 필요한이유.") {
+            yesButton {
+                ActivityCompat.requestPermissions(
+                    this@MapActivity,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_ACCESS_FINE_LOCATION
+                )
+            }
+
+            noButton {
+                toast("거절")
+            }
+        }.show()
+    }
+
+
     private fun permissionCheck(cancel: () -> Unit, ok: () -> Unit) {
+        // 위치 권한이 있는지 검사
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            // 권한이 허용되지 않음
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             ) {
+                // 이전에 권한을 한 번 거부한 적이 있는 경우에 실행할 함수
                 cancel()
             } else {
+                // 권한 요청
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_ACCESS_FINE_LOCATION
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    REQUEST_ACCESS_FINE_LOCATION
                 )
             }
         } else {
+            // 권한을 수락 했을 때 실행할 함수
             ok()
         }
     }
@@ -616,32 +620,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                 }
                 return
             }
-        }
-    }
-
-    override fun onBackPressed() {
-        if (story) {
-            iOSDialogBuilder(this@MapActivity)
-                .setTitle("여행중 입니다.")
-                .setSubtitle("여행을 종료하시겠습니까?")
-                .setBoldPositiveLabel(true)
-                .setCancelable(false)
-                .setPositiveListener("네") { dialog ->
-                    toast("취소됬습니다 !")
-                    //여행 취소 로직 작성 구 간
-                    toggleFab()
-                    dialog.dismiss()
-                    finish()
-                    stopServiceYeoDam()
-                    startActivity<MainActivity>()
-                }
-                .setNegativeListener(
-                    getString(R.string.dismiss)
-                ) { dialog -> dialog.dismiss() }
-                .build().show()
-        } else {
-            startActivity<MainActivity>()
-            finish()
         }
     }
 
@@ -760,9 +738,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
             val dataUri = data.data
 
-            if (dataUri != null) {
-                PhotoUri.add(dataUri)
-            }
+            PhotoUri.add(dataUri as Uri)
 
             PhotoBitmap.add(imageBitmap)
 
@@ -803,6 +779,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
 
                 val localBroadcastManager = LocalBroadcastManager.getInstance(this)
                 val putIntent = Intent("map_action")
+
                 putIntent.putExtra("OK", "on_Start_OK")
                 localBroadcastManager.sendBroadcast(putIntent)
 
@@ -816,7 +793,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                         Log.d("TestLog", myLat.toString())
                         Log.d("TestLog", myLon.toString())
 
-                        val size = myLat.size + myLon.size / 2 - 1
+                        val size = (((myLat.size + myLon.size) / 2) - 1)
 
                         Log.d("TestSize", size.toString())
 
@@ -828,10 +805,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
                             Log.d("logTest", size.toString())
 
                             polylineOptions.add(LatLng(myLat[count], myLon[count]))
-                            mMap.addPolyline(polylineOptions)
 
                             count++
                         }
+
+                        mMap.addPolyline(polylineOptions)
                     }
                 }
 
@@ -911,6 +889,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         removeLocationListener()
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        removeLocationListener()
+    }
+
     private val mapServiceConnection = object : ServiceConnection {
 
         // 서비스와 연결되었을 때
@@ -943,4 +927,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, Serializable {
         return false
     }
 
+    override fun onBackPressed() {
+        startActivity<MainActivity>()
+        finish()
+    }
 }

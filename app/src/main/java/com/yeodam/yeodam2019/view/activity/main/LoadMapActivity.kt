@@ -75,9 +75,9 @@ class LoadMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun getMapdata() {
 
         val intent = intent
-        val index = intent.getStringExtra("asd")
+        val index = intent.getStringExtra("asd") as String
 
-        Log.d("fuck2222", index)
+        Log.d("asd", index)
 
         val getData = db.collection("userStory").document("$userName : $userId").collection(index)
             .document("StoryData")
@@ -96,20 +96,26 @@ class LoadMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     PayInfo = userData?.PayInfo
                     PayLocation = userData?.PayLocation
 
+                    loadMap()
+
                 }
             }
+    }
+
+    private fun loadMap() {
+        for (map in Map!!) {
+            polylineOptions.add(map)
+            mMap.addPolyline(polylineOptions)
+        }
     }
 
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(Map?.get(0), 17f))
-
-        loadLine()
-        loadMemo()
-        loadPay()
-        loadPhoto()
+//
+//        loadMemo()
+//        loadPay()
 
     }
 
@@ -125,7 +131,9 @@ class LoadMapActivity : AppCompatActivity(), OnMapReadyCallback {
         if (count != null) {
             while (count > i) {
                 mMap.addMarker(
-                    MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar)).position(PayLocation?.get(i)!!).title(
+                    MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar)).position(
+                        PayLocation?.get(i)!!
+                    ).title(
                         Pay?.get(i)
                     ).snippet(PayInfo?.get(i))
                 )
@@ -134,7 +142,8 @@ class LoadMapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun loadMemo() {
-        val bitmapdraw: BitmapDrawable = resources.getDrawable(R.drawable.box_memo) as BitmapDrawable
+        val bitmapdraw: BitmapDrawable =
+            resources.getDrawable(R.drawable.box_memo) as BitmapDrawable
         val b = bitmapdraw.bitmap
         val smallMarkar = Bitmap.createScaledBitmap(b, 125, 125, false)
 
@@ -144,7 +153,9 @@ class LoadMapActivity : AppCompatActivity(), OnMapReadyCallback {
         if (count != null) {
             while (count > i) {
                 mMap.addMarker(
-                    MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar)).position(MemoLocation?.get(i)!!).title(
+                    MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(smallMarkar)).position(
+                        MemoLocation?.get(i)!!
+                    ).title(
                         "메모"
                     ).snippet(Memo?.get(i))
                 )
@@ -152,13 +163,6 @@ class LoadMapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun loadLine() {
-
-        for(i in this.Map!!){
-            polylineOptions.add(i)
-        }
-
-    }
 
     private fun getUserData() {
 
@@ -191,52 +195,4 @@ class LoadMapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    private fun loadPhoto() {
-
-
-    }
-
-
-    private fun getMarkerBitmapFromView(bitmap: String?): Bitmap {
-        val customMakerView =
-            (getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.custom_marker, null)
-        val imageView = customMakerView.findViewById<ImageView>(R.id.custom_Image)
-//        imageView.setImageBitmap(bitmap)
-        Glide.with(applicationContext).load(bitmap).into(imageView)
-
-        customMakerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        customMakerView.layout(0, 0, customMakerView.measuredWidth, customMakerView.measuredHeight)
-        customMakerView.buildDrawingCache()
-
-        val returnBitmap =
-            Bitmap.createBitmap(customMakerView.measuredWidth, customMakerView.measuredHeight, Bitmap.Config.ARGB_8888)
-
-
-        val canvas = Canvas(returnBitmap)
-        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN)
-        val drawble = customMakerView.background
-        if (drawble != null) {
-            drawble.draw(canvas)
-        }
-
-
-        customMakerView.draw(canvas)
-        return addImageMarker(returnBitmap)
-
-    }
-
-    private fun addImageMarker(bitmap: Bitmap): Bitmap {
-
-//        val ImageLatLng = LatLng(myLatitude, myLongitude)
-
-
-//        mMap.addMarker(
-//            MarkerOptions().position(ImageLatLng).icon(
-//                BitmapDescriptorFactory.fromBitmap(
-//                    bitmap
-//                )
-//            )
-//        )
-        return bitmap
-    }
 }

@@ -3,6 +3,7 @@ package com.yeodam.yeodam2019.view.activity.map
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -28,6 +29,7 @@ import com.yeodam.yeodam2019.data.userCount
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
 import kotlinx.android.synthetic.main.activity_upload.*
 import org.jetbrains.anko.toast
+import java.io.ByteArrayOutputStream
 
 class UploadActivity : AppCompatActivity() {
 
@@ -57,6 +59,7 @@ class UploadActivity : AppCompatActivity() {
     private var Memo = ArrayList<String>()
     private var MemoLocation = ArrayList<LatLng>()
     private var Photo = ArrayList<String>()
+    private var PhotoBitmap = ArrayList<Bitmap>()
     private var PhotoLocation = ArrayList<LatLng>()
     private var Pay = ArrayList<String>()
     private var PayInfo = ArrayList<String>()
@@ -124,6 +127,7 @@ class UploadActivity : AppCompatActivity() {
         PayLocation = intent.getParcelableArrayListExtra("PayLocation")
         Day = intent.getStringExtra("Day")
         PhotoUri = intent.getParcelableArrayListExtra("Uri")
+        PhotoBitmap = intent.getParcelableArrayListExtra("PhotoBitmap")
 
         DayCount = intent.getIntExtra("DayCount", 0)
         meter = intent.getFloatExtra("meter", 0.0F).toInt()
@@ -134,8 +138,55 @@ class UploadActivity : AppCompatActivity() {
         Log.d("OK", "yeodam")
 
         getMainData()
+
+        getPhotoUri()
     }
 
+    private fun getPhotoUri() {
+
+        for (i in PhotoUri){
+            if (i != null){
+                var storyTitle = upload_title_editText.text.toString()
+                val ref =
+                    storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryTitle/StoryPhoto")
+            }
+        }
+
+    }
+
+
+    private fun uploadImage() {
+        Log.d("OK", "yeodam")
+        if (filePath != null) {
+            val storyTitle = upload_title_editText.text.toString()
+            val ref =
+                storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryTitle/StoryProfile")
+            val uploadTask = ref?.putFile(filePath!!)
+
+            val urlTask =
+                uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            throw it
+                        }
+                    }
+
+                    return@Continuation ref.downloadUrl
+
+                })?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUri = task.result
+                        if (downloadUri != null) {
+                            Upload(downloadUri.toString())
+                        }
+                    } else {
+                        // Handle 실패할 경우
+                    }
+                }?.addOnFailureListener {
+                }
+        }
+
+    }
 
 
     private fun Upload(uri: String) {
@@ -150,7 +201,7 @@ class UploadActivity : AppCompatActivity() {
         val intent = Intent(this, YeoDamService::class.java)
         stopService(intent)
 
-        uploadUri(PhotoUri)
+        photoUri()
 
         index++
 
@@ -225,11 +276,7 @@ class UploadActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadUri(uri: ArrayList<Uri>) {
-
-        for (i in uri) {
-            uploadUriFirebase(i)
-        }
+    private fun photoUri() {
 
     }
 
@@ -272,12 +319,12 @@ class UploadActivity : AppCompatActivity() {
     private fun buttonLitener() {
 
         Upload_Upload.setOnClickListener {
-            // 성정
-            MainActivity().story = true
+
             // 로딩
             setLoading()
             // 업로드
             Yeodam()
+
             uploadImage()
         }
 
@@ -336,69 +383,6 @@ class UploadActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun uploadImage() {
-        Log.d("OK", "yeodam")
-        if (filePath != null) {
-            var storyTitle = upload_title_editText.text.toString()
-            val ref =
-                storageReference?.child("User_Story/$userName : $userId/$storyTitle/StoryTitle/StoryProfile")
-            val uploadTask = ref?.putFile(filePath!!)
-
-            val urlTask =
-                uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                    if (!task.isSuccessful) {
-                        task.exception?.let {
-                            throw it
-                        }
-                    }
-
-                    return@Continuation ref.downloadUrl
-
-                })?.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val downloadUri = task.result
-                        if (downloadUri != null) {
-                            Upload(downloadUri.toString())
-                        }
-                    } else {
-                        // Handle 실패할 경우
-                    }
-                }?.addOnFailureListener {
-                }
-        }
-
-    }
-
-    private fun uploadUriFirebase(uri: Uri) {
-        val storage = FirebaseStorage.getInstance()
-
-        val storageRef = storage.reference
-
-        val storyTitle = upload_title_editText.text.toString()
-
-        val ref = storageRef.child("User_Story/$userName : $userId/$storyTitle/StoryPhoto/$uri")
-        val uploadTask = ref.putFile(uri)
-
-        val urlTask =
-            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let {
-                        throw it
-                    }
-                }
-                return@Continuation ref.downloadUrl
-            }).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val downloadUri = task.result
-
-                } else {
-                    // Handle 실패할 경우
-                }
-            }.addOnFailureListener {
-            }
-
     }
 
 

@@ -3,21 +3,18 @@ package com.yeodam.yeodam2019.utils
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 
-class MyItem : ClusterItem {
 
-    private val location : LatLng? = null
-//    private val
-
-    override fun getSnippet(): String {
-        return ""
+class MarkerClusterItem(private val latLng: LatLng, private val title: String) : ClusterItem {
+    override fun getPosition(): LatLng {
+        return latLng
     }
 
     override fun getTitle(): String {
-        return ""
+        return title
     }
 
-    override fun getPosition(): LatLng? {
-        return null
+    override fun getSnippet(): String {
+        return ""
     }
 
 }

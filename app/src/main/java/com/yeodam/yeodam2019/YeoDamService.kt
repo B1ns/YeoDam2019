@@ -9,6 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -99,10 +101,13 @@ open class YeoDamService : Service(), Serializable {
 
         }
 
+        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_logo_yeodam)
+
         val notification = builder
+            .setLargeIcon(bitmap)
+            .setSmallIcon(R.drawable.ic_logo_yeodam)
             .setContentTitle("여담")
             .setContentText("지금은 여행을 기록중입니다:D")
-            .setSmallIcon(R.drawable.ic_logo_yeodam)
             .setContentIntent(pendingIntent)
             .build()
 
@@ -120,7 +125,6 @@ open class YeoDamService : Service(), Serializable {
 
     }
 
-
     fun locationInit() {
 
         fusedLocationProviderClient = FusedLocationProviderClient(mContext)
@@ -131,9 +135,9 @@ open class YeoDamService : Service(), Serializable {
 
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
-        locationRequest.interval = 20000
+        locationRequest.interval = 200000
 
-        locationRequest.fastestInterval = 12000
+        locationRequest.fastestInterval = 60000
 
         addLocationListener()
     }
@@ -148,9 +152,27 @@ open class YeoDamService : Service(), Serializable {
 
             val location = locationResult?.lastLocation
 
+            var firstLocationLat: Double
+            var firstLocationLog: Double
+
+            val latB = 0.009609
+            val lonB = 0.00594
+
             location?.run {
+
+                firstLocationLat = lat
+                firstLocationLog = lon
+
                 lat = latitude
                 lon = longitude
+
+
+//                if (((lat - firstLocationLat) < latB && (lon - firstLocationLog) < lonB)) {
+//                    Log.d("Yeodam", "최소 범위를 넘어서지 않았습니다.")
+//                } else {
+//                    myLatitude.add(lat)
+//                    myLongitude.add(lon)
+//                }
 
                 myLatitude.add(lat)
                 myLongitude.add(lon)

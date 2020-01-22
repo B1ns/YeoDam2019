@@ -34,7 +34,10 @@ open class MapMoreAllFragment : Fragment() {
 
         val photo = extra?.getParcelableArrayList<Bitmap>("Photo")
         val memo = extra?.getStringArrayList("Memo")
+        val memoLocation = extra?.getParcelableArrayList<LatLng>("MemoLocation")
         val Pay = extra?.getStringArrayList("Pay")
+        val payInfo = extra?.getStringArrayList("PayInfo")
+        val payLocation = extra?.getParcelableArrayList<LatLng>("PayLocation")
 
         var photoCount = 0
         var memoCount = 0

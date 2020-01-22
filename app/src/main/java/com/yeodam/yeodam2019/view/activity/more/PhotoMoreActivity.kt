@@ -31,6 +31,8 @@ class PhotoMoreActivity : AppCompatActivity() {
         val photo = intent.getParcelableExtra("Photo") as Bitmap
         val photoLocation = intent.getParcelableExtra<LatLng>("PhotoLocation")
 
+        photoViewOne.setImageBitmap(photo)
+
         adpater = PhotoViewAdpater(this, photo)
         photoView_Viewpager.adapter = adpater
 

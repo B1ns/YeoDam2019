@@ -32,6 +32,7 @@ data class YeoDam(
     var StoryIndex: Int? = null
 )
 
+
 @Parcelize
 data class YeoDamData(
     var Map: ArrayList<LatLng>? = null,

@@ -24,6 +24,7 @@
         android:layout_width="125dp"
         android:layout_height="125dp"
         android:src="@drawable/person"
+        android:background="@android:color/white"
         app:civ_border_color="@android:color/darker_gray"
         app:civ_border_width="2dp"
         app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
@@ -52,7 +53,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#59d3ee"
-            android:drawableEnd="@drawable/ic_close_gray_24dp"
             android:inputType="text"
             android:maxLength="10" />
 

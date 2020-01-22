@@ -1,18 +1,18 @@
 package com.yeodam.yeodam2019.view.activity.splash
 
+import android.Manifest
 import android.app.Activity
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import com.bumptech.glide.Glide
+import androidx.appcompat.app.AppCompatActivity
+import com.fondesa.kpermissions.extension.permissionsBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yeodam.yeodam2019.R
 import com.yeodam.yeodam2019.data.UserDTO
 import com.yeodam.yeodam2019.view.activity.main.MainActivity
-import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
 
 class SplashActivity : AppCompatActivity() {
@@ -27,14 +27,14 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        if (InfoActivity().info){
+        if (InfoActivity().info) {
             getUserData()
             userInfo()
         }
 
-        var pref = getSharedPreferences("isFirst", Activity.MODE_PRIVATE)
+        val pref = getSharedPreferences("isFirst", Activity.MODE_PRIVATE)
 
-        var first = pref.getBoolean("isFirst", false)
+        val first = pref.getBoolean("isFirst", false)
 
         val handler = Handler()
         handler.postDelayed({

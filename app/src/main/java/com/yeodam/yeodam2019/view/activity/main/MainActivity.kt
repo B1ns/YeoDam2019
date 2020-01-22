@@ -1,6 +1,8 @@
 package com.yeodam.yeodam2019.view.activity.main
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ncorti.slidetoact.SlideToActView
 import com.yeodam.yeodam2019.R
+import com.yeodam.yeodam2019.YeoDamService
 import com.yeodam.yeodam2019.data.Story
 import com.yeodam.yeodam2019.data.UserDTO
 import com.yeodam.yeodam2019.data.userCount
@@ -65,8 +68,6 @@ class MainActivity : AppCompatActivity() {
 
         buttonListener()
 
-        getOnAir()
-
         itemListener()
 
         addItem()
@@ -77,6 +78,22 @@ class MainActivity : AppCompatActivity() {
 
         travelData()
 
+        startOnAir()
+
+    }
+
+    private fun startOnAir() {
+        if (isMyServiceRunning(YeoDamService::class.java)) {
+            fab_main.visibility = View.GONE
+            fab_onAir.visibility = View.VISIBLE
+        } else {
+            fab_main.visibility = View.VISIBLE
+            fab_onAir.visibility = View.INVISIBLE
+        }
+
+        fab_onAir.setOnClickListener {
+            startActivity<MapActivity>()
+        }
     }
 
     private fun travelData() {
@@ -127,23 +144,6 @@ class MainActivity : AppCompatActivity() {
             bg.visibility = View.INVISIBLE
         }
 
-    }
-
-    @SuppressLint("RestrictedApi")
-    private fun getOnAir() {
-        val intent = intent
-        val onAir = intent.getStringExtra("onAir")
-        if (onAir == "onAir") {
-            fab_main.visibility = View.INVISIBLE
-            fab_onAir.visibility = View.VISIBLE
-        } else {
-            fab_main.visibility = View.VISIBLE
-            fab_onAir.visibility = View.INVISIBLE
-        }
-
-        fab_onAir.setOnClickListener {
-            startActivity<MapActivity>()
-        }
     }
 
     private fun runItem() {
@@ -229,7 +229,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     @SuppressLint("RestrictedApi")
     private fun buttonListener() {
 
@@ -250,10 +249,18 @@ class MainActivity : AppCompatActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0) {
                     // 아래로 스크롤
-                    fab_main.hide()
+                    if (isMyServiceRunning(YeoDamService::class.java)) {
+                        Log.d("Service", "ON")
+                    } else {
+                        fab_main.hide()
+                    }
                 } else if (dy < 0) {
                     // 위로 스크롤
-                    fab_main.show()
+                    if (isMyServiceRunning(YeoDamService::class.java)) {
+                        Log.d("Service", "ON")
+                    } else {
+                        fab_main.show()
+                    }
                 }
             }
         })
@@ -262,10 +269,18 @@ class MainActivity : AppCompatActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0) {
                     // 아래로 스크롤
-                    fab_main.hide()
+                    if (isMyServiceRunning(YeoDamService::class.java)) {
+                        Log.d("Service", "ON")
+                    } else {
+                        fab_main.hide()
+                    }
                 } else if (dy < 0) {
                     // 위로 스크롤
-                    fab_main.show()
+                    if (isMyServiceRunning(YeoDamService::class.java)) {
+                        Log.d("Service", "ON")
+                    } else {
+                        fab_main.show()
+                    }
                 }
             }
         })
@@ -424,6 +439,18 @@ class MainActivity : AppCompatActivity() {
         val intent = intent
         val title = intent.getStringExtra("title")
         mainTitle = title
+    }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+
+        return false
     }
 }
 
